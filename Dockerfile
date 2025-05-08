@@ -17,6 +17,7 @@ RUN mkdir -p /opt/myapp
 
 # Entpacke das TAR-Archiv (enthält RC-Client.zip)
 #RUN tar -xf /opt/myapp/rc-client.tar.001 -C /opt/myapp/
+COPY rc-client.tar* /opt/myapp
 RUN cat /opt/myapp/rc-client.tar.* > /opt/myapp/rc-client.tar && tar xf /opt/myapp/rc-client.tar -C /opt/myapp/
 RUN rm /opt/myapp/*.tar*
 
