@@ -24,11 +24,8 @@ RUN mkdir -p /opt/myapp
 RUN cat /opt/myapp/rc-client.tar.* > /opt/myapp/rc-client.tar && tar xf /opt/myapp/rc-client.tar -C /opt/myapp/
 RUN rm /opt/myapp/*.tar*
 
-# Kopiere das ZIP-Archiv in das Image
-#COPY RC-Client.zip /opt/myapp/
-
 # Entpacke das ZIP-Archiv im Container
-RUN unzip /opt/myapp/rc-client.zip -d /opt/myapp/ && \
+RUN unzip /opt/myapp/rc-client.zip -d /opt/myapp/rc-client && \
     chmod +x /opt/myapp/rc-client/admin.sh
 
 # Setze Arbeitsverzeichnis
