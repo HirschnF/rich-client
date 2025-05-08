@@ -4,13 +4,6 @@ FROM dorowu/ubuntu-desktop-lxde-vnc:focal
 # Wechsle zu root für Paketinstallation
 USER root
 
-# Installiere Java 11 ohne apt-get: Nutze Temurin (Adoptium) Installer
-#RUN mkdir -p /opt/java && \
-#    curl -fsSL https://github.com/adoptium/temurin11-binaries/releases/latest/download/OpenJDK11U-jdk_x64_linux_hotspot.tar.gz \
-#    | tar -xz -C /opt/java && \
-#    ln -s /opt/java/jdk-11*/bin/java /usr/bin/java && \
-#    java -version
-
 # Installiere Java 11 und unzip
 RUN apt-get update && \
     apt-get install -y openjdk-11-jdk unzip && \
