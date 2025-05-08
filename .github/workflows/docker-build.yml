@@ -5,7 +5,7 @@ on:
     branches: [ main ]
     paths:
       - Dockerfile
-      - RC-Client/**
+      - rc-client/**
       - .github/workflows/docker-build.yml
 
 jobs:
