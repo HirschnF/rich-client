@@ -4,6 +4,9 @@ FROM dorowu/ubuntu-desktop-lxde-vnc:focal
 # Wechsle zu root für Paketinstallation
 USER root
 
+# Entferne ungültige Chrome-Repo-Quelle
+RUN rm -f /etc/apt/sources.list.d/google-chrome.list
+
 # Installiere Java 11 und unzip
 RUN apt-get update && \
     apt-get install -y openjdk-11-jdk unzip && \
