@@ -1,0 +1,1 @@
+$ helm upgrade --install jetty-user456 ./myapp-helm --namespace consult-usifhirsch-55 --set user=user456 --set image.repository=frank1977/jetty-rich-client --set image.tag=java11-vnc
