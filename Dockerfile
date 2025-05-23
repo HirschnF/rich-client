@@ -38,6 +38,9 @@ COPY rc-client.tar.gz.part-* /opt/myapp
 #RUN unzip /opt/myapp/rc-client.zip* -d /opt/myapp/rc-client && \
 #    chmod +x /opt/myapp/rc-client/admin.sh
 
+# Setze das Arbeitsverzeichnis
+WORKDIR /opt/myapp
+
 # Füge die Teile zusammen
 RUN cat rc-client.tar.gz.part-* > rc-client.tar.gz && \
     tar -xzf rc-client.tar.gz && \
