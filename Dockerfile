@@ -24,17 +24,20 @@ RUN mkdir -p /opt/myapp
 #RUN rm /opt/myapp/*.tar*
 #COPY rc-client.zip* /opt/myapp
 
+#########################################################
 #For creating the tar files correctly use this on your GIT Bash on windows
 #$ tar -czf rc-client.tar.gz ./USM_5_5_HOTFIX01_B036_jetty
 #$ split -b 90m rc-client.tar.gz rc-client.tar.gz.part-
 #$ rm rc-client.tar.gz
 #$ mv rc-client.tar.gz.part-* /c/transfer/rich-client
+#########################################################
 
 #copy Tar-files to image
 COPY rc-client.tar.gz.part-* /opt/myapp
 # Entpacke das ZIP-Archiv im Container
 #RUN unzip /opt/myapp/rc-client.zip* -d /opt/myapp/rc-client && \
 #    chmod +x /opt/myapp/rc-client/admin.sh
+
 # Füge die Teile zusammen
 RUN cat rc-client.tar.gz.part-* > rc-client.tar.gz && \
     tar -xzf rc-client.tar.gz && \
