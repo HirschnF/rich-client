@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp-{{ .Values.user }}-ingress
+  namespace: {{ .Values.namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: {{ .Values.domain }}
+      http:
+        paths:
+          - path: /{{ .Values.user }}/gui
+            pathType: Prefix
+            backend:
+              service:
+                name: myapp-{{ .Values.user }}-svc
+                port:
+                  number: 80
+          - path: /{{ .Values.user }}/frontend
+            pathType: Prefix
+            backend:
+              service:
+                name: myapp-{{ .Values.user }}-svc
+                port:
+                  number: 8087

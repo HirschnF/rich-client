@@ -1,0 +1,14 @@
+# Kubernetes Namespace für die App
+namespace: consult-usifhirsch-55
+# Benutzerkennung (für URL + Ressourcen)
+user: vm
+
+image:
+  repository: frank1977/jetty-rich-client
+  tag: java11-vnc
+
+storage:
+  size: 1Gi
+
+# Basis-Domain für Ingress (z. B. von NGINX)
+domain: rc.consult-usifhirsch-55.k8s-dev001.aspera.usu.grp/
