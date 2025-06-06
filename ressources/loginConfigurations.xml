@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<loginConfigurations delay="100000">
+    <loginConfiguration AUTH_TYPE="S3User" DBMS="MariaDB" dbversion="5.2.B541_next.DB327" lastUsed="2020-06-29 11:03:56.428" name="vm52  Demo DEVDAY - MariaDB" vmpassword="mv" vmuser="vm">
+        <session DBASE="usm" HOST="usm-mariadb" PORT="3306" QUALIFIER="" dbpassword="changeMePlease" dbuser="root" name="VALUEMATION"/>
+		<session DBASE="usm" HOST="usm-mariadb" PORT="3306" QUALIFIER="" dbpassword="changeMePlease" dbuser="root" name="HISTORY"/>
+        <session DBASE="usm" HOST="usm-mariadb" PORT="3306" QUALIFIER="" dbpassword="changeMePlease" dbuser="root" name="EXPORT_ORIG"/>
+    </loginConfiguration>
+</loginConfigurations>
