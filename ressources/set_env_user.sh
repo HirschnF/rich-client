@@ -1,5 +1,5 @@
 # Set the Jave Runtime directory.
-export JDK="/usr/lib/jvm/java-11-openjdk-amd64"
+export JDK="/usr/lib/jvm/java-17-openjdk-amd64"
 
 # Set JVM Options - Memory Options
 #export MEM_ARGS="-Xms256m -Xmx1920m -XX:NewSize=20m -XX:MaxNewSize=20m -XX:SurvivorRatio=8 -XX:PermSize=128m -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40"

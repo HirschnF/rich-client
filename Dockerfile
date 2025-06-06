@@ -11,7 +11,7 @@ RUN rm -f /etc/apt/sources.list.d/google-chrome.list
 # Installiere Java 11 und unzip
 ###openjdk-11-jdk
 RUN apt-get update && \
-    apt-get install -y openjdk-17-jre unzip && \
+    apt-get install -y openjdk-17-jdk unzip && \
     apt-get clean
 RUN apt install openssh-server -y
 RUN systemctl enable ssh
