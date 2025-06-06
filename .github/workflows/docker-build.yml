@@ -2,7 +2,7 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches: [ main ]
+    branches: [ novnc ]
     paths:
       - Dockerfile
       - rc-client/**
@@ -31,4 +31,4 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: frank1977/jetty-rich-client:java11-vnc
+        tags: frank1977/jetty-rich-client:java17-novnc
