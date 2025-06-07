@@ -52,7 +52,7 @@ COPY resources/set_env_user.sh /workspace/usmclient/
 #USU Logo
 #COPY resources/logo.js.png /usr/share/novnc/include/
 COPY resources/.bashrc /root/
-COPY resources/index.html /usr/share/novnc/
+#COPY resources/index.html /usr/share/novnc/
 
 # Setze Arbeitsverzeichnis
 WORKDIR /workspace/usu/rc-client
