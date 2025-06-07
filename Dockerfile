@@ -38,6 +38,14 @@ COPY rc-client.tar.gz.part-* /workspace/usu
 #RUN unzip /opt/usu/rc-client.zip* -d /opt/usu/rc-client && \
 #    chmod +x /opt/usu/rc-client/admin.sh
 
+COPY resources/loginConfigurations.xml /root/.valuemation/
+COPY resources/set_env_user.sh /workspace/usmclient/
+
+#USU Logo
+#COPY resources/logo.js.png /usr/share/novnc/include/
+COPY resources/.bashrc /root/
+COPY resources/index.html /usr/share/novnc/
+
 # Setze das Arbeitsverzeichnis
 WORKDIR /workspace/usu
 
@@ -45,14 +53,6 @@ WORKDIR /workspace/usu
 RUN cat rc-client.tar.gz.part-* > rc-client.tar.gz && \
     tar -xzf rc-client.tar.gz && \
     rm rc-client.tar.gz*  # löscht Archiv und Part-Dateien
-
-COPY resources/loginConfigurations.xml /root/.valuemation/
-COPY resources/set_env_user.sh /workspace/usmclient/
-
-#USU Logo
-#COPY resources/logo.js.png /usr/share/novnc/include/
-COPY resources/.bashrc /root/
-#COPY resources/index.html /usr/share/novnc/
 
 # Setze Arbeitsverzeichnis
 WORKDIR /workspace/usu/rc-client
