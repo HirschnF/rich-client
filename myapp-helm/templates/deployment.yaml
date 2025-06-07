@@ -1,3 +1,33 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: myapp-{{ .Values.user }}
+#   namespace: {{ .Values.namespace }}
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: myapp
+#       user: {{ .Values.user }}
+#   template:
+#     metadata:
+#       labels:
+#         app: myapp
+#         user: {{ .Values.user }}
+#     spec:
+#       containers:
+#         - name: myapp
+#           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+#           ports:
+#             - containerPort: 80    # VNC/noVNC GUI
+#             - containerPort: 8087  # Web-Frontend
+#           volumeMounts:
+#             - name: shared-data
+#               mountPath: /data
+#       volumes:
+#         - name: shared-data
+#           persistentVolumeClaim:
+#             claimName: myapp-{{ .Values.user }}-pvc
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -15,15 +45,20 @@ spec:
         app: myapp
         user: {{ .Values.user }}
     spec:
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       containers:
         - name: myapp
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 80    # VNC/noVNC GUI
-            - containerPort: 8087  # Web-Frontend
+            - containerPort: 80
+            - containerPort: 8087
           volumeMounts:
             - name: shared-data
               mountPath: /data
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: shared-data
           persistentVolumeClaim:
