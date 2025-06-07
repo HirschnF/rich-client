@@ -65,3 +65,7 @@ USER 1000
 
 # NoVNC/VNC starten + Terminal öffnen + deine App starten (falls gewünscht)
 #CMD ["/startup.sh"]
+
+# Idee:
+# wie kann ich in verschiedenen Dateien Platzhalter einbauen, die dann beim Deployment mit helm durch dann notwendige Werte im Image ersetzt werden?
+# Beispiel: in einer XML-Datei muss ein Benutzer und ein Passwort gesetzt werden, das in einer secrets.yaml stehen kann?
