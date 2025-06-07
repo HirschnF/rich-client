@@ -47,6 +47,9 @@ spec:
     spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      # Schreibrechte notwendig, da der POD sonst abstürzt            
+      securityContext:
+        fsGroup: 1000  # oder 101, je nach Container-User
       containers:
         - name: myapp
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -56,10 +59,12 @@ spec:
             - containerPort: 8087
           volumeMounts:
             - name: shared-data
-              mountPath: /data
+#              mountPath: /data
+              mountPath: /workspace
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: shared-data
           persistentVolumeClaim:
             claimName: myapp-{{ .Values.user }}-pvc
+
