@@ -19,6 +19,9 @@ RUN systemctl enable ssh
 # Erstelle Zielverzeichnis
 ###RUN mkdir -p /opt/usu
 
+#Debug Ausgabe der Datei
+RUN echo "=== DEBUG PRE: supervisord.conf ===" && cat /app/supervisord.conf
+
 RUN mkdir -p /root/.valuemation && chmod -R 777 /root/.valuemation
 RUN mkdir -p /workspace/usu && chmod -R 777 /workspace/usu
 RUN mkdir -p /workspace/usu/data && chmod -R 777 /workspace/usu/data
@@ -67,6 +70,9 @@ WORKDIR /workspace/usu/data
 USER 1000
 
 WORKDIR /workspace/usu/data
+
+#Debug Ausgabe der Datei
+RUN echo "=== DEBUG POST: supervisord.conf ===" && cat /app/supervisord.conf
 
 # Starte deine App über das Startskript - passiert dann in der .bashrc
 ### CMD ["./admin.sh"]
