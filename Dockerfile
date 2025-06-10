@@ -21,7 +21,12 @@ RUN systemctl enable ssh
 
 RUN mkdir -p /root/.valuemation
 RUN mkdir -p /workspace/usu/
+RUN mkdir -p /workspace/usu/data
 RUN mkdir -p /local/
+RUN mkdir -p /workspace/usu/rc-client
+
+RUN chmod -R 777 /workspace
+RUN chmod -R 777 /root/.valuemation
 
 # Entpacke das TAR-Archiv (enthält RC-Client.zip)
 #RUN tar -xf /opt/usu/rc-client.tar.001 -C /opt/usu/
@@ -55,7 +60,8 @@ RUN cat rc-client.tar.gz.part-* > rc-client.tar.gz && \
     rm rc-client.tar.gz*  # löscht Archiv und Part-Dateien
 
 # Setze Arbeitsverzeichnis
-WORKDIR /workspace/usu/rc-client
+
+WORKDIR /workspace/usu/rc-client/data
 
 # Optional: zurück zu Standardbenutzer
 USER 1000

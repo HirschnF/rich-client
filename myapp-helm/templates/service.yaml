@@ -14,3 +14,10 @@ spec:
     - name: frontend
       port: 8087
       targetPort: 8087
+# 09.06.2025 ergänzt um auf den Port zugreifen zu können      
+    - name: rfb
+      port: 5900
+      targetPort: 5900
+    - name: novnc
+      port: 6000
+      targetPort: 6000
