@@ -52,6 +52,7 @@ COPY resources/loginConfigurations.xml /root/.valuemation/
 COPY resources/.bashrc /root/
 COPY resources/index.html /usr/share/novnc/
 COPY resources/supervisord.conf /app/supervisord.conf
+COPY resources/supervisord.conf /app/conf.d/supervisord.conf
 
 # Setze das Arbeitsverzeichnis
 WORKDIR /workspace/usu
