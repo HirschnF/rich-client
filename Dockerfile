@@ -43,7 +43,6 @@ COPY rc-client.tar.gz.part-* /workspace/usu
 #    chmod +x /opt/usu/rc-client/admin.sh
 
 COPY resources/loginConfigurations.xml /root/.valuemation/
-COPY resources/set_env_user.sh /workspace/usmclient/
 
 #USU Logo
 #COPY resources/logo.js.png /usr/share/novnc/include/
@@ -59,12 +58,15 @@ RUN cat rc-client.tar.gz.part-* > rc-client.tar.gz && \
     tar -xzf rc-client.tar.gz && \
     rm rc-client.tar.gz*  # löscht Archiv und Part-Dateien
 
+COPY resources/set_env_user.sh /workspace/usu/rc-client/
 # Setze Arbeitsverzeichnis
 
 WORKDIR /workspace/usu/data
 
 # Optional: zurück zu Standardbenutzer
 USER 1000
+
+WORKDIR /workspace/usu/data
 
 # Starte deine App über das Startskript - passiert dann in der .bashrc
 ### CMD ["./admin.sh"]

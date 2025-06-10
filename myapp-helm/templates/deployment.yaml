@@ -23,7 +23,7 @@ spec:
       # initContainers:
       #   - name: init-volume
       #     image: busybox
-      #     command: ["sh", "-c", "mkdir -p /workspace/usu/data && chmod -R 777 /workspace/usu/data"]
+      #     command: ["sh", "-c", "mkdir -p /workspace/usu/rc-client/data/ && chmod -R 777 /workspace/usu/rc-client/data/"]
       #     volumeMounts:
       #       - name: shared-data
       #         mountPath: /workspace/usu/data
