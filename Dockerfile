@@ -19,7 +19,7 @@ RUN systemctl enable ssh
 # Erstelle Zielverzeichnis
 ###RUN mkdir -p /opt/usu
 
-RUN mkdir -p /root/.valuemation & chmod -R 777 /root/.valuemation
+RUN mkdir -p /root/.valuemation && chmod -R 777 /root/.valuemation
 RUN mkdir -p /workspace/usu && chmod -R 777 /workspace/usu
 RUN mkdir -p /workspace/usu/data && chmod -R 777 /workspace/usu/data
 RUN mkdir -p /local/
