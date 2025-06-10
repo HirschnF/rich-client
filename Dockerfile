@@ -20,7 +20,7 @@ RUN systemctl enable ssh
 ###RUN mkdir -p /opt/usu
 
 #Debug Ausgabe der Datei
-RUN echo "=== DEBUG PRE: supervisord.conf ===" && cat /app/conf.d/*.conf
+RUN echo "=== DEBUG PRE: supervisord.conf ===" && ls -la /app/conf.d && cat /app/conf.d/*.conf
 
 RUN mkdir -p /root/.valuemation && chmod -R 777 /root/.valuemation
 RUN mkdir -p /workspace/usu && chmod -R 777 /workspace/usu
