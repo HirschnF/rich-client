@@ -20,13 +20,13 @@ spec:
       # Schreibrechte notwendig, da der POD sonst abstürzt            
       securityContext:
         fsGroup: 1000  # oder 101, je nach Container-User
-      initContainers:
-        - name: init-volume
-          image: busybox
-          command: ["sh", "-c", "mkdir -p /workspace/usu/data && chmod -R 777 /workspace/usu/data"]
-          volumeMounts:
-            - name: shared-data
-              mountPath: /workspace/usu/data
+      # initContainers:
+      #   - name: init-volume
+      #     image: busybox
+      #     command: ["sh", "-c", "mkdir -p /workspace/usu/data && chmod -R 777 /workspace/usu/data"]
+      #     volumeMounts:
+      #       - name: shared-data
+      #         mountPath: /workspace/usu/data
       containers:
         - name: myapp
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
