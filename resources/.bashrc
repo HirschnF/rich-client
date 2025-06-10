@@ -17,5 +17,5 @@
 # alias cp='cp -i'                                                                                                     │
 # alias mv='mv -i'
 
-cd /workspace/usmclient
+cd /workspace/usu/rc-client
 ./admin.sh

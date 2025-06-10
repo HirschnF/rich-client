@@ -3,7 +3,7 @@
 FROM theasp/novnc
 
 # Wechsle zu root für Paketinstallation
-###USER root
+USER root
 
 # Entferne ungültige Chrome-Repo-Quelle
 RUN rm -f /etc/apt/sources.list.d/google-chrome.list
@@ -19,14 +19,13 @@ RUN systemctl enable ssh
 # Erstelle Zielverzeichnis
 ###RUN mkdir -p /opt/usu
 
-RUN mkdir -p /root/.valuemation
-RUN mkdir -p /workspace/usu/
-RUN mkdir -p /workspace/usu/data
+RUN mkdir -p /root/.valuemation & chmod -R 777 /root/.valuemation
+RUN mkdir -p /workspace/usu && chmod -R 777 /workspace/usu
+RUN mkdir -p /workspace/usu/data && chmod -R 777 /workspace/usu/data
 RUN mkdir -p /local/
-RUN mkdir -p /workspace/usu/rc-client
+RUN mkdir -p /workspace/usu/rc-client && chmod -R 777 /workspace/usu/rc-client
 
 RUN chmod -R 777 /workspace
-RUN chmod -R 777 /root/.valuemation
 
 # Entpacke das TAR-Archiv (enthält RC-Client.zip)
 #RUN tar -xf /opt/usu/rc-client.tar.001 -C /opt/usu/

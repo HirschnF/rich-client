@@ -23,8 +23,6 @@ ingress:
   hostname: rc.consult-usifhirsch-55.k8s-dev001.aspera.usu.grp
   tls: true
 
-# storage:
-#   size: 1Gi
 storage:
   size: 1Gi
   storageClassName: vsphere-csi-sc
