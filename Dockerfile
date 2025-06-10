@@ -27,7 +27,7 @@ RUN mkdir -p /workspace/usu && chmod -R 777 /workspace/usu
 RUN mkdir -p /workspace/usu/data && chmod -R 777 /workspace/usu/data
 RUN mkdir -p /local/
 RUN mkdir -p /workspace/usu/rc-client && chmod -R 777 /workspace/usu/rc-client
-
+RUN mkdir -p /workspace/usu/rc-client/data && chmod -R 777 /workspace/usu/rc-client/data
 RUN chmod -R 777 /workspace
 
 # Entpacke das TAR-Archiv (enthält RC-Client.zip)
@@ -63,6 +63,7 @@ RUN cat rc-client.tar.gz.part-* > rc-client.tar.gz && \
     rm rc-client.tar.gz*  # löscht Archiv und Part-Dateien
 
 COPY resources/set_env_user.sh /workspace/usu/rc-client/
+
 # Setze Arbeitsverzeichnis
 
 WORKDIR /workspace/usu/data
@@ -74,6 +75,9 @@ WORKDIR /workspace/usu/data
 
 #Debug Ausgabe der Datei
 RUN echo "=== DEBUG POST: supervisord.conf ===" && cat /app/supervisord.conf
+
+RUN echo "Create Supervisord.log"
+RUN echo "" >> /workspace/usu/rc-client/data/supervisord.log
 
 # Starte deine App über das Startskript - passiert dann in der .bashrc
 ### CMD ["./admin.sh"]
