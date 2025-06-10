@@ -61,7 +61,7 @@ RUN cat rc-client.tar.gz.part-* > rc-client.tar.gz && \
 
 # Setze Arbeitsverzeichnis
 
-WORKDIR /workspace/usu/rc-client/data
+WORKDIR /workspace/usu/data
 
 # Optional: zurück zu Standardbenutzer
 USER 1000
