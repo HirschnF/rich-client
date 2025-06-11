@@ -18,8 +18,11 @@ spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       # Schreibrechte notwendig, da der POD sonst abstürzt            
-      securityContext:
-        fsGroup: 1000  # oder 101, je nach Container-User
+      # wir wollen das nun als root laufen lassen
+      # securityContext:
+      #   fsGroup: 1000  # oder 101, je nach Container-User
+
+      #INIT Container wird nicht benötigt
       # initContainers:
       #   - name: init-volume
       #     image: busybox
@@ -30,6 +33,12 @@ spec:
       containers:
         - name: myapp
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          # 11.06.2025 - den Container am Leben halten für 10h
+          command: ["sh", "-c", 'echo "Hello, Kubernetes!" && tail -f /dev/null']
+          #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && mkdir -p /workspace/usu/rc-client/data/ && chmod -R 777 /workspace/usu/rc-client/data/ && tail -f /dev/null']
+          # It is for running as the root user
+          # securityContext:
+          #   runAsUser: 0
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 80
@@ -37,15 +46,15 @@ spec:
 # 09.06.2025 ergänzt um auf den Port zugreifen zu können                  
             - containerPort: 5900
             - containerPort: 6000
-          volumeMounts:
-            - name: shared-data
-#              mountPath: /data
-#              mountPath: /workspace
-              mountPath: /workspace/usu/data
+#           volumeMounts:
+#             - name: shared-data
+# #              mountPath: /data
+# #              mountPath: /workspace
+#               mountPath: /workspace/usu/data
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-      volumes:
-        - name: shared-data
-          persistentVolumeClaim:
-            claimName: myapp-{{ .Values.user }}-pvc
+      # volumes:
+      #   - name: shared-data
+      #     persistentVolumeClaim:
+      #       claimName: myapp-{{ .Values.user }}-pvc
 

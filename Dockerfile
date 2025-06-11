@@ -61,17 +61,18 @@ WORKDIR /workspace/usu
 RUN cat rc-client.tar.gz.part-* > rc-client.tar.gz && \
     tar -xzf rc-client.tar.gz && \
     rm rc-client.tar.gz*  # löscht Archiv und Part-Dateien
-
+RUN mv /workspace/usu/USM_*/* ./rc-client/
+#RUN rm USM_*
 COPY resources/set_env_user.sh /workspace/usu/rc-client/
 
 # Setze Arbeitsverzeichnis
 
-WORKDIR /workspace/usu/data
+#WORKDIR /workspace/usu/data
 
 # Optional: zurück zu Standardbenutzer
-USER 1000
+#USER 1000
 
-WORKDIR /workspace/usu/data
+#WORKDIR /workspace/usu/data
 
 #Debug Ausgabe der Datei
 RUN echo "=== DEBUG POST: supervisord.conf ===" && cat /app/supervisord.conf
