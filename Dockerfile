@@ -77,8 +77,8 @@ COPY resources/set_env_user.sh /workspace/usu/rc-client/
 #Debug Ausgabe der Datei
 RUN echo "=== DEBUG POST: supervisord.conf ===" && cat /app/supervisord.conf
 
-RUN echo "Create Supervisord.log"
-RUN echo "" >> /workspace/usu/rc-client/data/supervisord.log
+#RUN echo "Create Supervisord.log"
+#RUN echo "" >> /workspace/usu/rc-client/data/supervisord.log
 
 # Starte deine App über das Startskript - passiert dann in der .bashrc
 ### CMD ["./admin.sh"]
