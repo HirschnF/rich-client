@@ -8,11 +8,13 @@ USER root
 RUN echo "### Update system... ###"
 # Entferne ungültige Chrome-Repo-Quelle
 RUN rm -f /etc/apt/sources.list.d/google-chrome.list
+RUN echo "deb http://ftp.de.debian.org/debian bullseye main" > /etc/apt/sources.list
 
 # Installiere Java 11 und unzip
 ###openjdk-11-jdk
 RUN apt-get update && \
-    apt-get install -y openjdk-17-jdk unzip && \
+    apt-get install -y openjdk-17-jdk && \
+    apt-get install -y unzip && \
     apt-get clean
 RUN apt install openssh-server -y
 
