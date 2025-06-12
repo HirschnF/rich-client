@@ -11,25 +11,11 @@ RUN rm -f /etc/apt/sources.list.d/google-chrome.list
 
 # Installiere Java 11 und unzip
 ###openjdk-11-jdk
-RUN set -ex && \
-    apt-get update && \
-    apt-get install -y \
-    x11vnc \
-    fluxbox \
-    xterm \
-    Xvfb \
-    supervisor \
-    curl \
-    unzip \
-    net-tools && \
-    openjdk-17-jdk \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-    #RUN apt-get update && \
-#    apt-get install -y openjdk-17-jdk unzip && \
-#    apt-get clean
+RUN apt-get update && \
+    apt-get install -y openjdk-17-jdk unzip && \
+    apt-get clean
 RUN apt install openssh-server -y
+
 RUN systemctl enable ssh
 
 # Erstelle Zielverzeichnis
@@ -68,8 +54,8 @@ COPY resources/supervisord.conf /app/supervisord.conf
 #USU Logo
 #COPY resources/logo.js.png /usr/share/novnc/include/
 #COPY resources/.bashrc /root/
-
-#COPY resources/index.html /usr/share/novnc/
+COPY resources/index.html /usr/share/novnc/
+#COPY resources/supervisord.conf /app/supervisord.conf
 #COPY resources/supervisord.conf /app/conf.d/supervisord.conf
 
 # Setze das Arbeitsverzeichnis
