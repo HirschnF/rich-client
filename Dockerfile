@@ -2,6 +2,7 @@
 ###FROM dorowu/ubuntu-desktop-lxde-vnc:focal
 FROM theasp/novnc
 
+
 # Wechsle zu root für Paketinstallation
 USER root
 
@@ -16,9 +17,10 @@ RUN apt-get update && \
     apt-get install -y openjdk-17-jdk && \
     apt-get install -y unzip && \
     apt-get clean
-RUN apt install openssh-server -y
 
-RUN systemctl enable ssh
+
+#RUN apt install openssh-server -y
+#RUN systemctl enable ssh
 
 # Erstelle Zielverzeichnis
 ###RUN mkdir -p /opt/usu
