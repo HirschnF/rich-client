@@ -16,6 +16,7 @@ RUN echo "deb http://ftp.de.debian.org/debian bullseye main" > /etc/apt/sources.
 RUN apt-get update && \
     apt-get install -y openjdk-17-jdk && \
     apt-get install -y unzip && \
+    apt-get install -y procps && \
     apt-get clean
 
 

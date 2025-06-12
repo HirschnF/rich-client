@@ -36,7 +36,7 @@ spec:
           # 11.06.2025 - den Container am Leben halten für 10h
           #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && /usr/bin/supervisord -c /app/supervisord.conf'] #&& tail -f /dev/null']
           #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && /startup.sh'] #&& tail -f /dev/null']
-          command: ["sh", "-c", 'echo "Hello, Kubernetes!" && tail -f /dev/null']
+          command: ["sh", "-c", 'echo "Hello, Kubernetes!" '] # && tail -f /dev/null']
           #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && mkdir -p /workspace/usu/rc-client/data/ && chmod -R 777 /workspace/usu/rc-client/data/ && tail -f /dev/null']
           # It is for running as the root user
           securityContext:
