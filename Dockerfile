@@ -14,7 +14,6 @@ RUN rm -f /etc/apt/sources.list.d/google-chrome.list
 RUN set -ex && \
     apt-get update && \
     apt-get install -y \
-    openjdk-17-jdk \
     x11vnc \
     fluxbox \
     xterm \
@@ -23,6 +22,7 @@ RUN set -ex && \
     curl \
     unzip \
     net-tools && \
+    openjdk-17-jdk \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
