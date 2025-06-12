@@ -5,6 +5,7 @@ FROM theasp/novnc
 # Wechsle zu root für Paketinstallation
 USER root
 
+RUN echo "### Update system... ###"
 # Entferne ungültige Chrome-Repo-Quelle
 RUN rm -f /etc/apt/sources.list.d/google-chrome.list
 
@@ -20,15 +21,16 @@ RUN systemctl enable ssh
 ###RUN mkdir -p /opt/usu
 
 #Debug Ausgabe der Datei
-RUN echo "=== DEBUG PRE: supervisord.conf ===" && ls -la /app/conf.d && cat /app/conf.d/*.conf
+#RUN echo "=== DEBUG PRE: supervisord.conf ===" && ls -la /app/conf.d && cat /app/conf.d/*.conf
 
+RUN echo "### Create folders... ###"
 RUN mkdir -p /root/.valuemation && chmod -R 777 /root/.valuemation
-RUN mkdir -p /workspace/usu && chmod -R 777 /workspace/usu
+#RUN mkdir -p /workspace/usu && chmod -R 777 /workspace/usu
 RUN mkdir -p /workspace/usu/data && chmod -R 777 /workspace/usu/data
-RUN mkdir -p /local/
+#RUN mkdir -p /local/
 RUN mkdir -p /workspace/usu/rc-client && chmod -R 777 /workspace/usu/rc-client
-RUN mkdir -p /workspace/usu/rc-client/data && chmod -R 777 /workspace/usu/rc-client/data
-RUN chmod -R 777 /workspace
+#RUN mkdir -p /workspace/usu/rc-client/data && chmod -R 777 /workspace/usu/rc-client/data
+#RUN chmod -R 777 /workspace
 
 # Entpacke das TAR-Archiv (enthält RC-Client.zip)
 #RUN tar -xf /opt/usu/rc-client.tar.001 -C /opt/usu/
@@ -38,7 +40,7 @@ RUN chmod -R 777 /workspace
 #RUN cat /opt/usu/rc-client.tar.* > /opt/usu/rc-client.tar && tar xf /opt/usu/rc-client.tar -C /opt/usu/
 #RUN rm /opt/usu/*.tar*
 #COPY rc-client.zip* /opt/usu
-
+RUN echo "### Copy Rich Client as tar.gz... ###"
 #copy Tar-files to image
 COPY rc-client.tar.gz.part-* /workspace/usu
 # Entpacke das ZIP-Archiv im Container
@@ -49,20 +51,22 @@ COPY resources/loginConfigurations.xml /root/.valuemation/
 
 #USU Logo
 #COPY resources/logo.js.png /usr/share/novnc/include/
-COPY resources/.bashrc /root/
+#COPY resources/.bashrc /root/
 COPY resources/index.html /usr/share/novnc/
-COPY resources/supervisord.conf /app/supervisord.conf
-COPY resources/supervisord.conf /app/conf.d/supervisord.conf
+#COPY resources/supervisord.conf /app/supervisord.conf
+#COPY resources/supervisord.conf /app/conf.d/supervisord.conf
 
 # Setze das Arbeitsverzeichnis
 WORKDIR /workspace/usu
-
+RUN echo "### Extract Rich Client... ###"
 # Füge die Teile zusammen
 RUN cat rc-client.tar.gz.part-* > rc-client.tar.gz && \
     tar -xzf rc-client.tar.gz && \
     rm rc-client.tar.gz*  # löscht Archiv und Part-Dateien
+RUN echo "### Move Rich Client... ###"
 RUN mv /workspace/usu/USM_*/* ./rc-client/
-#RUN rm USM_*
+
+RUN echo "### Copy set_env with Java Path... ###"
 COPY resources/set_env_user.sh /workspace/usu/rc-client/
 
 # Setze Arbeitsverzeichnis
@@ -75,7 +79,7 @@ COPY resources/set_env_user.sh /workspace/usu/rc-client/
 #WORKDIR /workspace/usu/data
 
 #Debug Ausgabe der Datei
-RUN echo "=== DEBUG POST: supervisord.conf ===" && cat /app/supervisord.conf
+#RUN echo "=== DEBUG POST: supervisord.conf ===" && cat /app/supervisord.conf
 
 #RUN echo "Create Supervisord.log"
 #RUN echo "" >> /workspace/usu/rc-client/data/supervisord.log
