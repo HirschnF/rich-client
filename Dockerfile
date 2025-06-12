@@ -12,8 +12,8 @@ RUN rm -f /etc/apt/sources.list.d/google-chrome.list
 # Installiere Java 11 und unzip
 ###openjdk-11-jdk
 RUN apt-get update && \
-    openjdk-17-jdk \
     apt-get install -y \
+    openjdk-17-jdk \
     x11vnc \
     fluxbox \
     xterm \
