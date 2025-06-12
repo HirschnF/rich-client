@@ -48,6 +48,11 @@ spec:
 # 09.06.2025 ergänzt um auf den Port zugreifen zu können                  
             - containerPort: 5900
             - containerPort: 6000
+          env:
+            - name: DISPLAY_WIDTH
+              value: "1600"
+            - name: DISPLAY_HEIGHT
+              value: "900"
 #           volumeMounts:
 #             - name: shared-data
 # #              mountPath: /data

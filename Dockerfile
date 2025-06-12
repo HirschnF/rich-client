@@ -15,6 +15,15 @@ RUN apt-get update && \
     apt-get install -y openjdk-17-jdk unzip && \
     apt-get clean
 RUN apt install openssh-server -y
+RUN apt-get update && apt-get install -y \
+    x11vnc \
+    fluxbox \
+    xterm \
+    Xvfb \
+    supervisor \
+    curl \
+    unzip \
+    net-tools
 RUN systemctl enable ssh
 
 # Erstelle Zielverzeichnis
@@ -48,12 +57,13 @@ COPY rc-client.tar.gz.part-* /workspace/usu
 #    chmod +x /opt/usu/rc-client/admin.sh
 
 COPY resources/loginConfigurations.xml /root/.valuemation/
+COPY resources/supervisord.conf /app/supervisord.conf
 
 #USU Logo
 #COPY resources/logo.js.png /usr/share/novnc/include/
 #COPY resources/.bashrc /root/
-COPY resources/index.html /usr/share/novnc/
-#COPY resources/supervisord.conf /app/supervisord.conf
+
+#COPY resources/index.html /usr/share/novnc/
 #COPY resources/supervisord.conf /app/conf.d/supervisord.conf
 
 # Setze das Arbeitsverzeichnis
