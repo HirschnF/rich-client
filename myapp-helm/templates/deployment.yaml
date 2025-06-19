@@ -53,6 +53,12 @@ spec:
               value: "1600"
             - name: DISPLAY_HEIGHT
               value: "900"
+# 19.6.25 dynamisch die loginconfigurations.xml aufbauen
+          volumeMounts:
+            - name: login-config
+              mountPath: /root/.valuemation/loginConfigurations.xml
+              subPath: loginConfigurations.xml
+
 #           volumeMounts:
 #             - name: shared-data
 # #              mountPath: /data
@@ -60,6 +66,11 @@ spec:
 #               mountPath: /workspace/usu/data
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: login-config
+          configMap:
+          name: login-config-{{ .Values.user }}
+
       # volumes:
       #   - name: shared-data
       #     persistentVolumeClaim:

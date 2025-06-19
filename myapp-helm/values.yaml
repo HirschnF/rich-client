@@ -34,4 +34,10 @@ resources:
     cpu: 500m
     memory: 1Gi
 
-
+db:
+  host: usm-mariadb.consult-usifhirsch-55.svc.cluster.local
+  port: "3306"
+  dbase: usm
+  qualifier: ""
+  dbuser: root
+  dbpassword: changeMePlease
