@@ -2,6 +2,7 @@
 namespace: consult-usifhirsch-55
 
 user: user456
+userpw: mv
 
 enablePersistence: false
 
@@ -39,5 +40,5 @@ db:
   port: "3306"
   dbase: usm
   qualifier: ""
-  dbuser: root
-  dbpassword: changeMePlease
+  dbuser: usm
+  dbpassword: changeMeP1TSgsF0CQeB

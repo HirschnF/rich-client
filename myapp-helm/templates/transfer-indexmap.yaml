@@ -1,0 +1,124 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: transfer-index-{{ .Values.user }}
+  namespace: {{ .Values.namespace }}
+data:
+  transfer.html: |
+    <!DOCTYPE html>
+      <html lang="de">
+      <head>
+        <meta charset="UTF-8">
+        <title>Datei-Transfer</title>
+        <style>
+          body {
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: 2rem auto;
+          }
+          input[type="file"] {
+            margin-bottom: 1rem;
+          }
+          ul {
+            list-style: none;
+            padding-left: 0;
+          }
+          li {
+            margin-bottom: 0.5rem;
+          }
+          button {
+            margin-top: 1rem;
+          }
+        </style>
+      </head>
+      <body>
+
+        <h1>📁 Datei-Transfer Jetty Rich Client</h1>
+
+        <h2>🔼 Datei hochladen</h2>
+        <input type="file" id="fileInput" />
+        <br />
+        <button onclick="uploadFile()">Hochladen</button>
+
+        <h2>🔽 Dateien im Verzeichnis</h2>
+        <button onclick="listFiles()">Dateien anzeigen</button>
+        <ul id="fileList"></ul>
+
+        <script>
+          // 📂 Ziel-URL relativ zur aktuellen Seite
+          const BASE_URL = window.location.href.endsWith("/")
+            ? window.location.href
+            : window.location.href + "/";
+
+          async function uploadFile() {
+            const fileInput = document.getElementById("fileInput");
+            if (!fileInput.files.length) {
+              alert("Bitte eine Datei auswählen.");
+              return;
+            }
+
+            const file = fileInput.files[0];
+            const url = BASE_URL + encodeURIComponent(file.name);
+
+            try {
+              const response = await fetch(url, {
+                method: "PUT",
+                body: file
+              });
+
+              if (response.ok) {
+                alert("✅ Datei erfolgreich hochgeladen!");
+                listFiles();
+              } else {
+                alert("❌ Fehler beim Hochladen: " + response.statusText);
+              }
+            } catch (err) {
+              alert("❌ Upload fehlgeschlagen: " + err.message);
+            }
+          }
+
+          async function listFiles() {
+            try {
+              const response = await fetch(BASE_URL, {
+                method: "PROPFIND",
+                headers: {
+                  "Depth": "1"
+                }
+              });
+
+              if (!response.ok) {
+                alert("❌ Fehler beim Abrufen der Dateiliste");
+                return;
+              }
+
+              const text = await response.text();
+              const parser = new DOMParser();
+              const xml = parser.parseFromString(text, "application/xml");
+              const responses = xml.getElementsByTagName("d:response");
+
+              const fileList = document.getElementById("fileList");
+              fileList.innerHTML = "";
+
+              for (let i = 1; i < responses.length; i++) {
+                const href = responses[i].getElementsByTagName("d:href")[0].textContent;
+                const fileName = decodeURIComponent(href.split("/").pop());
+
+                const li = document.createElement("li");
+                const a = document.createElement("a");
+                a.href = BASE_URL + encodeURIComponent(fileName);
+                a.textContent = fileName;
+                a.target = "_blank";
+                a.download = fileName;
+
+                li.appendChild(a);
+                fileList.appendChild(li);
+              }
+            } catch (err) {
+              alert("❌ Fehler beim Laden der Dateien: " + err.message);
+            }
+          }
+        </script>
+
+      </body>
+      </html>
+
