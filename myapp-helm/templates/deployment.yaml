@@ -39,7 +39,7 @@ spec:
           
           #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && cat /root/.valuemation/loginConfigurations.xml && /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/stdout'] # && tail -f /dev/null']
           # 26.06.2025 - ADD special user
-          command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && cat /home/usuuser/.valuemation/loginConfigurations.xml && tail -f /dev/stdout'] # && tail -f /dev/null']
+          command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && cat /home/usuuser/.valuemation/loginConfigurations.xml && /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/stdout'] # && tail -f /dev/null']
           #echo "feh --bg-scale /workspace/usu/logo.png" >> &&'
           #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && mkdir -p /workspace/usu/rc-client/data/ && chmod -R 777 /workspace/usu/rc-client/data/ && tail -f /dev/null']
           # It is for running as the root user

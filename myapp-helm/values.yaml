@@ -8,7 +8,9 @@ enablePersistence: false
 
 image:
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.01.06
+  tag: usm5.5.01.07
+#.05 hat im Web funktioniert
+
   pullPolicy: Always
 
 

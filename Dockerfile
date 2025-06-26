@@ -90,14 +90,17 @@ RUN echo "### Copy set_env with Java Path... ###"
 COPY resources/set_env_user.sh /workspace/usu/rc-client/
 
 RUN chown usuuser:usuuser -R /workspace
+
+# Supervisord starten
+CMD ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]
+
 # Wechsel zu Benutzer
 USER usuuser
 
 # Arbeitsverzeichnis
 WORKDIR /workspace/usu
 
-# Supervisord starten
-CMD ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]
+
 
 # Setze Arbeitsverzeichnis
 
