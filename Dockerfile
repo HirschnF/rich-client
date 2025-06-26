@@ -17,7 +17,14 @@ RUN apt-get update && \
     apt-get install -y openjdk-17-jdk && \
     apt-get install -y unzip && \
     apt-get install -y procps && \
+    apt-get install -y python3-pip && \
     apt-get clean
+
+RUN echo "### Install uploadserver... ###"
+RUN pip install uploadserver
+
+# 26.06.2025 - ADD special user usuuser
+RUN useradd -m -s /bin/bash usuuser
 
 
 #RUN apt install openssh-server -y
@@ -31,6 +38,9 @@ RUN apt-get update && \
 
 RUN echo "### Create folders... ###"
 RUN mkdir -p /root/.valuemation && chmod -R 777 /root/.valuemation
+
+# 26.06.2025 - ADD special user
+RUN mkdir -p /home/usuuser/.valuemation && chmod -R 777 /home/usuuser/.valuemation
 #RUN mkdir -p /workspace/usu && chmod -R 777 /workspace/usu
 RUN mkdir -p /workspace/usu/data && chmod -R 777 /workspace/usu/data
 #RUN mkdir -p /local/
@@ -55,6 +65,9 @@ COPY rc-client.tar.gz.part-* /workspace/usu
 
 COPY resources/loginConfigurations.xml /root/.valuemation/
 COPY resources/supervisord.conf /app/supervisord.conf
+# 26.06.2025 - ADD special user
+COPY resources/loginConfigurations.xml /home/usuuser/.valuemation/
+COPY --chown=usuuser:usuuser resources/supervisord.conf /app/supervisord.conf
 
 #USU Logo
 #COPY resources/logo.js.png /usr/share/novnc/include/
@@ -75,6 +88,16 @@ RUN mv /workspace/usu/USM_*/* ./rc-client/
 
 RUN echo "### Copy set_env with Java Path... ###"
 COPY resources/set_env_user.sh /workspace/usu/rc-client/
+
+RUN chown usuuser:usuuser -R /workspace
+# Wechsel zu Benutzer
+USER usuuser
+
+# Arbeitsverzeichnis
+WORKDIR /workspace/usu
+
+# Supervisord starten
+CMD ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]
 
 # Setze Arbeitsverzeichnis
 

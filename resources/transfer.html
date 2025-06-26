@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Datei-Transfer</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; }
+    input[type="file"] { margin-bottom: 1rem; }
+    ul { list-style: none; padding-left: 0; }
+    li { margin-bottom: 0.5rem; }
+    button { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+
+  <h1>📁 Datei-Transfer</h1>
+
+  <h2>🔼 Datei hochladen (nur .zip, .xml, .sql)</h2>
+  <input type="file" id="fileInput" accept=".zip,.xml,.sql" />
+  <br />
+  <button onclick="uploadFile()">Hochladen</button>
+
+  <h2>🔽 Verfügbare Dateien</h2>
+  <button onclick="listFiles()">Dateien anzeigen</button>
+  <ul id="fileList"></ul>
+
+  <script>
+    const UPLOAD_URL = "./upload.php"; // Upload-Skript im gleichen Verzeichnis
+    const FILES_URL = "./";            // Annahme: Directory Listing aktiv
+
+    function getExtension(filename) {
+      return filename.split('.').pop().toLowerCase();
+    }
+
+    async function uploadFile() {
+      const fileInput = document.getElementById("fileInput");
+      if (!fileInput.files.length) {
+        alert("Bitte eine Datei auswählen.");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const allowed = ["zip", "xml", "sql"];
+      const ext = getExtension(file.name);
+
+      if (!allowed.includes(ext)) {
+        alert("Nur ZIP, XML oder SQL-Dateien erlaubt.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await fetch(UPLOAD_URL, {
+          method: "POST",
+          body: formData
+        });
+
+        if (response.ok) {
+          alert("✅ Datei erfolgreich hochgeladen!");
+          listFiles();
+        } else {
+          alert("❌ Upload fehlgeschlagen: " + response.statusText);
+        }
+      } catch (err) {
+        alert("❌ Netzwerkfehler: " + err.message);
+      }
+    }
+
+    async function listFiles() {
+      try {
+        const response = await fetch(FILES_URL);
+        const text = await response.text();
+
+        // versuche, aus dem HTML-Listing Links zu extrahieren
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, "text/html");
+        const links = doc.querySelectorAll("a");
+
+        const fileList = document.getElementById("fileList");
+        fileList.innerHTML = "";
+
+        links.forEach(link => {
+          const href = link.getAttribute("href");
+          const name = link.textContent;
+
+          if (!href || href === "../") return;
+
+          const ext = getExtension(name);
+          if (["zip", "xml", "sql"].includes(ext)) {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = href;
+            a.textContent = name;
+            a.download = name;
+            li.appendChild(a);
+            fileList.appendChild(li);
+          }
+        });
+
+      } catch (err) {
+        alert("❌ Fehler beim Laden der Dateiliste: " + err.message);
+      }
+    }
+  </script>
+
+</body>
+</html>

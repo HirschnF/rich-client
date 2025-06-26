@@ -8,7 +8,7 @@ enablePersistence: false
 
 image:
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.01.05
+  tag: usm5.5.01.06
   pullPolicy: Always
 
 

@@ -9,46 +9,33 @@ data:
       <html lang="de">
       <head>
         <meta charset="UTF-8">
-        <title>Datei-Transfer</title>
+        <title>Datei Upload & Download</title>
         <style>
-          body {
-            font-family: sans-serif;
-            max-width: 600px;
-            margin: 2rem auto;
-          }
-          input[type="file"] {
-            margin-bottom: 1rem;
-          }
-          ul {
-            list-style: none;
-            padding-left: 0;
-          }
-          li {
-            margin-bottom: 0.5rem;
-          }
-          button {
-            margin-top: 1rem;
-          }
+          body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; }
+          input[type="file"] { margin-bottom: 1rem; }
+          ul { list-style: none; padding-left: 0; }
+          li { margin-bottom: 0.5rem; }
+          button { margin-top: 1rem; }
         </style>
       </head>
       <body>
 
-        <h1>📁 Datei-Transfer Jetty Rich Client</h1>
+        <h1>📁 Datei-Transfer</h1>
 
         <h2>🔼 Datei hochladen</h2>
         <input type="file" id="fileInput" />
         <br />
         <button onclick="uploadFile()">Hochladen</button>
 
-        <h2>🔽 Dateien im Verzeichnis</h2>
+        <h2>🔽 Verfügbare Dateien</h2>
         <button onclick="listFiles()">Dateien anzeigen</button>
         <ul id="fileList"></ul>
 
         <script>
-          // 📂 Ziel-URL relativ zur aktuellen Seite
-          const BASE_URL = window.location.href.endsWith("/")
-            ? window.location.href
-            : window.location.href + "/";
+          const UPLOAD_URL = "/workspace/usu/data/";  // Zielpfad
+          const LIST_URL = "/workspace/usu/list.json"; // Datei-Liste
+          const DOWNLOAD_URL = "/workspace/usu/data/";       // Download-Pfad
+
 
           async function uploadFile() {
             const fileInput = document.getElementById("fileInput");
@@ -58,67 +45,51 @@ data:
             }
 
             const file = fileInput.files[0];
-            const url = BASE_URL + encodeURIComponent(file.name);
+            const formData = new FormData();
+            formData.append("file", file);
 
             try {
-              const response = await fetch(url, {
-                method: "PUT",
-                body: file
+              const response = await fetch(UPLOAD_URL, {
+                method: "POST",
+                body: formData
               });
 
               if (response.ok) {
                 alert("✅ Datei erfolgreich hochgeladen!");
                 listFiles();
               } else {
-                alert("❌ Fehler beim Hochladen: " + response.statusText);
+                alert("❌ Upload fehlgeschlagen: " + response.statusText);
               }
             } catch (err) {
-              alert("❌ Upload fehlgeschlagen: " + err.message);
+              alert("❌ Netzwerkfehler: " + err.message);
             }
           }
 
           async function listFiles() {
             try {
-              const response = await fetch(BASE_URL, {
-                method: "PROPFIND",
-                headers: {
-                  "Depth": "1"
-                }
-              });
-
+              const response = await fetch(LIST_URL);
               if (!response.ok) {
-                alert("❌ Fehler beim Abrufen der Dateiliste");
-                return;
+                throw new Error("Fehler beim Abrufen der Dateiliste");
               }
 
-              const text = await response.text();
-              const parser = new DOMParser();
-              const xml = parser.parseFromString(text, "application/xml");
-              const responses = xml.getElementsByTagName("d:response");
-
+              const files = await response.json();
               const fileList = document.getElementById("fileList");
               fileList.innerHTML = "";
 
-              for (let i = 1; i < responses.length; i++) {
-                const href = responses[i].getElementsByTagName("d:href")[0].textContent;
-                const fileName = decodeURIComponent(href.split("/").pop());
-
+              files.forEach(fileName => {
                 const li = document.createElement("li");
                 const a = document.createElement("a");
-                a.href = BASE_URL + encodeURIComponent(fileName);
+                a.href = DOWNLOAD_URL + encodeURIComponent(fileName);
                 a.textContent = fileName;
-                a.target = "_blank";
                 a.download = fileName;
-
                 li.appendChild(a);
                 fileList.appendChild(li);
-              }
+              });
             } catch (err) {
-              alert("❌ Fehler beim Laden der Dateien: " + err.message);
+              alert("❌ Fehler beim Laden der Dateiliste: " + err.message);
             }
           }
         </script>
 
       </body>
       </html>
-

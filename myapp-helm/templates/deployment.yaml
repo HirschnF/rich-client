@@ -36,7 +36,11 @@ spec:
           # 11.06.2025 - den Container am Leben halten für 10h
           #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && /usr/bin/supervisord -c /app/supervisord.conf'] #&& tail -f /dev/null']
           #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && /startup.sh'] #&& tail -f /dev/null']
-          command: ["sh", "-c", 'echo "Hello, Kubernetes!" && cat /root/.valuemation/loginConfigurations.xml && /usr/bin/supervisord -c /app/supervisord.conf && cd /workspace/usu/rc-client && tail -f /dev/stdout'] # && tail -f /dev/null']
+          
+          #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && cat /root/.valuemation/loginConfigurations.xml && /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/stdout'] # && tail -f /dev/null']
+          # 26.06.2025 - ADD special user
+          command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && cat /home/usuuser/.valuemation/loginConfigurations.xml && tail -f /dev/stdout'] # && tail -f /dev/null']
+          #echo "feh --bg-scale /workspace/usu/logo.png" >> &&'
           #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && mkdir -p /workspace/usu/rc-client/data/ && chmod -R 777 /workspace/usu/rc-client/data/ && tail -f /dev/null']
           # It is for running as the root user
           securityContext:
@@ -46,8 +50,8 @@ spec:
             - containerPort: 80
             - containerPort: 8087
 # 09.06.2025 ergänzt um auf den Port zugreifen zu können                  
-            - containerPort: 5900
-            - containerPort: 6000
+            # - containerPort: 5900
+            # - containerPort: 6000
           env:
             - name: DISPLAY_WIDTH
               value: "1600"
@@ -56,7 +60,8 @@ spec:
 # 19.6.25 dynamisch die loginconfigurations.xml aufbauen
           volumeMounts:
             - name: login-config
-              mountPath: /root/.valuemation/loginConfigurations.xml
+              #mountPath: /root/.valuemation/loginConfigurations.xml
+              mountPath: /home/usuuser/.valuemation/loginConfigurations.xml
               subPath: loginConfigurations.xml
             - name: novnc-index
               mountPath: /usr/share/novnc/index.html
