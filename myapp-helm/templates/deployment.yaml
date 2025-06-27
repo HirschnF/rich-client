@@ -44,10 +44,10 @@ spec:
           #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && mkdir -p /workspace/usu/rc-client/data/ && chmod -R 777 /workspace/usu/rc-client/data/ && tail -f /dev/null']
           # It is for running as the root user
           securityContext:
-            runAsUser: 0
+            runAsUser: 1000
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 80
+            - containerPort: 8080
             - containerPort: 8087
 # 09.06.2025 ergänzt um auf den Port zugreifen zu können                  
             # - containerPort: 5900

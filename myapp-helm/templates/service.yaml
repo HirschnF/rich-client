@@ -10,7 +10,7 @@ spec:
   ports:
     - name: vnc
       port: 80
-      targetPort: 80
+      targetPort: 8080
     - name: webjetty
       port: 8087
       targetPort: 8087

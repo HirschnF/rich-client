@@ -42,7 +42,7 @@ RUN mkdir -p /root/.valuemation && chmod -R 777 /root/.valuemation
 # 26.06.2025 - ADD special user
 RUN mkdir -p /home/usuuser/.valuemation && chmod -R 777 /home/usuuser/.valuemation
 #RUN mkdir -p /workspace/usu && chmod -R 777 /workspace/usu
-RUN mkdir -p /workspace/usu/data && chmod -R 777 /workspace/usu/data
+RUN mkdir -p /workspace/usu/data/log && chmod -R 777 /workspace
 #RUN mkdir -p /local/
 RUN mkdir -p /workspace/usu/rc-client && chmod -R 777 /workspace/usu/rc-client
 #RUN mkdir -p /workspace/usu/rc-client/data && chmod -R 777 /workspace/usu/rc-client/data
@@ -63,10 +63,10 @@ COPY rc-client.tar.gz.part-* /workspace/usu
 #RUN unzip /opt/usu/rc-client.zip* -d /opt/usu/rc-client && \
 #    chmod +x /opt/usu/rc-client/admin.sh
 
-COPY resources/loginConfigurations.xml /root/.valuemation/
-COPY resources/supervisord.conf /app/supervisord.conf
+#COPY resources/loginConfigurations.xml /root/.valuemation/
+#COPY resources/supervisord.conf /app/supervisord.conf
 # 26.06.2025 - ADD special user
-COPY resources/loginConfigurations.xml /home/usuuser/.valuemation/
+COPY --chown=usuuser:usuuser resources/loginConfigurations.xml /home/usuuser/.valuemation/
 COPY --chown=usuuser:usuuser resources/supervisord.conf /app/supervisord.conf
 
 #USU Logo
@@ -92,7 +92,7 @@ COPY resources/set_env_user.sh /workspace/usu/rc-client/
 RUN chown usuuser:usuuser -R /workspace
 
 # Supervisord starten
-CMD ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]
+#CMD ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]
 
 # Wechsel zu Benutzer
 USER usuuser
