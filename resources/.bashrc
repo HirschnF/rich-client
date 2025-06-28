@@ -17,5 +17,10 @@
 # alias cp='cp -i'                                                                                                     │
 # alias mv='mv -i'
 
-cd /workspace/usu/rc-client
-./admin.sh
+echo Checking XTERM - $XTERM_VERSION ...
+if [ -n "$XTERM_VERSION" ]; then
+    echo "XTERM_VERSION is set to $XTERM_VERSION — starting script..."
+    cd /workspace/usu/rc-client
+    ./admin.sh
+fi
+

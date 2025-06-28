@@ -14,6 +14,10 @@ spec:
     - name: webjetty
       port: 8087
       targetPort: 8087
+    - name: transfer
+      port: 8000
+      targetPort: 8000
+      
 # 09.06.2025 ergänzt um auf den Port zugreifen zu können      
     # - name: rfb
     #   port: 5900

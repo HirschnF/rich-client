@@ -17,31 +17,14 @@ spec:
     spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
-      # Schreibrechte notwendig, da der POD sonst abstürzt            
-      # wir wollen das nun als root laufen lassen
-      # securityContext:
-      #   fsGroup: 1000  # oder 101, je nach Container-User
-
-      #INIT Container wird nicht benötigt
-      # initContainers:
-      #   - name: init-volume
-      #     image: busybox
-      #     command: ["sh", "-c", "mkdir -p /workspace/usu/rc-client/data/ && chmod -R 777 /workspace/usu/rc-client/data/"]
-      #     volumeMounts:
-      #       - name: shared-data
-      #         mountPath: /workspace/usu/data
       containers:
         - name: myapp
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           # 11.06.2025 - den Container am Leben halten für 10h
-          #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && /usr/bin/supervisord -c /app/supervisord.conf'] #&& tail -f /dev/null']
-          #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && /startup.sh'] #&& tail -f /dev/null']
-          
-          #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && cat /root/.valuemation/loginConfigurations.xml && /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/stdout'] # && tail -f /dev/null']
           # 26.06.2025 - ADD special user
-          command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && cat /home/usuuser/.valuemation/loginConfigurations.xml && /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/stdout'] # && tail -f /dev/null']
+          command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && cat /home/usuuser/.valuemation/loginConfigurations.xml && /usr/bin/supervisord -c /app/supervisord.conf && python3 -m uploadserver --directory /workspace/usu/data && tail -f /dev/stdout']
+          # tail -f /dev/stdout'] # && tail -f /dev/null']
           #echo "feh --bg-scale /workspace/usu/logo.png" >> &&'
-          #command: ["sh", "-c", 'echo "Hello, Kubernetes!" && mkdir -p /workspace/usu/rc-client/data/ && chmod -R 777 /workspace/usu/rc-client/data/ && tail -f /dev/null']
           # It is for running as the root user
           securityContext:
             runAsUser: 1000
@@ -49,9 +32,6 @@ spec:
           ports:
             - containerPort: 8080
             - containerPort: 8087
-# 09.06.2025 ergänzt um auf den Port zugreifen zu können                  
-            # - containerPort: 5900
-            # - containerPort: 6000
           env:
             - name: DISPLAY_WIDTH
               value: "1600"
@@ -60,7 +40,6 @@ spec:
 # 19.6.25 dynamisch die loginconfigurations.xml aufbauen
           volumeMounts:
             - name: login-config
-              #mountPath: /root/.valuemation/loginConfigurations.xml
               mountPath: /home/usuuser/.valuemation/loginConfigurations.xml
               subPath: loginConfigurations.xml
             - name: novnc-index
@@ -69,27 +48,11 @@ spec:
             - name: novnc-lite
               mountPath: /usr/share/novnc/vnc_lite.html
               subPath: vnc_lite.html
-            - name: transfer-index
-              mountPath: /usr/share/novnc/transfer.html
-              subPath: transfer.html
+            - name: bashrc
+              mountPath: /home/usuuser/.bashrc
+              subPath: .bashrc
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-
-# # 23.06.25 Transfer Upload/ Download
-#         - name: webdav
-#           image: bytemark/webdav
-#           ports:
-#             - containerPort: 8081
-#           env:
-#             # - name: AUTH_TYPE
-#             #   value: "Basic"
-#             # - name: USERNAME
-#             #   value: {{ .Values.user }}
-#             # - name: PASSWORD
-#             #   value: {{ .Values.userpw }}
-#           volumeMounts:
-#             - name: shared-data
-#               mountPath: /workspace/usu/data
 
       volumes:
         - name: login-config
@@ -101,13 +64,8 @@ spec:
         - name: novnc-lite
           configMap:
             name: novnc-lite-{{ .Values.user }}
-        - name: transfer-index
+        - name: bashrc
           configMap:
-            name: transfer-index-{{ .Values.user }}
-        # - name: shared-data
-        #   emptyDir: {}
-      # volumes:
-      #   - name: shared-data
-      #     persistentVolumeClaim:
-      #       claimName: myapp-{{ .Values.user }}-pvc
+            name: bashrc-{{ .Values.user }}
+
 

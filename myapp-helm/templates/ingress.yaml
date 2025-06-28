@@ -32,44 +32,31 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: myapp-{{ .Values.user }}-svc
+                name: myapp-{{ .Values.user }}-gui-svc
                 port:
                   number: 80
           - path: /{{ .Values.user }}/gui/websockify(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: myapp-{{ .Values.user }}-svc
+                name: myapp-{{ .Values.user }}-websock-svc
                 port:
                   number: 80
           - path: /{{ .Values.user }}/frontend
             pathType: Prefix
             backend:
               service:
-                name: myapp-{{ .Values.user }}-svc
+                name: myapp-{{ .Values.user }}-frontend-svc
                 port:
                   number: 8087
-# 09.06.2025 ergänzt um auf den Port zugreifen zu können      
-          - path: /{{ .Values.user }}/novnc
-            pathType: Prefix
+# 28.06.2026 Upload und Download Server
+          # - path: /{{ .Values.user }}/transfer
+          #   pathType: Prefix
+          - path: /{{ .Values.user }}/transfer(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
-                name: myapp-{{ .Values.user }}-svc
+                name: myapp-{{ .Values.user }}-upload-svc
                 port:
-                  number: 6000
-          - path: /{{ .Values.user }}/rfb
-            pathType: Prefix
-            backend:
-              service:
-                name: myapp-{{ .Values.user }}-svc
-                port:
-                  number: 5900
-# # 23.06.25 Transfer Upload/ Download
-#           - path: /{{ .Values.user }}/files
-#             pathType: Prefix
-#             backend:
-#               service:
-#                 name: myapp-{{ .Values.user }}-svc
-#                 port:
-#                   number: 8081
+                  number: 8000
 

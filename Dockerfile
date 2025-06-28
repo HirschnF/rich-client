@@ -2,7 +2,6 @@
 ###FROM dorowu/ubuntu-desktop-lxde-vnc:focal
 FROM theasp/novnc
 
-
 # Wechsle zu root für Paketinstallation
 USER root
 
@@ -26,13 +25,6 @@ RUN pip install uploadserver
 # 26.06.2025 - ADD special user usuuser
 RUN useradd -m -s /bin/bash usuuser
 
-
-#RUN apt install openssh-server -y
-#RUN systemctl enable ssh
-
-# Erstelle Zielverzeichnis
-###RUN mkdir -p /opt/usu
-
 #Debug Ausgabe der Datei
 #RUN echo "=== DEBUG PRE: supervisord.conf ===" && ls -la /app/conf.d && cat /app/conf.d/*.conf
 
@@ -41,30 +33,14 @@ RUN mkdir -p /root/.valuemation && chmod -R 777 /root/.valuemation
 
 # 26.06.2025 - ADD special user
 RUN mkdir -p /home/usuuser/.valuemation && chmod -R 777 /home/usuuser/.valuemation
-#RUN mkdir -p /workspace/usu && chmod -R 777 /workspace/usu
 RUN mkdir -p /workspace/usu/data/log && chmod -R 777 /workspace
-#RUN mkdir -p /local/
 RUN mkdir -p /workspace/usu/rc-client && chmod -R 777 /workspace/usu/rc-client
-#RUN mkdir -p /workspace/usu/rc-client/data && chmod -R 777 /workspace/usu/rc-client/data
-#RUN chmod -R 777 /workspace
 
 # Entpacke das TAR-Archiv (enthält RC-Client.zip)
-#RUN tar -xf /opt/usu/rc-client.tar.001 -C /opt/usu/
-
-#no TAR file will be used
-#COPY rc-client.tar* /opt/usu
-#RUN cat /opt/usu/rc-client.tar.* > /opt/usu/rc-client.tar && tar xf /opt/usu/rc-client.tar -C /opt/usu/
-#RUN rm /opt/usu/*.tar*
-#COPY rc-client.zip* /opt/usu
 RUN echo "### Copy Rich Client as tar.gz... ###"
 #copy Tar-files to image
 COPY rc-client.tar.gz.part-* /workspace/usu
-# Entpacke das ZIP-Archiv im Container
-#RUN unzip /opt/usu/rc-client.zip* -d /opt/usu/rc-client && \
-#    chmod +x /opt/usu/rc-client/admin.sh
 
-#COPY resources/loginConfigurations.xml /root/.valuemation/
-#COPY resources/supervisord.conf /app/supervisord.conf
 # 26.06.2025 - ADD special user
 COPY --chown=usuuser:usuuser resources/loginConfigurations.xml /home/usuuser/.valuemation/
 COPY --chown=usuuser:usuuser resources/supervisord.conf /app/supervisord.conf
@@ -73,13 +49,11 @@ COPY --chown=usuuser:usuuser resources/supervisord.conf /app/supervisord.conf
 #COPY resources/logo.js.png /usr/share/novnc/include/
 #COPY resources/.bashrc /root/
 COPY resources/index.html /usr/share/novnc/
-#COPY resources/supervisord.conf /app/supervisord.conf
-#COPY resources/supervisord.conf /app/conf.d/supervisord.conf
 
 # Setze das Arbeitsverzeichnis
 WORKDIR /workspace/usu
 RUN echo "### Extract Rich Client... ###"
-# Füge die Teile zusammen
+# Entpacke das ZIP-Archiv im Container und füge die Teile zusammen
 RUN cat rc-client.tar.gz.part-* > rc-client.tar.gz && \
     tar -xzf rc-client.tar.gz && \
     rm rc-client.tar.gz*  # löscht Archiv und Part-Dateien
@@ -91,37 +65,11 @@ COPY resources/set_env_user.sh /workspace/usu/rc-client/
 
 RUN chown usuuser:usuuser -R /workspace
 
-# Supervisord starten
-#CMD ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]
-
 # Wechsel zu Benutzer
 USER usuuser
 
 # Arbeitsverzeichnis
 WORKDIR /workspace/usu
-
-
-
-# Setze Arbeitsverzeichnis
-
-#WORKDIR /workspace/usu/data
-
-# Optional: zurück zu Standardbenutzer
-#USER 1000
-
-#WORKDIR /workspace/usu/data
-
-#Debug Ausgabe der Datei
-#RUN echo "=== DEBUG POST: supervisord.conf ===" && cat /app/supervisord.conf
-
-#RUN echo "Create Supervisord.log"
-#RUN echo "" >> /workspace/usu/rc-client/data/supervisord.log
-
-# Starte deine App über das Startskript - passiert dann in der .bashrc
-### CMD ["./admin.sh"]
-
-# NoVNC/VNC starten + Terminal öffnen + deine App starten (falls gewünscht)
-#CMD ["/startup.sh"]
 
 # Idee:
 # wie kann ich in verschiedenen Dateien Platzhalter einbauen, die dann beim Deployment mit helm durch dann notwendige Werte im Image ersetzt werden?
