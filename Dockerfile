@@ -20,7 +20,8 @@ RUN apt-get update && \
     apt-get clean
 
 RUN echo "### Install uploadserver... ###"
-RUN pip install uploadserver
+#RUN pip install uploadserver
+RUN pip install flask
 
 # 26.06.2025 - ADD special user usuuser
 RUN useradd -m -s /bin/bash usuuser
@@ -44,6 +45,7 @@ COPY rc-client.tar.gz.part-* /workspace/usu
 # 26.06.2025 - ADD special user
 COPY --chown=usuuser:usuuser resources/loginConfigurations.xml /home/usuuser/.valuemation/
 COPY --chown=usuuser:usuuser resources/supervisord.conf /app/supervisord.conf
+COPY --chown=usuuser:usuuser resources/uploadserver.py /workspace/usu/uploadserver.py
 
 #USU Logo
 #COPY resources/logo.js.png /usr/share/novnc/include/

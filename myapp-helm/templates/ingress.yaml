@@ -32,21 +32,21 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: myapp-{{ .Values.user }}-gui-svc
+                name: myapp-{{ .Values.user }}-svc
                 port:
                   number: 80
           - path: /{{ .Values.user }}/gui/websockify(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: myapp-{{ .Values.user }}-websock-svc
+                name: myapp-{{ .Values.user }}-svc
                 port:
                   number: 80
           - path: /{{ .Values.user }}/frontend
             pathType: Prefix
             backend:
               service:
-                name: myapp-{{ .Values.user }}-frontend-svc
+                name: myapp-{{ .Values.user }}-svc
                 port:
                   number: 8087
 # 28.06.2026 Upload und Download Server
@@ -56,7 +56,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: myapp-{{ .Values.user }}-upload-svc
+                name: myapp-{{ .Values.user }}-svc
                 port:
                   number: 8000
 
