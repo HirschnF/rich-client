@@ -2,7 +2,7 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches: [ novnc ]
+    branches: [ noroot ]
     paths:
       - Dockerfile
       - rc-client/**
