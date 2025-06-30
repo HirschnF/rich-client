@@ -1,3 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flask-uploadsrv-{{ .Values.user }}
+  namespace: {{ .Values.namespace }}
+data:
+  uploadserver.py: |
     from flask import Flask, request, send_from_directory, render_template_string, redirect, url_for, abort
     import os
     from werkzeug.utils import secure_filename
@@ -5,13 +12,10 @@
     # Configuration
     UPLOAD_FOLDER = "/workspace/usu/data"
     ALLOWED_EXTENSIONS = {"zip", "xml", "sql"}
-
-    # Injected by Helm
     USER = "{{ .Values.user }}"
 
     app = Flask(__name__)
 
-    # Helm-safe Jinja2 template (double-escaped)
     HTML_TEMPLATE = """
     <!DOCTYPE html>
     <html lang="en">
@@ -23,7 +27,7 @@
       <h1>📁 File Transfer for {{ "{{ user }}" }}</h1>
 
       <h2>🔼 Upload a File (.zip, .xml, .sql)</h2>
-      <form action="{{ "{{ url_for('upload') }}" }}" method="post" enctype="multipart/form-data">
+      <form action="./upload" method="post" enctype="multipart/form-data">
         <input type="file" name="file" accept=".zip,.xml,.sql" required>
         <button type="submit">Upload</button>
       </form>
@@ -31,7 +35,7 @@
       <h2>📄 Available Files</h2>
       <ul>
         {{ "{% for file in files %}" }}
-          <li><a href="{{ "{{ url_for('download_file', filename=file) }}" }}">{{ "{{ file }}" }}</a></li>
+          <li><a href="transfer/{{ "{{ file }}" }}">{{ "{{ file }}" }}</a></li>
         {{ "{% else %}" }}
           <li><em>No files found.</em></li>
         {{ "{% endfor %}" }}

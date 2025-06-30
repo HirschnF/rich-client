@@ -50,10 +50,9 @@ spec:
                 port:
                   number: 8087
 # 28.06.2026 Upload und Download Server
-          # - path: /{{ .Values.user }}/transfer
-          #   pathType: Prefix
           - path: /{{ .Values.user }}/transfer(/|$)(.*)
             pathType: ImplementationSpecific
+            #pathType: Prefix
             backend:
               service:
                 name: myapp-{{ .Values.user }}-svc

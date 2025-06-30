@@ -22,7 +22,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           # 11.06.2025 - den Container am Leben halten für 10h
           # 26.06.2025 - ADD special user
-          command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && cat /home/usuuser/.valuemation/loginConfigurations.xml && echo "My home directory: $HOME" && /usr/bin/supervisord -c /app/supervisord.conf && python3 -m uploadserver --directory /workspace/usu/data && tail -f /dev/stdout']
+          command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && cat /home/usuuser/.valuemation/loginConfigurations.xml && echo "My home directory: $HOME" && /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/stdout']
+          # python3 -m uploadserver --directory /workspace/usu/data &&
           # tail -f /dev/stdout'] # && tail -f /dev/null']
           #echo "feh --bg-scale /workspace/usu/logo.png" >> &&'
           # It is for running as the root user
@@ -53,6 +54,9 @@ spec:
             - name: bashrc
               mountPath: /home/usuuser/.bashrc
               subPath: .bashrc
+            - name: flask
+              mountPath: /workspace/usu/uploadserver.py
+              subPath: uploadserver.py
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
@@ -69,5 +73,8 @@ spec:
         - name: bashrc
           configMap:
             name: bashrc-{{ .Values.user }}
+        - name: flask
+          configMap:
+            name: flask-uploadsrv-{{ .Values.user }}
 
 
