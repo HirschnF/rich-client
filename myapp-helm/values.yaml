@@ -1,5 +1,6 @@
 # # Kubernetes Namespace für die App
-namespace: consult-usifhirsch-55
+# namespace: consult-usifhirsch-55
+# helm upgrade --install jetty-user456 ./myapp-helm --namespace consult-usifhirsch-55
 
 user: user456
 userpw: mv
@@ -24,7 +25,7 @@ ingress:
   certManager: true
   annotations:
     cert-manager.io/cluster-issuer: usu-group-issuer
-  hostname: rc.consult-usifhirsch-55.k8s-dev001.aspera.usu.grp
+  hostname: rc.{{ .Values.namespace }}.k8s-dev001.aspera.usu.grp
   tls: true
 
 storage:
@@ -39,7 +40,7 @@ resources:
     memory: 1Gi
 
 db:
-  host: usm-mariadb.consult-usifhirsch-55.svc.cluster.local
+  host: usm-mariadb.{{ .Values.namespace }}.svc.cluster.local
   port: "3306"
   dbase: usm
   qualifier: ""

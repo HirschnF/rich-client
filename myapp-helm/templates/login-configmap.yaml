@@ -6,8 +6,8 @@ metadata:
 data:
   loginConfigurations.xml: |
     <?xml version="1.0" encoding="UTF-8"?>
-    <loginConfigurations delay="1000">
-        <loginConfiguration AUTH_TYPE="S3User" DBMS="MariaDB" dbversion="5.2.B541_next.DB327" lastUsed="2020-06-29 11:03:56.428" name="vm52  Demo DEVDAY - MariaDB" vmpassword="mv" vmuser="vm">
+    <loginConfigurations delay="1">
+        <loginConfiguration AUTH_TYPE="S3User" DBMS="MariaDB" dbversion="" lastUsed="" name="Demo - MariaDB" vmpassword="mv" vmuser="vm">
             <session DBASE="{{ .Values.db.dbase }}" HOST="{{ .Values.db.host }}" PORT="{{ .Values.db.port }}" QUALIFIER="{{ .Values.db.qualifier }}" dbpassword="{{ .Values.db.dbpassword }}" dbuser="{{ .Values.db.dbuser }}" name="VALUEMATION"/>
             <session DBASE="{{ .Values.db.dbase }}" HOST="{{ .Values.db.host }}" PORT="{{ .Values.db.port }}" QUALIFIER="{{ .Values.db.qualifier }}" dbpassword="{{ .Values.db.dbpassword }}" dbuser="{{ .Values.db.dbuser }}" name="HISTORY"/>
             <session DBASE="{{ .Values.db.dbase }}" HOST="{{ .Values.db.host }}" PORT="{{ .Values.db.port }}" QUALIFIER="{{ .Values.db.qualifier }}" dbpassword="{{ .Values.db.dbpassword }}" dbuser="{{ .Values.db.dbuser }}" name="EXPORT_ORIG"/>
