@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myapp-{{ .Values.user }}
+  name: rc-{{ .Values.user }}
   namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: myapp
+      app: rc
       user: {{ .Values.user }}
   template:
     metadata:
       labels:
-        app: myapp
+        app: rc
         user: {{ .Values.user }}
     spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       containers:
-        - name: myapp
+        - name: rc
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           # 11.06.2025 - den Container am Leben halten für 10h
           # 26.06.2025 - ADD special user

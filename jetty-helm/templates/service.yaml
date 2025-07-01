@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: myapp-{{ .Values.user }}-svc
+  name: rc-{{ .Values.user }}-svc
   namespace: {{ .Values.namespace }}
 spec:
   selector:
-    app: myapp
+    app: rc
     user: {{ .Values.user }}
   ports:
     - name: vnc

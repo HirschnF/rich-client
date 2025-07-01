@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: myapp-{{ .Values.user }}-ingress
+  name: rc-{{ .Values.user }}-ingress
   namespace: {{ .Values.namespace }}  
     {{- if .Values.ingress.annotations }}
   annotations:
@@ -32,21 +32,21 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: myapp-{{ .Values.user }}-svc
+                name: rc-{{ .Values.user }}-svc
                 port:
                   number: 80
           - path: /{{ .Values.user }}/gui/websockify(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: myapp-{{ .Values.user }}-svc
+                name: rc-{{ .Values.user }}-svc
                 port:
                   number: 80
           - path: /{{ .Values.user }}/frontend
             pathType: Prefix
             backend:
               service:
-                name: myapp-{{ .Values.user }}-svc
+                name: rc-{{ .Values.user }}-svc
                 port:
                   number: 8087
 # 28.06.2026 Upload und Download Server
@@ -55,7 +55,7 @@ spec:
             #pathType: Prefix
             backend:
               service:
-                name: myapp-{{ .Values.user }}-svc
+                name: rc-{{ .Values.user }}-svc
                 port:
                   number: 8000
 
