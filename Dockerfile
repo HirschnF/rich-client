@@ -35,7 +35,8 @@ RUN apt-get update && \
 
 RUN echo "### Install JDK newest version from temurin"    
 # Install latest Eclipse Temurin OpenJDK 17 (Adoptium)
-RUN curl -L -o temurin.tar.gz https://github.com/adoptium/temurin17-binaries/releases/latest/download/OpenJDK17U-jdk_x64_linux_hotspot.tar.gz && \
+#                              https://github.com/adoptium/temurin17-binaries/releases/latest/download/OpenJDK17U-jdk_x64_linux_hotspot.tar.gz
+RUN curl -L -o temurin.tar.gz https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.15%2B6/OpenJDK17U-jre_x64_linux_hotspot_17.0.15_6.tar.gz && \
     mkdir -p /opt/java && \
     tar -xzf temurin.tar.gz -C /opt/java --strip-components=1 && \
     rm temurin.tar.gz
