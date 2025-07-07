@@ -8,7 +8,11 @@ USER root
 RUN echo "### Update system... ###"
 # Entferne ungültige Chrome-Repo-Quelle
 RUN rm -f /etc/apt/sources.list.d/google-chrome.list
-RUN echo "deb http://ftp.de.debian.org/debian bullseye main" > /etc/apt/sources.list
+RUN echo "deb http://deb.debian.org/debian bullseye main" > /etc/apt/sources.list && \
+    echo "deb http://security.debian.org/debian-security bullseye-security main" >> /etc/apt/sources.list && \
+    echo "deb http://deb.debian.org/debian bullseye-updates main" >> /etc/apt/sources.list
+
+#RUN echo "deb http://ftp.de.debian.org/debian bullseye main" > /etc/apt/sources.list
 
 # Installiere Java 11 und unzip
 ###openjdk-11-jdk
