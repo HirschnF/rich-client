@@ -6,7 +6,7 @@ metadata:
 data:
   set_env_user.sh: |
     # Set the Jave Runtime directory.
-    export JDK="/usr/lib/jvm/java-17-openjdk-amd64"
+    #export JDK="/usr/lib/jvm/java-17-openjdk-amd64"
 
     export LOCAL_DIR="/workspace/usu/data/log/DEV"
     echo "***** LOCALDIR: $LOCAL_DIR *****"
