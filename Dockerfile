@@ -13,11 +13,24 @@ RUN echo "deb http://ftp.de.debian.org/debian bullseye main" > /etc/apt/sources.
 # Installiere Java 11 und unzip
 ###openjdk-11-jdk
 RUN apt-get update && \
-    apt-get install -y openjdk-17-jdk && \
+    #apt-get install -y openjdk-17-jdk && \
     apt-get install -y unzip && \
     apt-get install -y procps && \
     apt-get install -y python3-pip && \
+    apt-get install -y curl && \
+    apt-get install -y ca-certificates && \
     apt-get clean
+
+RUN echo "### Install JDK newest version from temurin"    
+# Install latest Eclipse Temurin OpenJDK 17 (Adoptium)
+RUN curl -L -o temurin.tar.gz https://github.com/adoptium/temurin17-binaries/releases/latest/download/OpenJDK17U-jdk_x64_linux_hotspot.tar.gz && \
+    mkdir -p /opt/java && \
+    tar -xzf temurin.tar.gz -C /opt/java --strip-components=1 && \
+    rm temurin.tar.gz
+
+# Set JAVA_HOME and PATH
+ENV JAVA_HOME=/opt/java
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 RUN echo "### Install uploadserver... ###"
 #RUN pip install uploadserver
@@ -69,6 +82,9 @@ RUN chown usuuser:usuuser -R /workspace
 
 # Wechsel zu Benutzer
 USER usuuser
+
+# Neues PW für novnc setzen
+RUN mkdir -p /home/usuuser/.vnc && x11vnc -storepasswd 1234 /home/usuuser/.vnc/passwd
 
 # Arbeitsverzeichnis
 WORKDIR /workspace/usu

@@ -1,17 +1,17 @@
 # # Kubernetes Namespace für die App
-# namespace: consult-usifhirsch-55
-# helm upgrade --install jetty-user456 ./myapp-helm --namespace consult-usifhirsch-55
-namespace: consult-usifhirsch-55
+# namespace: consult-usimheinz-55
+# helm upgrade --install jetty-usimheinz ./myapp-helm --namespace consult-usimheinz-55
+namespace: consult-usimheinz-55
 
 #Username of Consultant
-user: frank
+user: usimheinz
 userpw: mv
 
 enablePersistence: false
 
 image:
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.01.09
+  tag: usm5.5.01.10
 # funktionierte gut, ohne upload server    tag: usm5.5.01.08
 #.05 hat im Web funktioniert
 
@@ -27,7 +27,7 @@ ingress:
   certManager: true
   annotations:
     cert-manager.io/cluster-issuer: usu-group-issuer
-  hostname: rc.consult-usifhirsch-55.k8s-dev001.aspera.usu.grp
+  hostname: rc.consult-usimheinz-55.k8s-dev001.aspera.usu.grp
   tls: true
 
 storage:
@@ -36,16 +36,21 @@ storage:
 
 resources:
   limits:
-    memory: 2Gi
+    memory: 4Gi
   requests:
-    cpu: 500m
-    memory: 1Gi
+    cpu: 1000m
+    memory: 2Gi
 
 # depends on the USC Package secrets.yaml
 db:
-  host: usm-mariadb.consult-usifhirsch-55.svc.cluster.local
+  host: usm-mariadb.consult-usimheinz-55.svc.cluster.local
   port: "3306"
   dbase: usm
   qualifier: ""
   dbuser: usm
   dbpassword: changeMeP1TSgsF0CQeB
+  
+  dbaseexport: usm_export
+  dbasectm: usmctm
+  dbasehistory: usm_history
+  dbasetest: usm_archive

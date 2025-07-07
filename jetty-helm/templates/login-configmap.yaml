@@ -9,7 +9,13 @@ data:
     <loginConfigurations delay="1">
         <loginConfiguration AUTH_TYPE="S3User" DBMS="MariaDB" dbversion="" lastUsed="" name="Demo - MariaDB" vmpassword="mv" vmuser="vm">
             <session DBASE="{{ .Values.db.dbase }}" HOST="{{ .Values.db.host }}" PORT="{{ .Values.db.port }}" QUALIFIER="{{ .Values.db.qualifier }}" dbpassword="{{ .Values.db.dbpassword }}" dbuser="{{ .Values.db.dbuser }}" name="VALUEMATION"/>
-            <session DBASE="{{ .Values.db.dbase }}" HOST="{{ .Values.db.host }}" PORT="{{ .Values.db.port }}" QUALIFIER="{{ .Values.db.qualifier }}" dbpassword="{{ .Values.db.dbpassword }}" dbuser="{{ .Values.db.dbuser }}" name="HISTORY"/>
-            <session DBASE="{{ .Values.db.dbase }}" HOST="{{ .Values.db.host }}" PORT="{{ .Values.db.port }}" QUALIFIER="{{ .Values.db.qualifier }}" dbpassword="{{ .Values.db.dbpassword }}" dbuser="{{ .Values.db.dbuser }}" name="EXPORT_ORIG"/>
+            <session DBASE="{{ .Values.db.dbasehistory }}" HOST="{{ .Values.db.host }}" PORT="{{ .Values.db.port }}" QUALIFIER="{{ .Values.db.qualifier }}" dbpassword="{{ .Values.db.dbpassword }}" dbuser="{{ .Values.db.dbuser }}" name="HISTORY"/>
+            <session DBASE="{{ .Values.db.dbaseexport }}" HOST="{{ .Values.db.host }}" PORT="{{ .Values.db.port }}" QUALIFIER="{{ .Values.db.qualifier }}" dbpassword="{{ .Values.db.dbpassword }}" dbuser="{{ .Values.db.dbuser }}" name="EXPORT_ORIG"/>
+            <session DBASE="{{ .Values.db.dbasectm }}" HOST="{{ .Values.db.host }}" PORT="{{ .Values.db.port }}" QUALIFIER="" dbpassword="{{ .Values.db.dbpassword }}" dbuser="{{ .Values.db.dbuser }}" name="CTM"/>
+            <session DBASE="{{ .Values.db.dbasetest }}" HOST="{{ .Values.db.host }}" PORT="{{ .Values.db.port }}" QUALIFIER="{{ .Values.db.qualifier }}" dbpassword="{{ .Values.db.dbpassword }}" dbuser="{{ .Values.db.dbuser }}" name="TEST"/>
+        </loginConfiguration>
+        <loginConfiguration AUTH_TYPE="S3User" DBMS="MariaDB" dbversion="" lastUsed="" name="Test - MariaDB" vmpassword="mv" vmuser="vm">
+            <session DBASE="{{ .Values.db.dbasetest }}" HOST="{{ .Values.db.host }}" PORT="{{ .Values.db.port }}" QUALIFIER="{{ .Values.db.qualifier }}" dbpassword="{{ .Values.db.dbpassword }}" dbuser="{{ .Values.db.dbuser }}" name="VALUEMATION"/>
+            <session DBASE="{{ .Values.db.dbasetest }}" HOST="{{ .Values.db.host }}" PORT="{{ .Values.db.port }}" QUALIFIER="{{ .Values.db.qualifier }}" dbpassword="{{ .Values.db.dbpassword }}" dbuser="{{ .Values.db.dbuser }}" name="HISTORY"/>
         </loginConfiguration>
     </loginConfigurations>

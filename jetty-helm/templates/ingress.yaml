@@ -35,15 +35,15 @@ spec:
                 name: rc-{{ .Values.user }}-svc
                 port:
                   number: 80
-          - path: /{{ .Values.user }}/gui/websockify(/|$)(.*)
+          # - path: /{{ .Values.user }}/gui/websockify(/|$)(.*)
+          #   pathType: ImplementationSpecific
+          #   backend:
+          #     service:
+          #       name: rc-{{ .Values.user }}-svc
+          #       port:
+          #         number: 80
+          - path: /{{ .Values.user }}/jetty(/|$)(.*)
             pathType: ImplementationSpecific
-            backend:
-              service:
-                name: rc-{{ .Values.user }}-svc
-                port:
-                  number: 80
-          - path: /{{ .Values.user }}/frontend
-            pathType: Prefix
             backend:
               service:
                 name: rc-{{ .Values.user }}-svc

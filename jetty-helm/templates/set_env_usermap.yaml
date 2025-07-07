@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: setenvuser-{{ .Values.user }}
+  namespace: {{ .Values.namespace }}
+data:
+  set_env_user.sh: |
+    # Set the Jave Runtime directory.
+    export JDK="/usr/lib/jvm/java-17-openjdk-amd64"
+
+    export LOCAL_DIR="/workspace/usu/data/log/DEV"
+    echo "***** LOCALDIR: $LOCAL_DIR *****"
+    mkdir -p $LOCAL_DIR/tmp
+    mkdir -p $LOCAL_DIR/vmcache
+
+    EMBEDJETTY="-Drunembeddedjetty=true"
+    EMBEDJETTY="$EMBEDJETTY -Dorg.eclipse.jetty.server.Request.maxFormContentSiz=100000000"
+    PORT=8087
+    HOSTVAR=RC_{{ .Values.user }}_SVC_SERVICE_HOST
+    HOSTVAR=$(echo "$HOSTVAR" | tr '[:lower:]' '[:upper:]')
+    #HOST=$(eval echo \$$HOSTVAR)
+    HOST="0.0.0.0"
+    EMBEDJETTY="$EMBEDJETTY -Dembeddedjettyhost=$HOST -Dembeddedjettyport=$PORT"
+    echo "***** EMBEDDEDJETTY: $EMBEDJETTY *****"
+
+    echo "***** create vmconfig.properties... *****"
+    VMCONFIGUSER=$LOCAL_DIR/vmconfig.properties
+    echo VMCONFIGUSER: $VMCONFIGUSER
+
+    echo "vmsf.localfiles.servletURL=http://$HOST:$PORT/vmwebjetty/vmsf" >$VMCONFIGUSER
+    echo "vmsf.localfiles.root=$LOCAL_DIR/tmp" >>$VMCONFIGUSER
+    echo "vmweb.appname=USM JETTY $PORT" >>$VMCONFIGUSER
+    echo "clientConfig.pushServiceType=CONTINUOUS" >>$VMCONFIGUSER
+    echo "clientConfig.pushServiceConnectionRefreshDelay=50" >>$VMCONFIGUSER
+    echo "autoCloseRunlinkInExistingSessionWindow=true" >>$VMCONFIGUSER
+    echo "vmweb.skins=USUStandard" >>$VMCONFIGUSER
+    echo "cors.allowOrigin=*" >>$VMCONFIGUSER
+
+    echo "***** show vmconfig.properties *****"
+    cat $VMCONFIGUSER
+
+    # # Process Engine in Rich Client
+    PE="-DProcessInterpreter.enabled=true -DProcessInterpreter.userName=PROCESSINTERPRETER -DProcessInterpreter.cryptedPassword=9A1E8801BD3B8B1AFF764F3709D0DF19 -DProcessInterpreter.stepInMillis=2000 -DProcessInterpreter.startOnLoad=false -DTaskExecutor.enabled=true -DTaskExecutor.userName=TASKEXECUTOR01 -DTaskExecutor.cryptedPassword=9A1E8801BD3B8B1AFF764F3709D0DF19 -DTaskExecutor.stepInMillis=2003 -DTaskExecutor.startOnLoad=false"
+    JAVA_PARAMS="-Dvm.local.dir=$LOCAL_DIR -Dvm.vmcache.dir=$LOCAL_DIR/vmcache -Dvm.log.dir=$LOCAL_DIR -Dvm.inifile.use.valuemation.dir=true -Dvm.config=$VMCONFIGUSER $PE"
+    echo "***** show JAVA_PARAMS *****"
+    echo "$JAVA_PARAMS"
+    
+    # # Set JVM Options - Memory Options
+    export MEM_ARGS="-Xms256m -Xmx2g -XX:NewSize=20m -XX:MaxNewSize=20m -XX:SurvivorRatio=8 -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40 -XX:-UseStringDeduplication -XX:-CreateCoredumpOnCrash" 
+    # zwecks Debugging hinzugefügt, da die Java Umgebung abstürzte: -XX:-UseStringDeduplication -XX:-CreateCoredumpOnCrash
+
+    # Set JVM Options  - e.g. system property values
+    export SET USER_JAVA_OPTS="-Dfile.encoding=UTF-8"
+
+    # Set JVM Options - add to classpath
+    #export SET USER_CP="./user-libs/*"
+    #export SET TCP="$TCP:$USER_CP"
+
+    # # Set JVM Arguments
+    #export USER_JAVA_PARAMS="-BIRT_HOME <Path to Birt OSGI Runtime>"
