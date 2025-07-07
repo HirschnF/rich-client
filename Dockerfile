@@ -12,14 +12,22 @@ RUN echo "deb http://ftp.de.debian.org/debian bullseye main" > /etc/apt/sources.
 
 # Installiere Java 11 und unzip
 ###openjdk-11-jdk
+# RUN apt-get update && \
+#     #apt-get install -y openjdk-17-jdk && \
+#     apt-get install -y unzip && \
+#     apt-get install -y procps && \
+#     apt-get install -y python3-pip && \
+#     apt-get install -y curl && \
+#     apt-get install -y ca-certificates && \
+#     apt-get clean
 RUN apt-get update && \
-    #apt-get install -y openjdk-17-jdk && \
-    apt-get install -y unzip && \
-    apt-get install -y procps && \
-    apt-get install -y python3-pip && \
-    apt-get install -y curl && \
-    apt-get install -y ca-certificates && \
-    apt-get clean
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    unzip \
+    procps \
+    python3-pip \
+    curl \
+    ca-certificates && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN echo "### Install JDK newest version from temurin"    
 # Install latest Eclipse Temurin OpenJDK 17 (Adoptium)
