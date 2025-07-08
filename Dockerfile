@@ -24,13 +24,40 @@ RUN echo "deb http://deb.debian.org/debian bullseye main" > /etc/apt/sources.lis
 #     apt-get install -y curl && \
 #     apt-get install -y ca-certificates && \
 #     apt-get clean
+
+
+# RUN apt-get update && \
+#     DEBIAN_FRONTEND=noninteractive apt-get install -y \
+#     unzip \
+#     procps \
+#     python3-pip \
+#     curl \
+#     ca-certificates && \
+#     apt-get clean && rm -rf /var/lib/apt/lists/*
+# Install packages
+#ANpassung wegen Java Absturz, ggf. novnc Konflikt
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
     unzip \
     procps \
     python3-pip \
     curl \
-    ca-certificates && \
+    ca-certificates \
+    libxrender1 \
+    libxtst6 \
+    libxi6 \
+    libxext6 \
+    libxrandr2 \
+    libfreetype6 \
+    libfontconfig1 \
+    libxfixes3 \
+    libxinerama1 \
+    libxcursor1 \
+    libglib2.0-0 \
+    libxcomposite1 \
+    libasound2 \
+    libxdamage1 \
+    libxss1 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN echo "### Install JDK newest version from temurin"    
