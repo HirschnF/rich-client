@@ -22,7 +22,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           # 11.06.2025 - den Container am Leben halten für 10h
           # 26.06.2025 - ADD special user
-          command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && cat /home/usuuser/.valuemation/loginConfigurations.xml && echo "My home directory: $HOME" && mkdir -p $HOME/.vnc && x11vnc -storepasswd {{ .Values.user }} $HOME/.vnc/passwd && /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/stdout']
+          command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && cat /home/usuuser/.valuemation/loginConfigurations.xml && echo "My home directory: $HOME" && mkdir -p $HOME/.vnc && x11vnc -storepasswd {{ .Values.userpw }} $HOME/.vnc/passwd && /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/stdout']
           #mkdir -p ~/.vnc && x11vnc -storepasswd 1234 ~/.vnc/passwd
           # python3 -m uploadserver --directory /workspace/usu/data &&
           # tail -f /dev/stdout'] # && tail -f /dev/null']

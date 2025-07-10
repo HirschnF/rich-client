@@ -47,7 +47,7 @@ data:
     echo "$JAVA_PARAMS"
     
     # # Set JVM Options - Memory Options
-    export MEM_ARGS="-Xms256m -Xmx2g -XX:NewSize=20m -XX:MaxNewSize=20m -XX:SurvivorRatio=8 -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40 -XX:-UseStringDeduplication -XX:-CreateCoredumpOnCrash" 
+    export MEM_ARGS="-Xms256m -Xmx2g -XX:NewSize=20m -XX:MaxNewSize=20m -XX:SurvivorRatio=8 -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40 -XX:+UseContainerSupport -XX:-UseStringDeduplication -XX:-CreateCoredumpOnCrash -Djava.awt.headless=false" 
     # zwecks Debugging hinzugefügt, da die Java Umgebung abstürzte: -XX:-UseStringDeduplication -XX:-CreateCoredumpOnCrash
 
     # Set JVM Options  - e.g. system property values
