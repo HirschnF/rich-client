@@ -76,8 +76,8 @@ RUN echo "### Copy set_env with Java Path... ###"
 COPY --chown=usuuser:usuuser resources/set_env_user.sh /workspace/usu/rc-client/
 
 # Setze Startskript (optional)
-COPY --chown=usuuser:usuuser resources/start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
+# COPY --chown=usuuser:usuuser resources/start.sh /usr/local/bin/start.sh
+# RUN chmod +x /usr/local/bin/start.sh
 
 EXPOSE 3389
 

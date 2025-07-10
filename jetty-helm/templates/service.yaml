@@ -17,7 +17,10 @@ spec:
     - name: transfer
       port: 8000
       targetPort: 8000
-      
+    - name: rdp
+      port: 3389         # Port, auf dem der Service erreichbar ist (Cluster-intern)
+      targetPort: 3389   # Port im Container (EXPOSE 3389)
+      protocol: TCP  
 # 09.06.2025 ergänzt um auf den Port zugreifen zu können      
     # - name: rfb
     #   port: 5900
