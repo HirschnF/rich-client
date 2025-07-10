@@ -8,7 +8,7 @@ spec:
     app: rc
     user: {{ .Values.user }}
   ports:
-    - name: vnc
+    - name: guacamole
       port: 80
       targetPort: 8080
     - name: webjetty

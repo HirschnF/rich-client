@@ -4,14 +4,23 @@
 namespace: consult-usifhirsch-55
 
 #Username of Consultant
-user: usifhirsch
-userpw: changeIt
+# user: usifhirsch
+# userpw: changeIt
+guacamole:
+  username: admin
+  password: geheim123
+
+rdp:
+  host: java-app
+  port: 3389
+  username: usifhirsch
+  password: rdppass
 
 enablePersistence: false
 
 image:
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.01.16
+  tag: usm5.5.01.20
 # funktionierte gut, ohne upload server    tag: usm5.5.01.08
 #.05 hat im Web funktioniert
 

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: guacamole-user-mapping
+data:
+  user-mapping.xml: |
+    <user-mapping>
+      <authorize 
+          username="{{ .Values.guacamole.username }}" 
+          password="{{ .Values.guacamole.password }}">
+        <connection name="Jetty-Rich-Client">
+          <protocol>rdp</protocol>
+          <param name="hostname">{{ .Values.rdp.host }}</param>
+          <param name="port">{{ .Values.rdp.port }}</param>
+          <param name="username">{{ .Values.rdp.username }}</param>
+          <param name="password">{{ .Values.rdp.password }}</param>
+        </connection>
+      </authorize>
+    </user-mapping>

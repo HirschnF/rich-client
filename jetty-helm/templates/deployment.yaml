@@ -22,7 +22,11 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           # 11.06.2025 - den Container am Leben halten für 10h
           # 26.06.2025 - ADD special user
-          command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && cat /home/usuuser/.valuemation/loginConfigurations.xml && echo "My home directory: $HOME" && mkdir -p $HOME/.vnc && x11vnc -storepasswd {{ .Values.userpw }} $HOME/.vnc/passwd && /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/stdout']
+          
+          #nicht notwendig wenn im Dockerfile ein CMD definiert ist, ansonsten würde das überschrieben werden
+          #command: ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]
+          
+          #command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && echo "My home directory: $HOME" && /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/stdout']
           #mkdir -p ~/.vnc && x11vnc -storepasswd 1234 ~/.vnc/passwd
           # python3 -m uploadserver --directory /workspace/usu/data &&
           # tail -f /dev/stdout'] # && tail -f /dev/null']
@@ -61,6 +65,9 @@ spec:
             - name: setenvuser
               mountPath: /workspace/usu/rc-client/set_env_user.sh
               subPath: set_env_user.sh
+            - name: user-mapping
+              mountPath: /etc/guacamole/user-mapping.xml
+              subPath: user-mapping.xml
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
@@ -83,5 +90,6 @@ spec:
         - name: setenvuser
           configMap:
             name: setenvuser-{{ .Values.user }}
-
-
+        - name: user-mapping
+          configMap:
+            name: guacamole-user-mapping
