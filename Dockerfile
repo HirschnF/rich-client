@@ -38,7 +38,7 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 # Guacamole WebApp herunterladen und in Tomcat deployen
 RUN echo "### Guacamole WebApp herunterladen und in Tomcat deployen... ###"
-RUN curl -L -o /tmp/guacamole.war https://apache.org/dyn/closer.cgi?action=download&filename=guacamole/1.5.4/binary/guacamole-1.5.4.war && \
+RUN curl -L -o /tmp/guacamole.war https://downloads.apache.org/guacamole/1.5.4/binary/guacamole-1.5.4.war && \
     mv /tmp/guacamole.war /var/lib/tomcat9/webapps/guacamole.war
 
 # guacd installieren
