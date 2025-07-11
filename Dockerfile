@@ -8,9 +8,8 @@ FROM ubuntu:20.04
 
 # Kopiere guacd aus Stage 1
 COPY --from=guacd /usr/local/sbin/guacd /usr/local/sbin/guacd
-COPY --from=guacd /usr/local/lib /usr/local/lib
 COPY --from=guacd /etc/guacamole /etc/guacamole
-COPY --from=guacd /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu
+COPY --from=guacd /usr/lib/libguac* /usr/lib/
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "### Update system... ###"
