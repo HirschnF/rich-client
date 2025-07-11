@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: guacamole-user-mapping
+  name: guacamole-user-mapping-{{ .Values.guacamole.username }}
 data:
   user-mapping.xml: |
     <user-mapping>

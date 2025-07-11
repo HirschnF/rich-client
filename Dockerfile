@@ -7,18 +7,23 @@ RUN apt-get update && \
     apt-get install -y \
     xfce4 \
     xrdp \
+    xorgxrdp \
     curl \
     unzip \
     sudo \
     dbus-x11 \
     x11-xserver-utils \
     python3-pip \
-    libxrender1 \
-    libxtst6 \
-    libxi6 \
+    libxrender1 libxtst6 libxi6 libxext6 libxrandr2 \
+    libfreetype6 libfontconfig1 libxfixes3 libxinerama1 libxcursor1 \
+    libglib2.0-0 libxcomposite1 libasound2 libxdamage1 libxss1 \
+    tomcat9 \
+    #libxrender1 \
+    #libxtst6 \
+    #libxi6 \
     ca-certificates \
-    supervisor \
-    libxext6 && \
+    supervisor && \
+    #libxext6 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Java installieren (Temurin JRE 17)
@@ -31,13 +36,23 @@ RUN curl -L -o temurin.tar.gz https://github.com/adoptium/temurin17-binaries/rel
 ENV JAVA_HOME=/opt/java
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
+# Guacamole WebApp herunterladen und in Tomcat deployen
+RUN echo "### Guacamole WebApp herunterladen und in Tomcat deployen... ###"
+RUN curl -L -o /tmp/guacamole.war https://apache.org/dyn/closer.cgi?action=download&filename=guacamole/1.5.4/binary/guacamole-1.5.4.war && \
+    mv /tmp/guacamole.war /var/lib/tomcat9/webapps/guacamole.war
+
+# guacd installieren
+RUN echo "### Guacd installieren... ###"
+RUN apt-get update && apt-get install -y guacd
+
 RUN echo "### Install uploadserver... ###"
 #RUN pip install uploadserver
 RUN pip install flask
 
 # Benutzer anlegen
 RUN useradd -m -s /bin/bash usuuser && \
-    echo "usuuser:rdppass" | chpasswd && \
+#    echo "usuuser:rdppass" | chpasswd && \
+    echo "usuuser:kPwwuSrx2pIn!" | chpasswd && \
     adduser usuuser sudo
 
 # RDP-Konfiguration
@@ -82,6 +97,7 @@ COPY --chown=usuuser:usuuser resources/set_env_user.sh /workspace/usu/rc-client/
 EXPOSE 3389
 
 RUN chown usuuser:usuuser -R /workspace
+RUN usermod -aG adm usuuser
 
 CMD ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]
 

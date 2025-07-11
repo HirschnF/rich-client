@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: setenvuser-{{ .Values.user }}
+  name: setenvuser-{{ .Values.guacamole.username }}
   namespace: {{ .Values.namespace }}
 data:
   set_env_user.sh: |
@@ -17,7 +17,7 @@ data:
     EMBEDJETTY="-Drunembeddedjetty=true"
     EMBEDJETTY="$EMBEDJETTY -Dorg.eclipse.jetty.server.Request.maxFormContentSiz=100000000"
     PORT=8087
-    HOSTVAR=RC_{{ .Values.user }}_SVC_SERVICE_HOST
+    HOSTVAR=RC_{{ .Values.guacamole.username }}_SVC_SERVICE_HOST
     HOSTVAR=$(echo "$HOSTVAR" | tr '[:lower:]' '[:upper:]')
     #HOST=$(eval echo \$$HOSTVAR)
     HOST="0.0.0.0"

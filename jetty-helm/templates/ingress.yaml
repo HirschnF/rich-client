@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: rc-{{ .Values.user }}-ingress
+  name: rc-{{ .Values.guacamole.username }}-ingress
   namespace: {{ .Values.namespace }}  
     {{- if .Values.ingress.annotations }}
   annotations:
@@ -23,40 +23,40 @@ spec:
   tls:
     - hosts:
         - {{ .Values.ingress.hostname }}
-      secretName: tls-{{ .Values.user }}
+      secretName: tls-{{ .Values.guacamole.username }}
   {{- end }}
   rules:
     - host: {{ .Values.ingress.hostname }}
       http:
         paths:
-          - path: /{{ .Values.user }}/gui(/|$)(.*)
+          - path: /{{ .Values.guacamole.username }}/gui(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: rc-{{ .Values.user }}-svc
+                name: rc-{{ .Values.guacamole.username }}-svc
                 port:
                   number: 80
-          # - path: /{{ .Values.user }}/gui/websockify(/|$)(.*)
+          # - path: /{{ .Values.guacamole.username }}/gui/websockify(/|$)(.*)
           #   pathType: ImplementationSpecific
           #   backend:
           #     service:
-          #       name: rc-{{ .Values.user }}-svc
+          #       name: rc-{{ .Values.guacamole.username }}-svc
           #       port:
           #         number: 80
-          - path: /{{ .Values.user }}/jetty(/|$)(.*)
+          - path: /{{ .Values.guacamole.username }}/jetty(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: rc-{{ .Values.user }}-svc
+                name: rc-{{ .Values.guacamole.username }}-svc
                 port:
                   number: 8087
 # 28.06.2026 Upload und Download Server
-          - path: /{{ .Values.user }}/transfer(/|$)(.*)
+          - path: /{{ .Values.guacamole.username }}/transfer(/|$)(.*)
             pathType: ImplementationSpecific
             #pathType: Prefix
             backend:
               service:
-                name: rc-{{ .Values.user }}-svc
+                name: rc-{{ .Values.guacamole.username }}-svc
                 port:
                   number: 8000
 

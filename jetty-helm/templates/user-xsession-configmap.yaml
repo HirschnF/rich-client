@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-xsession-{{ .Values.guacamole.username }}
+data:
+  .xsession: |
+    #!/bin/bash
+    /workspace/usu/rc-client/admin.sh &
+    exec startxfce4

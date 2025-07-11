@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rc-{{ .Values.user }}
+  name: rc-{{ .Values.guacamole.username }}
   namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: rc
-      user: {{ .Values.user }}
+      user: {{ .Values.guacamole.username }}
   template:
     metadata:
       labels:
         app: rc
-        user: {{ .Values.user }}
+        user: {{ .Values.guacamole.username }}
     spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
@@ -26,14 +26,14 @@ spec:
           #nicht notwendig wenn im Dockerfile ein CMD definiert ist, ansonsten würde das überschrieben werden
           #command: ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]
           
-          #command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && echo "My home directory: $HOME" && /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/stdout']
+          command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && echo "My home directory: $HOME" && /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/stdout']
           #mkdir -p ~/.vnc && x11vnc -storepasswd 1234 ~/.vnc/passwd
           # python3 -m uploadserver --directory /workspace/usu/data &&
           # tail -f /dev/stdout'] # && tail -f /dev/null']
           #echo "feh --bg-scale /workspace/usu/logo.png" >> &&'
           # It is for running as the root user
           securityContext:
-            runAsUser: 1000
+          #  runAsUser: 1000
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8080
@@ -50,15 +50,15 @@ spec:
             - name: login-config
               mountPath: /home/usuuser/.valuemation/loginConfigurations.xml
               subPath: loginConfigurations.xml
-            - name: novnc-index
-              mountPath: /usr/share/novnc/index.html
-              subPath: index.html
-            - name: novnc-lite
-              mountPath: /usr/share/novnc/vnc_lite.html
-              subPath: vnc_lite.html
-            - name: bashrc
-              mountPath: /home/usuuser/.bashrc
-              subPath: .bashrc
+            # - name: novnc-index
+            #   mountPath: /usr/share/novnc/index.html
+            #   subPath: index.html
+            # - name: novnc-lite
+            #   mountPath: /usr/share/novnc/vnc_lite.html
+            #   subPath: vnc_lite.html
+            # - name: bashrc
+            #   mountPath: /home/usuuser/.bashrc
+            #   subPath: .bashrc
             - name: flask
               mountPath: /workspace/usu/uploadserver.py
               subPath: uploadserver.py
@@ -68,28 +68,34 @@ spec:
             - name: user-mapping
               mountPath: /etc/guacamole/user-mapping.xml
               subPath: user-mapping.xml
+            - name: user-xsession
+              mountPath: /home/usuuser/.xsession
+              subPath: .xsession  
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
       volumes:
         - name: login-config
           configMap:
-            name: login-config-{{ .Values.user }}
+            name: login-config-{{ .Values.guacamole.username }}
         - name: novnc-index
           configMap:
-            name: novnc-index-{{ .Values.user }}
+            name: novnc-index-{{ .Values.guacamole.username }}
         - name: novnc-lite
           configMap:
-            name: novnc-lite-{{ .Values.user }}
+            name: novnc-lite-{{ .Values.guacamole.username }}
         - name: bashrc
           configMap:
-            name: bashrc-{{ .Values.user }}
+            name: bashrc-{{ .Values.guacamole.username }}
         - name: flask
           configMap:
-            name: flask-uploadsrv-{{ .Values.user }}
+            name: flask-uploadsrv-{{ .Values.guacamole.username }}
         - name: setenvuser
           configMap:
-            name: setenvuser-{{ .Values.user }}
+            name: setenvuser-{{ .Values.guacamole.username }}
         - name: user-mapping
           configMap:
-            name: guacamole-user-mapping
+            name: guacamole-user-mapping-{{ .Values.guacamole.username }}
+        - name: user-xsession
+          configMap:
+            name: user-xsession-{{ .Values.guacamole.username }}
