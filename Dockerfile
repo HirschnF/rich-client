@@ -1,4 +1,16 @@
+# Stage 1: guacd aus offiziellem Image extrahieren
+FROM guacamole/guacd:1.5.4 as guacd
+
+# Stage 2: dein App-Container
 FROM ubuntu:20.04
+
+# ... deine bisherigen Installationen ...
+
+# Kopiere guacd aus Stage 1
+COPY --from=guacd /usr/local/sbin/guacd /usr/local/sbin/guacd
+COPY --from=guacd /usr/local/lib /usr/local/lib
+COPY --from=guacd /etc/guacamole /etc/guacamole
+COPY --from=guacd /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "### Update system... ###"
@@ -36,15 +48,6 @@ RUN curl -L -o temurin.tar.gz https://github.com/adoptium/temurin17-binaries/rel
 ENV JAVA_HOME=/opt/java
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-# Guacamole WebApp herunterladen und in Tomcat deployen
-RUN echo "### Guacamole WebApp herunterladen und in Tomcat deployen... ###"
-RUN curl -L -o /tmp/guacamole.war https://downloads.apache.org/guacamole/1.5.4/binary/guacamole-1.5.4.war && \
-    mv /tmp/guacamole.war /var/lib/tomcat9/webapps/guacamole.war
-
-# guacd installieren
-RUN echo "### Guacd installieren... ###"
-RUN apt-get update && apt-get install -y guacd
-
 RUN echo "### Install uploadserver... ###"
 #RUN pip install uploadserver
 RUN pip install flask
@@ -77,6 +80,9 @@ COPY --chown=usuuser:usuuser resources/loginConfigurations.xml /home/usuuser/.va
 COPY --chown=usuuser:usuuser resources/supervisord.conf /app/supervisord.conf
 COPY --chown=usuuser:usuuser resources/.xsession /home/usuuser/.xsession
 COPY --chown=usuuser:usuuser resources/uploadserver.py /workspace/usu/uploadserver.py
+
+RUN echo "### Guacamole WAR file... ###"
+RUN wget -O /var/lib/tomcat9/webapps/guacamole.war https://downloads.apache.org/guacamole/1.5.4/binary/guacamole-1.5.4.war
 
 WORKDIR /workspace/usu
 
