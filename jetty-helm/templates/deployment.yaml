@@ -36,8 +36,11 @@ spec:
           #  runAsUser: 1000
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 8080
-            - containerPort: 8087
+            - containerPort: 8080   # Guacamole Web
+            - containerPort: 8087   # Jetty
+            - containerPort: 8000   # Uploadserver
+            - containerPort: 3389   # RDP
+            - containerPort: 4822   # guacd
           env:
             - name: HOME
               value: "/home/usuuser"

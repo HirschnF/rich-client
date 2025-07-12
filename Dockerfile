@@ -1,225 +1,81 @@
-# Stage 1: guacd aus offiziellem Image extrahieren
+# Stage 1: guacd aus dem offiziellen Image extrahieren
 FROM guacamole/guacd:1.5.4 as guacd
 
-# Stage 2: dein App-Container
-FROM ubuntu:20.04
-
-# ... deine bisherigen Installationen ...
-
-# Kopiere guacd aus Stage 1
-COPY --from=guacd /usr/local/sbin/guacd /usr/local/sbin/guacd
-COPY --from=guacd /etc/guacamole /etc/guacamole
-COPY --from=guacd /usr/lib/libguac* /usr/lib/
+# Stage 2: Hauptcontainer
+FROM debian:bullseye-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN echo "### Update system... ###"
-# System-Update und Pakete installieren
-RUN apt-get update && \
-    apt-get install -y \
-    xfce4 \
-    xrdp \
-    xorgxrdp \
-    curl \
-    unzip \
-    sudo \
-    dbus-x11 \
-    x11-xserver-utils \
-    python3-pip \
-    libxrender1 libxtst6 libxi6 libxext6 libxrandr2 \
-    libfreetype6 libfontconfig1 libxfixes3 libxinerama1 libxcursor1 \
-    libglib2.0-0 libxcomposite1 libasound2 libxdamage1 libxss1 \
-    tomcat9 \
-    #libxrender1 \
-    #libxtst6 \
-    #libxi6 \
-    ca-certificates \
-    supervisor && \
-    #libxext6 && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+ENV JAVA_HOME=/opt/java
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-# Java installieren (Temurin JRE 17)
+# Systempakete installieren
+RUN echo "### Update system... ###"
+RUN apt-get update && apt-get install -y \
+    sudo curl unzip gnupg2 software-properties-common \
+    xrdp xfce4 dbus-x11 x11-xserver-utils \
+    net-tools supervisor python3-pip \
+    tomcat9 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Java 17 installieren (Temurin)
 RUN echo "### Install JDK newest version from temurin"    
 RUN curl -L -o temurin.tar.gz https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.15%2B6/OpenJDK17U-jre_x64_linux_hotspot_17.0.15_6.tar.gz && \
     mkdir -p /opt/java && \
     tar -xzf temurin.tar.gz -C /opt/java --strip-components=1 && \
     rm temurin.tar.gz
 
-ENV JAVA_HOME=/opt/java
-ENV PATH="${JAVA_HOME}/bin:${PATH}"
-
-RUN echo "### Install uploadserver... ###"
-#RUN pip install uploadserver
-RUN pip install flask
-
 # Benutzer anlegen
 RUN useradd -m -s /bin/bash usuuser && \
-#    echo "usuuser:rdppass" | chpasswd && \
-    echo "usuuser:kPwwuSrx2pIn!" | chpasswd && \
+    echo "usuuser:rdppass" | chpasswd && \
     adduser usuuser sudo
 
-# RDP-Konfiguration
-RUN echo xfce4-session > /home/usuuser/.xsession && \
+# .xsession vorbereiten (wird später über ConfigMap überschrieben)
+RUN echo -e '#!/bin/bash\n/workspace/usu/rc-client/admin.sh &\nexec startxfce4' > /home/usuuser/.xsession && \
+    chmod +x /home/usuuser/.xsession && \
     chown usuuser:usuuser /home/usuuser/.xsession
-
-# xrdp aktivieren
-RUN systemctl enable xrdp
 
 # Arbeitsverzeichnisse
 RUN echo "### Create folders... ###"
-RUN mkdir -p /workspace/usu/rc-client && chown -R usuuser:usuuser /workspace
-RUN mkdir -p /home/usuuser/.valuemation && chmod -R 777 /home/usuuser/.valuemation
-RUN mkdir -p /workspace/usu/data/log && chmod -R 777 /workspace
-RUN mkdir -p /workspace/usu/rc-client && chmod -R 777 /workspace/usu/rc-client
+RUN mkdir -p /workspace/usu/rc-client /workspace/usu/data/log /home/usuuser/.valuemation && \
+    chmod -R 777 /workspace && \
+    chown -R usuuser:usuuser /workspace /home/usuuser/.valuemation
 
-# Java-App & Ressourcen kopieren
-RUN echo "### Copy Rich Client as tar.gz... ###"
-COPY --chown=usuuser:usuuser rc-client.tar.gz.part-* /workspace/usu/
-#COPY --chown=usuuser:usuuser resources/ /workspace/usu/resources/
-COPY --chown=usuuser:usuuser resources/loginConfigurations.xml /home/usuuser/.valuemation/
-COPY --chown=usuuser:usuuser resources/supervisord.conf /app/supervisord.conf
-COPY --chown=usuuser:usuuser resources/.xsession /home/usuuser/.xsession
-COPY --chown=usuuser:usuuser resources/uploadserver.py /workspace/usu/uploadserver.py
+# guacd aus Stage 1 kopieren
+COPY --from=guacd /usr/local/sbin/guacd /usr/local/sbin/guacd
+COPY --from=guacd /usr/local/lib /usr/local/lib
+COPY --from=guacd /etc/guacamole /etc/guacamole
 
+# Guacamole WebApp in Tomcat deployen
 RUN echo "### Guacamole WAR file... ###"
-RUN wget -O /var/lib/tomcat9/webapps/guacamole.war https://downloads.apache.org/guacamole/1.5.4/binary/guacamole-1.5.4.war
+RUN curl -L -o /var/lib/tomcat9/webapps/guacamole.war https://downloads.apache.org/guacamole/1.5.4/binary/guacamole-1.5.4.war
+
+# Flask Uploadserver installieren
+RUN echo "### Install uploadserver... ###"
+RUN pip3 install flask
+
+# Ressourcen kopieren (werden teilweise durch ConfigMaps überschrieben)
+COPY rc-client.tar.gz.part-* /workspace/usu/
+COPY resources/loginConfigurations.xml /home/usuuser/.valuemation/
+COPY resources/supervisord.conf /etc/supervisor/supervisord.conf
+COPY resources/uploadserver.py /workspace/usu/uploadserver.py
+COPY resources/set_env_user.sh /workspace/usu/rc-client/
+
+# Java-App entpacken
+RUN echo "### Copy and Extract Rich Client as tar.gz... ###"
+RUN cat /workspace/usu/rc-client.tar.gz.part-* > /workspace/usu/rc-client.tar.gz && \
+    tar -xzf /workspace/usu/rc-client.tar.gz -C /workspace/usu && \
+    mv /workspace/usu/USM_*/* /workspace/usu/rc-client && \
+    rm -rf /workspace/usu/rc-client.tar.gz*
 
 WORKDIR /workspace/usu
-
-# App entpacken
-RUN echo "### Extract Rich Client... ###"
-RUN cat rc-client.tar.gz.part-* > rc-client.tar.gz && \
-    tar -xzf rc-client.tar.gz && \
-    rm rc-client.tar.gz* && \
-    mv /workspace/usu/USM_*/* ./rc-client/
-
-RUN echo "### Copy set_env with Java Path... ###"
-COPY --chown=usuuser:usuuser resources/set_env_user.sh /workspace/usu/rc-client/
-
-# Setze Startskript (optional)
-# COPY --chown=usuuser:usuuser resources/start.sh /usr/local/bin/start.sh
-# RUN chmod +x /usr/local/bin/start.sh
-
-EXPOSE 3389
+# Ports freigeben
+EXPOSE 3389 8080 4822 8000 8087
 
 RUN chown usuuser:usuuser -R /workspace
 RUN usermod -aG adm usuuser
 
-CMD ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]
-
 # Wechsel zu Benutzer
 USER usuuser
 
-# Arbeitsverzeichnis
-WORKDIR /workspace/usu
-
-# ############################################################
-# # Basis-Image mit VNC, noVNC, Ubuntu 20.04 (focal)
-# ###FROM dorowu/ubuntu-desktop-lxde-vnc:focal
-# FROM theasp/novnc
-
-# # Wechsle zu root für Paketinstallation
-# USER root
-
-# RUN echo "### Update system... ###"
-# # Entferne ungültige Chrome-Repo-Quelle
-# RUN rm -f /etc/apt/sources.list.d/google-chrome.list
-# RUN echo "deb http://deb.debian.org/debian bullseye main" > /etc/apt/sources.list && \
-#     echo "deb http://security.debian.org/debian-security bullseye-security main" >> /etc/apt/sources.list && \
-#     echo "deb http://deb.debian.org/debian bullseye-updates main" >> /etc/apt/sources.list
-
-# RUN apt-get update && \
-#     DEBIAN_FRONTEND=noninteractive apt-get install -y \
-#     unzip \
-#     procps \
-#     python3-pip \
-#     curl \
-#     ca-certificates \
-#     libxrender1 \
-#     libxtst6 \
-#     libxi6 \
-#     libxext6 \
-#     libxrandr2 \
-#     libfreetype6 \
-#     libfontconfig1 \
-#     libxfixes3 \
-#     libxinerama1 \
-#     libxcursor1 \
-#     libglib2.0-0 \
-#     libxcomposite1 \
-#     libasound2 \
-#     libxdamage1 \
-#     libxss1 && \
-#     apt-get clean && rm -rf /var/lib/apt/lists/*
-
-#RUN echo "### Install JDK newest version from temurin"    
-# Install latest Eclipse Temurin OpenJDK 17 (Adoptium)
-#                              https://github.com/adoptium/temurin17-binaries/releases/latest/download/OpenJDK17U-jdk_x64_linux_hotspot.tar.gz
-# RUN curl -L -o temurin.tar.gz https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.15%2B6/OpenJDK17U-jre_x64_linux_hotspot_17.0.15_6.tar.gz && \
-#     mkdir -p /opt/java && \
-#     tar -xzf temurin.tar.gz -C /opt/java --strip-components=1 && \
-#     rm temurin.tar.gz
-
-# Set JAVA_HOME and PATH
-# ENV JAVA_HOME=/opt/java
-# ENV PATH="${JAVA_HOME}/bin:${PATH}"
-
-# RUN echo "### Install uploadserver... ###"
-# #RUN pip install uploadserver
-# RUN pip install flask
-
-# 26.06.2025 - ADD special user usuuser
-# RUN useradd -m -s /bin/bash usuuser
-
-#Debug Ausgabe der Datei
-#RUN echo "=== DEBUG PRE: supervisord.conf ===" && ls -la /app/conf.d && cat /app/conf.d/*.conf
-
-# RUN echo "### Create folders... ###"
-# RUN mkdir -p /root/.valuemation && chmod -R 777 /root/.valuemation
-
-# # 26.06.2025 - ADD special user
-# RUN mkdir -p /home/usuuser/.valuemation && chmod -R 777 /home/usuuser/.valuemation
-# RUN mkdir -p /workspace/usu/data/log && chmod -R 777 /workspace
-# RUN mkdir -p /workspace/usu/rc-client && chmod -R 777 /workspace/usu/rc-client
-
-# Entpacke das TAR-Archiv (enthält RC-Client.zip)
-# RUN echo "### Copy Rich Client as tar.gz... ###"
-# #copy Tar-files to image
-# COPY rc-client.tar.gz.part-* /workspace/usu
-
-# # 26.06.2025 - ADD special user
-# COPY --chown=usuuser:usuuser resources/loginConfigurations.xml /home/usuuser/.valuemation/
-# COPY --chown=usuuser:usuuser resources/supervisord.conf /app/supervisord.conf
-# COPY --chown=usuuser:usuuser resources/uploadserver.py /workspace/usu/uploadserver.py
-
-#USU Logo
-#COPY resources/logo.js.png /usr/share/novnc/include/
-#COPY resources/.bashrc /root/
-#COPY resources/index.html /usr/share/novnc/
-
-# Setze das Arbeitsverzeichnis
-# WORKDIR /workspace/usu
-# RUN echo "### Extract Rich Client... ###"
-# # Entpacke das ZIP-Archiv im Container und füge die Teile zusammen
-# RUN cat rc-client.tar.gz.part-* > rc-client.tar.gz && \
-#     tar -xzf rc-client.tar.gz && \
-#     rm rc-client.tar.gz*  # löscht Archiv und Part-Dateien
-# RUN echo "### Move Rich Client... ###"
-# RUN mv /workspace/usu/USM_*/* ./rc-client/
-
-# RUN echo "### Copy set_env with Java Path... ###"
-# COPY resources/set_env_user.sh /workspace/usu/rc-client/
-
-# RUN chown usuuser:usuuser -R /workspace
-
-# # Wechsel zu Benutzer
-# USER usuuser
-
-# # Neues PW für novnc setzen
-# RUN mkdir -p /home/usuuser/.vnc && x11vnc -storepasswd 1234 /home/usuuser/.vnc/passwd
-
-# # Arbeitsverzeichnis
-# WORKDIR /workspace/usu
-
-# Idee:
-# wie kann ich in verschiedenen Dateien Platzhalter einbauen, die dann beim Deployment mit helm durch dann notwendige Werte im Image ersetzt werden?
-# Beispiel: in einer XML-Datei muss ein Benutzer und ein Passwort gesetzt werden, das in einer secrets.yaml stehen kann?
+# Start über supervisord
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
