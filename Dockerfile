@@ -41,9 +41,10 @@ RUN mkdir -p /workspace/usu/rc-client /workspace/usu/data/log /home/usuuser/.val
     chown -R usuuser:usuuser /workspace /home/usuuser/.valuemation
 
 # guacd aus Stage 1 kopieren
-COPY --from=guacd /usr/local/sbin/guacd /usr/local/sbin/guacd
-COPY --from=guacd /usr/local/lib /usr/local/lib
-COPY --from=guacd /etc/guacamole /etc/guacamole
+COPY --from=guacd /opt/guacamole /opt/guacamole
+#/usr/local/sbin/guacd /usr/local/sbin/guacd
+#COPY --from=guacd /usr/local/lib /usr/local/lib
+#COPY --from=guacd /etc/guacamole /etc/guacamole
 
 # Guacamole WebApp in Tomcat deployen
 RUN echo "### Guacamole WAR file... ###"
