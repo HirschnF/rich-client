@@ -77,8 +77,8 @@ RUN mkdir -p /var/log && \
 RUN echo "### Guacamole WAR file... ###"
 RUN curl -L -o /var/lib/tomcat9/webapps/guacamole.war https://downloads.apache.org/guacamole/1.5.4/binary/guacamole-1.5.4.war
 RUN rm -rf /var/lib/tomcat9/webapps/ROOT && \
-    mkdir -p /var/lib/tomcat9/webapps/ROOT && \
-    unzip -o /var/lib/tomcat9/webapps/guacamole.war -d /var/lib/tomcat9/webapps/ROOT
+    mkdir -p /var/lib/tomcat9/webapps/guacamole && \
+    unzip -o /var/lib/tomcat9/webapps/guacamole.war -d /var/lib/tomcat9/webapps/guacamole
 
 # Flask Uploadserver installieren
 RUN echo "### Install uploadserver... ###"
