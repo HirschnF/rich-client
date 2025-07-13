@@ -29,8 +29,7 @@ spec:
     - host: {{ .Values.ingress.hostname }}
       http:
         paths:
-          - path: /{{ .Values.guacamole.username }}/gui(/|$)(.*)
-            rewrite-target: /guacamole/$2
+          - path: /{{ .Values.guacamole.username }}/guacamole(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
               service:

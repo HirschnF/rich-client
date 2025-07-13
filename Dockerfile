@@ -76,7 +76,9 @@ RUN mkdir -p /var/log && \
 # Guacamole WebApp in Tomcat deployen
 RUN echo "### Guacamole WAR file... ###"
 RUN curl -L -o /var/lib/tomcat9/webapps/guacamole.war https://downloads.apache.org/guacamole/1.5.4/binary/guacamole-1.5.4.war
-RUN unzip /var/lib/tomcat9/webapps/guacamole.war -d /var/lib/tomcat9/webapps/guacamole
+RUN rm -rf /var/lib/tomcat9/webapps/ROOT && \
+    mkdir -p /var/lib/tomcat9/webapps/ROOT && \
+    unzip -o /var/lib/tomcat9/webapps/guacamole.war -d /var/lib/tomcat9/webapps/ROOT
 
 # Flask Uploadserver installieren
 RUN echo "### Install uploadserver... ###"
@@ -96,9 +98,9 @@ RUN cat /workspace/usu/rc-client.tar.gz.part-* > /workspace/usu/rc-client.tar.gz
     mv /workspace/usu/USM_*/* /workspace/usu/rc-client && \
     rm -rf /workspace/usu/rc-client.tar.gz*
 
-RUN echo "auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider" >guacamole.properties
-RUN echo "basic-user-mapping: /etc/guacamole/user-mapping.xml" >>guacamole.properties
-RUN chmod 660 guacamole.properties
+RUN echo "auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider" >/etc/guacamole/guacamole.properties
+RUN echo "basic-user-mapping: /etc/guacamole/user-mapping.xml" >>/etc/guacamole/guacamole.properties
+RUN chmod 660 /etc/guacamole/guacamole.properties
 
 RUN ln -s /var/log/tomcat9/ /usr/share/tomcat9/logs
 RUN touch /var/log/tomcat9/catalina.out
