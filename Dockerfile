@@ -53,7 +53,7 @@ RUN apt-get update && apt-get install -y \
 RUN curl -L -o /tmp/guacamole-server.tar.gz https://downloads.apache.org/guacamole/1.5.4/source/guacamole-server-1.5.4.tar.gz && \
     tar -xzf /tmp/guacamole-server.tar.gz -C /tmp && \
     cd /tmp/guacamole-server-1.5.4 && \
-    ./configure --with-init-dir=/etc/init.d && \
+    LDFLAGS="-lrt" ./configure --with-init-dir=/etc/init.d && \
     make && \
     make install && \
     ldconfig && \
