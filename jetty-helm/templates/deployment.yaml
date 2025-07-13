@@ -74,9 +74,9 @@ spec:
             - name: user-xsession
               mountPath: /home/usuuser/.xsession
               subPath: .xsession  
-            - name: tomcat
-              mountPath: /usr/share/tomcat9/conf/server.xml
-              subPath: server.xml
+            # - name: tomcat
+            #   mountPath: /usr/share/tomcat9/conf/server.xml
+            #   subPath: server.xml
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
@@ -105,6 +105,6 @@ spec:
         - name: user-xsession
           configMap:
             name: user-xsession-{{ .Values.guacamole.username }}
-        - name: tomcat
-          configMap:
-            name: tomcat-config-{{ .Values.guacamole.username }}
+        # - name: tomcat
+        #   configMap:
+        #     name: tomcat-config-{{ .Values.guacamole.username }}

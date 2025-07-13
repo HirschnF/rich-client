@@ -1,11 +1,4 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: tomcat-config-{{ .Values.guacamole.username }}
-  namespace: {{ .Values.namespace }}
-data:
-  server.xml: |
-    <?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
     <Server port="8105" shutdown="SHUTDOWN">
       <Service name="Catalina">
         <Connector port="8080" protocol="HTTP/1.1"
@@ -18,4 +11,3 @@ data:
         </Engine>
       </Service>
     </Server>
-
