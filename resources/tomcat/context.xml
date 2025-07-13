@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+  <!-- Disable session persistence -->
+  <Manager pathname="" />
+
+  <!-- Uncomment to enable global JNDI datasource if needed -->
+  <!--
+  <Resource name="jdbc/guacamole_db"
+            auth="Container"
+            type="javax.sql.DataSource"
+            maxTotal="100"
+            maxIdle="30"
+            maxWaitMillis="10000"
+            username="guacamole_user"
+            password="guacamole_password"
+            driverClassName="com.mysql.jdbc.Driver"
+            url="jdbc:mysql://localhost:3306/guacamole_db"/>
+  -->
+
+</Context>

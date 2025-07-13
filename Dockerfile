@@ -91,6 +91,11 @@ COPY resources/supervisord.conf /etc/supervisor/supervisord.conf
 COPY resources/uploadserver.py /workspace/usu/uploadserver.py
 COPY resources/set_env_user.sh /workspace/usu/rc-client/
 
+COPY resources/tomcat/web.xml /usr/share/tomcat9/conf
+COPY resources/tomcat/context.xml /usr/share/tomcat9/conf
+COPY resources/tomcat/tomcat-users.xml /usr/share/tomcat9/conf
+COPY resources/tomcat/logging.properties /usr/share/tomcat9/conf
+
 # Java-App entpacken
 RUN echo "### Copy and Extract Rich Client as tar.gz... ###"
 RUN cat /workspace/usu/rc-client.tar.gz.part-* > /workspace/usu/rc-client.tar.gz && \
