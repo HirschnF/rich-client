@@ -98,6 +98,7 @@ RUN cat /workspace/usu/rc-client.tar.gz.part-* > /workspace/usu/rc-client.tar.gz
     mv /workspace/usu/USM_*/* /workspace/usu/rc-client && \
     rm -rf /workspace/usu/rc-client.tar.gz*
 
+RUN mkdir -p /etc/guacamole   
 RUN echo "auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider" >/etc/guacamole/guacamole.properties
 RUN echo "basic-user-mapping: /etc/guacamole/user-mapping.xml" >>/etc/guacamole/guacamole.properties
 RUN chmod 660 /etc/guacamole/guacamole.properties
