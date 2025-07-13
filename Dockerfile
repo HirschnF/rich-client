@@ -44,7 +44,7 @@ RUN mkdir -p /workspace/usu/rc-client /workspace/usu/data/log /home/usuuser/.val
 # Install build dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
-    libcairo2-dev libjpeg-turbo8-dev libpng-dev libtool-bin \
+    libcairo2-dev libjpeg-dev libpng-dev libtool-bin \
     uuid-dev libossp-uuid-dev libavcodec-dev libavutil-dev libswscale-dev \
     freerdp2-dev libpango1.0-dev libssh2-1-dev libtelnet-dev libvncserver-dev \
     libpulse-dev libssl-dev libvorbis-dev libwebp-dev
