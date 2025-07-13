@@ -106,6 +106,9 @@ RUN chmod 660 /etc/guacamole/guacamole.properties
 RUN ln -s /var/log/tomcat9/ /usr/share/tomcat9/logs
 RUN touch /var/log/tomcat9/catalina.out
 RUN chmod 664 /var/log/tomcat9/catalina.out
+RUN ln -s /var/lib/tomcat9/webapps/ /usr/share/tomcat9/webapps
+RUN chown usuuser:adm -R /var/lib/tomcat9
+RUN chown usuuser:adm -R /usr/share/tomcat9
 
 WORKDIR /workspace/usu
 # Ports freigeben
