@@ -26,7 +26,7 @@ spec:
           #nicht notwendig wenn im Dockerfile ein CMD definiert ist, ansonsten würde das überschrieben werden
           #command: ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]
           
-          command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && echo "My home directory: $HOME" && /usr/bin/supervisord -c /app/supervisord.conf && tail -f /dev/stdout']
+          #command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && echo "My home directory: $HOME" && /usr/bin/supervisord -c /etc/supervisor/supervisord.conf && tail -f /dev/stdout']
           #mkdir -p ~/.vnc && x11vnc -storepasswd 1234 ~/.vnc/passwd
           # python3 -m uploadserver --directory /workspace/usu/data &&
           # tail -f /dev/stdout'] # && tail -f /dev/null']
@@ -74,6 +74,9 @@ spec:
             - name: user-xsession
               mountPath: /home/usuuser/.xsession
               subPath: .xsession  
+            # - name: supervisor
+            #   mountPath: /app/supervisord.conf
+            #   subPath: supervisord.conf
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
@@ -81,15 +84,15 @@ spec:
         - name: login-config
           configMap:
             name: login-config-{{ .Values.guacamole.username }}
-        - name: novnc-index
-          configMap:
-            name: novnc-index-{{ .Values.guacamole.username }}
-        - name: novnc-lite
-          configMap:
-            name: novnc-lite-{{ .Values.guacamole.username }}
-        - name: bashrc
-          configMap:
-            name: bashrc-{{ .Values.guacamole.username }}
+        # - name: novnc-index
+        #   configMap:
+        #     name: novnc-index-{{ .Values.guacamole.username }}
+        # - name: novnc-lite
+        #   configMap:
+        #     name: novnc-lite-{{ .Values.guacamole.username }}
+        # - name: bashrc
+        #   configMap:
+        #     name: bashrc-{{ .Values.guacamole.username }}
         - name: flask
           configMap:
             name: flask-uploadsrv-{{ .Values.guacamole.username }}
@@ -102,3 +105,6 @@ spec:
         - name: user-xsession
           configMap:
             name: user-xsession-{{ .Values.guacamole.username }}
+        # - name: supervisor
+        #   configMap:
+        #     name: superviso-config-{{ .Values.guacamole.username }}

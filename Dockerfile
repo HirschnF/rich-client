@@ -1,5 +1,5 @@
 # Stage 1: guacd aus dem offiziellen Image extrahieren
-FROM guacamole/guacd:1.5.4 as guacd
+#FROM guacamole/guacd:1.5.4 as guacd
 
 # Stage 2: Hauptcontainer
 FROM debian:bullseye-slim
@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     sudo curl unzip gnupg2 software-properties-common \
     xrdp xfce4 dbus-x11 x11-xserver-utils \
     net-tools supervisor python3-pip \
-    tomcat9 \
+    tomcat9 tomcat9-common\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Java 17 installieren (Temurin)
@@ -41,7 +41,30 @@ RUN mkdir -p /workspace/usu/rc-client /workspace/usu/data/log /home/usuuser/.val
     chown -R usuuser:usuuser /workspace /home/usuuser/.valuemation
 
 # guacd aus Stage 1 kopieren
-COPY --from=guacd /opt/guacamole /opt/guacamole
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libcairo2-dev libjpeg-turbo8-dev libpng-dev libtool-bin \
+    uuid-dev libossp-uuid-dev libavcodec-dev libavutil-dev libswscale-dev \
+    freerdp2-dev libpango1.0-dev libssh2-1-dev libtelnet-dev libvncserver-dev \
+    libpulse-dev libssl-dev libvorbis-dev libwebp-dev
+
+# Build guacd
+RUN curl -L -o /tmp/guacamole-server.tar.gz https://downloads.apache.org/guacamole/1.5.4/source/guacamole-server-1.5.4.tar.gz && \
+    tar -xzf /tmp/guacamole-server.tar.gz -C /tmp && \
+    cd /tmp/guacamole-server-1.5.4 && \
+    ./configure --with-init-dir=/etc/init.d && \
+    make && \
+    make install && \
+    ldconfig && \
+    rm -rf /tmp/guacamole-server*
+
+# Optional: Clean up
+RUN apt-get purge -y build-essential libtool-bin && \
+    apt-get autoremove -y && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+#COPY --from=guacd /opt/guacamole /opt/guacamole
 #/usr/local/sbin/guacd /usr/local/sbin/guacd
 #COPY --from=guacd /usr/local/lib /usr/local/lib
 #COPY --from=guacd /etc/guacamole /etc/guacamole
