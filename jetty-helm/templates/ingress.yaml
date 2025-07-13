@@ -30,6 +30,7 @@ spec:
       http:
         paths:
           - path: /{{ .Values.guacamole.username }}/gui(/|$)(.*)
+            rewrite-target: /guacamole/$2
             pathType: ImplementationSpecific
             backend:
               service:

@@ -67,7 +67,7 @@ RUN apt-get purge -y build-essential libtool-bin && \
 RUN mkdir -p /var/log && \
     touch /var/log/xrdp.log /var/log/xrdp-sesman.log && \
     chown usuuser: /var/log/xrdp*.log
-        
+
 #COPY --from=guacd /opt/guacamole /opt/guacamole
 #/usr/local/sbin/guacd /usr/local/sbin/guacd
 #COPY --from=guacd /usr/local/lib /usr/local/lib
@@ -76,6 +76,7 @@ RUN mkdir -p /var/log && \
 # Guacamole WebApp in Tomcat deployen
 RUN echo "### Guacamole WAR file... ###"
 RUN curl -L -o /var/lib/tomcat9/webapps/guacamole.war https://downloads.apache.org/guacamole/1.5.4/binary/guacamole-1.5.4.war
+RUN unzip /var/lib/tomcat9/webapps/guacamole.war -d /var/lib/tomcat9/webapps/guacamole
 
 # Flask Uploadserver installieren
 RUN echo "### Install uploadserver... ###"
