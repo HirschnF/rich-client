@@ -1,0 +1,57 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rc-{{ .Values.guacamole.username }}-guacamole-ingress
+  namespace: {{ .Values.namespace }}  
+    {{- if .Values.ingress.annotations }}
+  annotations:
+    #nginx.ingress.kubernetes.io/use-regex: "true"
+    #nginx.ingress.kubernetes.io/rewrite-target: /guacamole$2
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    nginx.ingress.kubernetes.io/connection-proxy-header: "keep-alive"
+    {{- if .Values.ingress.annotations }}
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
+    {{- end }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- if .Values.ingress.tls }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.hostname }}
+      secretName: tls-{{ .Values.guacamole.username }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.ingress.hostname }}
+      http:
+        paths:
+          - path: /guacamole
+          #(/|$)(.*)
+          #{{ .Values.guacamole.username }}/
+            pathType: Prefix #ImplementationSpecific
+            backend:
+              service:
+                name: rc-{{ .Values.guacamole.username }}-svc
+                port:
+                  number: 80
+          - path: /guacamole/
+          #(/|$)(.*)
+          #{{ .Values.guacamole.username }}/
+            pathType: Prefix #ImplementationSpecific
+            backend:
+              service:
+                name: rc-{{ .Values.guacamole.username }}-svc
+                port:
+                  number: 80
+          # # Direktpfad für Redirects
+          # - path: /guacamole(/|$)(.*)
+          #   pathType: ImplementationSpecific
+          #   backend:
+          #     service:
+          #       name: rc-{{ .Values.guacamole.username }}-svc
+          #       port:
+          #         number: 80

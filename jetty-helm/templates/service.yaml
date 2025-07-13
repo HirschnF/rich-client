@@ -21,14 +21,3 @@ spec:
       port: 3389         # Port, auf dem der Service erreichbar ist (Cluster-intern)
       targetPort: 3389   # Port im Container (EXPOSE 3389)
       protocol: TCP  
-# 09.06.2025 ergänzt um auf den Port zugreifen zu können      
-    # - name: rfb
-    #   port: 5900
-    #   targetPort: 5900
-    # - name: novnc
-    #   port: 6000
-    #   targetPort: 6000
-# 23.06.25 Transfer Upload/ Download
-    # - name: webdav
-    #   port: 8081
-    #   targetPort: 8081

@@ -109,14 +109,14 @@ RUN mkdir -p /etc/guacamole
 RUN echo "auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider" >/etc/guacamole/guacamole.properties
 RUN echo "basic-user-mapping: /etc/guacamole/user-mapping.xml" >>/etc/guacamole/guacamole.properties
 RUN chmod 660 /etc/guacamole/guacamole.properties
-RUN chown usuuser:adm /etc/guacamole/guacamole.properties
+RUN chown tomcat:adm /etc/guacamole/guacamole.properties
 
 RUN ln -s /var/log/tomcat9/ /usr/share/tomcat9/logs
 RUN touch /var/log/tomcat9/catalina.out
 RUN chmod 664 /var/log/tomcat9/catalina.out
 RUN ln -s /var/lib/tomcat9/webapps/ /usr/share/tomcat9/webapps
-RUN chown usuuser:adm -R /var/lib/tomcat9
-RUN chown usuuser:adm -R /usr/share/tomcat9
+RUN chown tomcat:adm -R /var/lib/tomcat9
+RUN chown tomcat:adm -R /usr/share/tomcat9
 
 WORKDIR /workspace/usu
 # Ports freigeben

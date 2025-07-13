@@ -29,20 +29,6 @@ spec:
     - host: {{ .Values.ingress.hostname }}
       http:
         paths:
-          - path: /{{ .Values.guacamole.username }}/guacamole(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: rc-{{ .Values.guacamole.username }}-svc
-                port:
-                  number: 80
-          # - path: /{{ .Values.guacamole.username }}/gui/websockify(/|$)(.*)
-          #   pathType: ImplementationSpecific
-          #   backend:
-          #     service:
-          #       name: rc-{{ .Values.guacamole.username }}-svc
-          #       port:
-          #         number: 80
           - path: /{{ .Values.guacamole.username }}/jetty(/|$)(.*)
             pathType: ImplementationSpecific
             backend:
