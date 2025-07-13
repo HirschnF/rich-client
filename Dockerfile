@@ -96,6 +96,14 @@ RUN cat /workspace/usu/rc-client.tar.gz.part-* > /workspace/usu/rc-client.tar.gz
     mv /workspace/usu/USM_*/* /workspace/usu/rc-client && \
     rm -rf /workspace/usu/rc-client.tar.gz*
 
+RUN echo "auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider" >guacamole.properties
+RUN echo "basic-user-mapping: /etc/guacamole/user-mapping.xml" >>guacamole.properties
+RUN chmod 660 guacamole.properties
+
+RUN ln -s /var/log/tomcat9/ /usr/share/tomcat9/logs
+RUN touch /var/log/tomcat9/catalina.out
+RUN chmod 664 /var/log/tomcat9/catalina.out
+
 WORKDIR /workspace/usu
 # Ports freigeben
 EXPOSE 3389 8080 4822 8000 8087

@@ -6,7 +6,7 @@ metadata:
 data:
   server.xml: |
     <?xml version="1.0" encoding="UTF-8"?>
-    <Server port="8005" shutdown="SHUTDOWN">
+    <Server port="8105" shutdown="SHUTDOWN">
       <Service name="Catalina">
         <Connector port="8080" protocol="HTTP/1.1"
                   connectionTimeout="20000"
