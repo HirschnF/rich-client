@@ -64,6 +64,10 @@ RUN apt-get purge -y build-essential libtool-bin && \
     apt-get autoremove -y && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+RUN mkdir -p /var/log && \
+    touch /var/log/xrdp.log /var/log/xrdp-sesman.log && \
+    chown usuuser: /var/log/xrdp*.log
+        
 #COPY --from=guacd /opt/guacamole /opt/guacamole
 #/usr/local/sbin/guacd /usr/local/sbin/guacd
 #COPY --from=guacd /usr/local/lib /usr/local/lib
