@@ -45,6 +45,8 @@ spec:
               value: "1600"
             - name: DISPLAY_HEIGHT
               value: "900"
+            - name: CATALINA_BASE
+              value: "/var/lib/tomcat9"
 # 19.6.25 dynamisch die loginconfigurations.xml aufbauen
           volumeMounts:
             - name: login-config
