@@ -22,11 +22,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           # 11.06.2025 - den Container am Leben halten für 10h
           # 26.06.2025 - ADD special user
-          
-          #nicht notwendig wenn im Dockerfile ein CMD definiert ist, ansonsten würde das überschrieben werden
-          #command: ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]
-          
-          command: ["sh", "-c", 'echo "Hello, Kubernetes! I am $(whoami)" && echo "My home directory: $HOME" && /usr/bin/supervisord -c /etc/supervisor/supervisord.conf && tail -f /dev/stdout']
+          #echo "Hello, Kubernetes! I am $(whoami)" && echo "My home directory: $HOME" && 
+          command: ["sh", "-c", '/usr/bin/supervisord -c /etc/supervisor/supervisord.conf && tail -f /dev/stdout']
           #mkdir -p ~/.vnc && x11vnc -storepasswd 1234 ~/.vnc/passwd
           # python3 -m uploadserver --directory /workspace/usu/data &&
           # tail -f /dev/stdout'] # && tail -f /dev/null']
