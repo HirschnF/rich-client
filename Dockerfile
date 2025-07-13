@@ -80,6 +80,10 @@ RUN rm -rf /var/lib/tomcat9/webapps/ROOT && \
     mkdir -p /var/lib/tomcat9/webapps/guacamole && \
     unzip -o /var/lib/tomcat9/webapps/guacamole.war -d /var/lib/tomcat9/webapps/guacamole
 
+RUN mkdir -p /var/lib/tomcat9/base/conf/Catalina/localhost
+RUN mkdir -p /var/lib/tomcat9/base/work/Catalina/localhost
+#RUN chown tomcat:adm /var/lib/tomcat9/base
+
 # Flask Uploadserver installieren
 RUN echo "### Install uploadserver... ###"
 RUN pip3 install flask
