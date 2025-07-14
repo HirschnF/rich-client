@@ -25,9 +25,9 @@ RUN curl -L -o temurin.tar.gz https://github.com/adoptium/temurin17-binaries/rel
     rm temurin.tar.gz
 
 # Benutzer anlegen
-RUN useradd -m -s /bin/bash tomcat && \
-    echo "tomcat:rdppass" | chpasswd && \
-    adduser tomcat sudo
+# RUN useradd -m -s /bin/bash tomcat && \
+#     echo "tomcat:rdppass" | chpasswd && \
+#     adduser tomcat sudo
 
 # .xsession vorbereiten (wird später über ConfigMap überschrieben)
 RUN echo -e '#!/bin/bash\n/workspace/usu/rc-client/admin.sh &\nexec startxfce4' > /home/tomcat/.xsession && \
