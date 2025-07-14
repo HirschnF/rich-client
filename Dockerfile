@@ -30,9 +30,10 @@ RUN curl -L -o temurin.tar.gz https://github.com/adoptium/temurin17-binaries/rel
 #     adduser tomcat sudo
 
 # .xsession vorbereiten (wird später über ConfigMap überschrieben)
-RUN echo -e '#!/bin/bash\n/workspace/usu/rc-client/admin.sh &\nexec startxfce4' > /home/tomcat/.xsession && \
+RUN mkdir -p /home/tomcat && \
+    echo -e '#!/bin/bash\n/workspace/usu/rc-client/admin.sh &\nexec startxfce4' > /home/tomcat/.xsession && \
     chmod +x /home/tomcat/.xsession && \
-    chown tomcat:tomcat /home/tomcat/.xsession
+    chown -R tomcat:tomcat /home/tomcat
 
 # Arbeitsverzeichnisse
 RUN echo "### Create folders... ###"
