@@ -40,17 +40,17 @@ spec:
             - containerPort: 4822   # guacd
           env:
             - name: HOME
-              value: "/home/usuuser"
+              value: "/home/tomcat"
             - name: DISPLAY_WIDTH
               value: "1600"
             - name: DISPLAY_HEIGHT
               value: "900"
             - name: CATALINA_BASE
-              value: "/var/lib/tomcat9"
+              value: "/usr/share/tomcat9"
 # 19.6.25 dynamisch die loginconfigurations.xml aufbauen
           volumeMounts:
             - name: login-config
-              mountPath: /home/usuuser/.valuemation/loginConfigurations.xml
+              mountPath: /home/tomcat/.valuemation/loginConfigurations.xml
               subPath: loginConfigurations.xml
             # - name: novnc-index
             #   mountPath: /usr/share/novnc/index.html
@@ -59,7 +59,7 @@ spec:
             #   mountPath: /usr/share/novnc/vnc_lite.html
             #   subPath: vnc_lite.html
             # - name: bashrc
-            #   mountPath: /home/usuuser/.bashrc
+            #   mountPath: /home/tomcat/.bashrc
             #   subPath: .bashrc
             - name: flask
               mountPath: /workspace/usu/uploadserver.py
@@ -71,7 +71,7 @@ spec:
               mountPath: /etc/guacamole/user-mapping.xml
               subPath: user-mapping.xml
             - name: user-xsession
-              mountPath: /home/usuuser/.xsession
+              mountPath: /home/tomcat/.xsession
               subPath: .xsession  
             # - name: tomcat
             #   mountPath: /usr/share/tomcat9/conf/server.xml

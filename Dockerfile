@@ -25,20 +25,20 @@ RUN curl -L -o temurin.tar.gz https://github.com/adoptium/temurin17-binaries/rel
     rm temurin.tar.gz
 
 # Benutzer anlegen
-RUN useradd -m -s /bin/bash usuuser && \
-    echo "usuuser:rdppass" | chpasswd && \
-    adduser usuuser sudo
+RUN useradd -m -s /bin/bash tomcat && \
+    echo "tomcat:rdppass" | chpasswd && \
+    adduser tomcat sudo
 
 # .xsession vorbereiten (wird später über ConfigMap überschrieben)
-RUN echo -e '#!/bin/bash\n/workspace/usu/rc-client/admin.sh &\nexec startxfce4' > /home/usuuser/.xsession && \
-    chmod +x /home/usuuser/.xsession && \
-    chown usuuser:usuuser /home/usuuser/.xsession
+RUN echo -e '#!/bin/bash\n/workspace/usu/rc-client/admin.sh &\nexec startxfce4' > /home/tomcat/.xsession && \
+    chmod +x /home/tomcat/.xsession && \
+    chown tomcat:tomcat /home/tomcat/.xsession
 
 # Arbeitsverzeichnisse
 RUN echo "### Create folders... ###"
-RUN mkdir -p /workspace/usu/rc-client /workspace/usu/data/log /home/usuuser/.valuemation && \
+RUN mkdir -p /workspace/usu/rc-client /workspace/usu/data/log /home/tomcat/.valuemation && \
     chmod -R 777 /workspace && \
-    chown -R usuuser:usuuser /workspace /home/usuuser/.valuemation
+    chown -R tomcat:tomcat /workspace /home/tomcat/.valuemation
 
 # guacd aus Stage 1 kopieren
 # Install build dependencies
@@ -66,7 +66,7 @@ RUN apt-get purge -y build-essential libtool-bin && \
 
 RUN mkdir -p /var/log && \
     touch /var/log/xrdp.log /var/log/xrdp-sesman.log && \
-    chown usuuser: /var/log/xrdp*.log
+    chown tomcat: /var/log/xrdp*.log
 
 #COPY --from=guacd /opt/guacamole /opt/guacamole
 #/usr/local/sbin/guacd /usr/local/sbin/guacd
@@ -80,8 +80,8 @@ RUN rm -rf /var/lib/tomcat9/webapps/ROOT && \
     mkdir -p /var/lib/tomcat9/webapps/guacamole && \
     unzip -o /var/lib/tomcat9/webapps/guacamole.war -d /var/lib/tomcat9/webapps/guacamole
 
-RUN mkdir -p /var/lib/tomcat9/base/conf/Catalina/localhost
-RUN mkdir -p /var/lib/tomcat9/base/work/Catalina/localhost
+#RUN mkdir -p /var/lib/tomcat9/base/conf/Catalina/localhost
+#RUN mkdir -p /var/lib/tomcat9/base/work/Catalina/localhost
 #RUN chown tomcat:adm /var/lib/tomcat9/base
 
 # Flask Uploadserver installieren
@@ -90,7 +90,7 @@ RUN pip3 install flask
 
 # Ressourcen kopieren (werden teilweise durch ConfigMaps überschrieben)
 COPY rc-client.tar.gz.part-* /workspace/usu/
-COPY resources/loginConfigurations.xml /home/usuuser/.valuemation/
+COPY resources/loginConfigurations.xml /home/tomcat/.valuemation/
 COPY resources/supervisord.conf /etc/supervisor/supervisord.conf
 COPY resources/uploadserver.py /workspace/usu/uploadserver.py
 COPY resources/set_env_user.sh /workspace/usu/rc-client/
@@ -126,11 +126,11 @@ WORKDIR /workspace/usu
 # Ports freigeben
 EXPOSE 3389 8080 4822 8000 8087
 
-RUN chown usuuser:usuuser -R /workspace
-RUN usermod -aG adm usuuser
+RUN chown tomcat:tomcat -R /workspace
+RUN usermod -aG adm tomcat
 
 # Wechsel zu Benutzer
-USER usuuser
+USER tomcat
 
 # Start über supervisord
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
