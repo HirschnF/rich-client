@@ -11,7 +11,7 @@ guacamole:
   password: geheim123
 
 rdp:
-  host: java-app
+  host: localhost
   port: 3389
   username: usifhirsch
   password: rdppass
@@ -20,7 +20,7 @@ enablePersistence: false
 
 image:
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.01.48
+  tag: usm5.5.01.49
 # funktionierte gut, ohne upload server    tag: usm5.5.01.08
 #.05 hat im Web funktioniert
 
