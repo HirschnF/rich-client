@@ -44,10 +44,10 @@ spec:
               value: Europe/Berlin
             - name: HOME
               value: "/home/tomcat"
-            - name: DISPLAY_WIDTH
-              value: "1600"
-            - name: DISPLAY_HEIGHT
-              value: "900"
+            # - name: DISPLAY_WIDTH
+            #   value: "1600"
+            # - name: DISPLAY_HEIGHT
+            #   value: "900"
             - name: CATALINA_BASE
               value: "/usr/share/tomcat9"
 # 19.6.25 dynamisch die loginconfigurations.xml aufbauen
@@ -76,9 +76,12 @@ spec:
             - name: user-xsession
               mountPath: /home/tomcat/.xsession
               subPath: .xsession  
-            # - name: tomcat
-            #   mountPath: /usr/share/tomcat9/conf/server.xml
-            #   subPath: server.xml
+            - name: tomcat-web
+              mountPath: /usr/share/tomcat9/conf/web.xml
+              subPath: web.xml
+            - name: guacamole-properties
+              mountPath: /etc/guacamole/guacamole.properties
+              subPath: guacamole.properties
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
@@ -107,6 +110,9 @@ spec:
         - name: user-xsession
           configMap:
             name: user-xsession-{{ .Values.guacamole.username }}
-        # - name: tomcat
-        #   configMap:
-        #     name: tomcat-config-{{ .Values.guacamole.username }}
+        - name: tomcat-web
+          configMap:
+            name: guacamole-tomcat-web-mapping-{{ .Values.guacamole.username }}
+        - name: guacamole-properties
+          configMap:
+            name: guacamole-properties-mapping-{{ .Values.guacamole.username }}

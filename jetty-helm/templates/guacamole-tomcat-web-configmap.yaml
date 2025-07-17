@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: guacamole-tomcat-web-mapping-{{ .Values.guacamole.username }}
+data:
+  web.xml: |
+    <?xml version="1.0" encoding="ISO-8859-1"?>
+    <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                                http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+            version="3.1">
+
+      <display-name>Tomcat Default Web Application</display-name>
+
+      <!-- Session timeout in minutes -->
+      <session-config>
+        <session-timeout>60</session-timeout>
+      </session-config>
+
+      <!-- Welcome files -->
+      <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index.htm</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
+      </welcome-file-list>
+
+      <mime-mapping>
+        <extension>css</extension>
+        <mime-type>text/css</mime-type>
+      </mime-mapping>
+
+
+    </web-app>

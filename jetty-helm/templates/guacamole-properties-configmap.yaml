@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: guacamole-user-mapping-{{ .Values.guacamole.username }}
+data:
+  guacamole.properties: |
+    auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider
+    basic-user-mapping: /etc/guacamole/user-mapping.xml
+    guacd-hostname: {{ .Values.rdp.hostname }}
+    guacd-port: 4822
+
