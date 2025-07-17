@@ -17,6 +17,7 @@ spec:
     spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      serviceAccountName: rc-{{ .Values.guacamole.username }}-svca
       containers:
         - name: rc
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -39,6 +40,8 @@ spec:
             - containerPort: 3389   # RDP
             - containerPort: 4822   # guacd
           env:
+            - name: TZ
+              value: Europe/Berlin
             - name: HOME
               value: "/home/tomcat"
             - name: DISPLAY_WIDTH

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: Jetty-Richclient 5.5HF01
-description: Helm Chart für Jetty Rich Client mit NoVNC
+description: Helm Chart für Jetty Rich Client mit Guacamole
 type: application
 version: 0.2.0
-appVersion: "1.0.0"
+appVersion: "2.0.0"
