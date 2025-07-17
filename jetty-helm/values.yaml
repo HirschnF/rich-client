@@ -1,7 +1,7 @@
 # # Kubernetes Namespace für die App
-# namespace: consult-usifhirsch-55
-# helm upgrade --install jetty-usifhirsch ./myapp-helm --namespace consult-usifhirsch-55
-namespace: consult-usifhirsch-55
+# namespace: consult-summit-2025
+# helm upgrade --install jetty-usifhirsch ./myapp-helm --namespace consult-summit-2025
+namespace: consult-summit-2025
 
 #Username of Consultant
 user: usifhirsch
@@ -27,7 +27,7 @@ ingress:
   certManager: true
   annotations:
     cert-manager.io/cluster-issuer: usu-group-issuer
-  hostname: rc.consult-usifhirsch-55.k8s-dev004.aspera.usu.grp
+  hostname: rc.consult-summit-2025.k8s-dev004.aspera.usu.grp
   tls: true
 
 storage:
@@ -43,12 +43,12 @@ resources:
 
 # depends on the USC Package secrets.yaml
 db:
-  host: usm-mariadb.consult-usifhirsch-55.svc.cluster.local
+  host: usm-mariadb.consult-summit-2025.svc.cluster.local
   port: "3306"
   dbase: usm
   qualifier: ""
-  dbuser: usm
-  dbpassword: changeMeP1TSgsF0CQeB
+  dbuser: root
+  dbpassword: changeMerCKUYdiu2EIk
   
   dbaseexport: usm_export
   dbasectm: usmctm
