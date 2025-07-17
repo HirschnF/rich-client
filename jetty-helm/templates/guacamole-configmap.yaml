@@ -10,8 +10,8 @@ data:
           password="{{ .Values.guacamole.password }}">
         <connection name="Jetty-Rich-Client">
           <protocol>rdp</protocol>
-          <param name="hostname">{{ .Values.rdp.host }}</param>
-          <param name="port">{{ .Values.rdp.port }}</param>
+          <param name="hostname">127.0.0.1</param>
+          <param name="port">3389</param>
           <param name="username">{{ .Values.rdp.username }}</param>
           <param name="password">{{ .Values.rdp.password }}</param>
         </connection>

@@ -6,6 +6,6 @@ data:
   guacamole.properties: |
     auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider
     basic-user-mapping: /etc/guacamole/user-mapping.xml
-    guacd-hostname: {{ .Values.rdp.hostname }}
+    guacd-hostname: localhost
     guacd-port: 4822
 

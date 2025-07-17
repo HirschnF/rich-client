@@ -69,6 +69,9 @@ RUN mkdir -p /var/log && \
     touch /var/log/xrdp.log /var/log/xrdp-sesman.log && \
     chown tomcat: /var/log/xrdp*.log
 
+RUN xrdp-keygen xrdp /etc/xrdpkey 2048 && \
+    chown -R tomcat: /etc/xrdp
+
 #COPY --from=guacd /opt/guacamole /opt/guacamole
 #/usr/local/sbin/guacd /usr/local/sbin/guacd
 #COPY --from=guacd /usr/local/lib /usr/local/lib

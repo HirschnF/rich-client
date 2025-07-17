@@ -11,8 +11,10 @@ guacamole:
   password: geheim123
 
 rdp:
-  host: rc.consult-summit-2025.svc.cluster.local
-  port: 3389
+  #host: 
+  #rc-usifhirsch-svc.consult-summit-2025.k8s-dev004.aspera.usu.grp
+  #rc-usifhirsch-svc.consult-summit-2025.svc.cluster.local
+  #port: 3389
   username: usifhirsch
   password: rdppass
 
@@ -20,7 +22,7 @@ enablePersistence: false
 
 image:
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.01.49
+  tag: usm5.5.01.50
 # funktionierte gut, ohne upload server    tag: usm5.5.01.08
 #.05 hat im Web funktioniert
 
