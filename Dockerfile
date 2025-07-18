@@ -30,15 +30,16 @@ RUN curl -L -o temurin.tar.gz https://github.com/adoptium/temurin17-binaries/rel
 #     adduser tomcat sudo
 
 # .xsession vorbereiten (wird später über ConfigMap überschrieben)
-RUN mkdir -p /home/tomcat && \
-    echo -e '#!/bin/bash\n/workspace/usu/rc-client/admin.sh &\nexec startxfce4' > /home/tomcat/.xsession && \
-    chmod +x /home/tomcat/.xsession && \
-    chown -R tomcat:tomcat /home/tomcat
-
-# Arbeitsverzeichnisse
 RUN echo "### Create folders... ###"
+RUN mkdir -p /home/tomcat
+#  && \
+#     chmod +x /home/tomcat/.xsession && \
+#     chown -R tomcat:tomcat /home/tomcat
+COPY --chown=tomcat:adm resources/.xsession /home/tomcat    
+# Arbeitsverzeichnisse
 RUN mkdir -p /workspace/usu/rc-client /workspace/usu/data/log /home/tomcat/.valuemation && \
     chmod -R 777 /workspace && \
+    chmod +x /home/tomcat/.xsession && \
     chown -R tomcat:tomcat /workspace /home/tomcat/.valuemation
 
 # guacd aus Stage 1 kopieren
