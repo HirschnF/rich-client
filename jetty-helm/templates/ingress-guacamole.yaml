@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: rc-{{ .Values.guacamole.username }}-guacamole-ingress
+  name: rc-{{ .Values.user }}-guacamole-ingress
   namespace: {{ .Values.namespace }}  
     {{- if .Values.ingress.annotations }}
   annotations:
@@ -23,7 +23,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.ingress.hostname }}
-      secretName: tls-{{ .Values.guacamole.username }}
+      secretName: tls-{{ .Values.user }}
   {{- end }}
   rules:
     - host: {{ .Values.ingress.hostname }}
@@ -31,20 +31,20 @@ spec:
         paths:
           - path: /guacamole
           #(/|$)(.*)
-          #{{ .Values.guacamole.username }}/
+          #{{ .Values.user }}/
             pathType: Prefix #ImplementationSpecific
             backend:
               service:
-                name: rc-{{ .Values.guacamole.username }}-svc
+                name: rc-{{ .Values.user }}-svc
                 port:
                   number: 80
           - path: /guacamole/
           #(/|$)(.*)
-          #{{ .Values.guacamole.username }}/
+          #{{ .Values.user }}/
             pathType: Prefix #ImplementationSpecific
             backend:
               service:
-                name: rc-{{ .Values.guacamole.username }}-svc
+                name: rc-{{ .Values.user }}-svc
                 port:
                   number: 80
           # # Direktpfad für Redirects
@@ -52,6 +52,6 @@ spec:
           #   pathType: ImplementationSpecific
           #   backend:
           #     service:
-          #       name: rc-{{ .Values.guacamole.username }}-svc
+          #       name: rc-{{ .Values.user }}-svc
           #       port:
           #         number: 80

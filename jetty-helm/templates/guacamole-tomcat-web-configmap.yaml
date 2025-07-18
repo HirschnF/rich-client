@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: guacamole-tomcat-web-mapping-{{ .Values.guacamole.username }}
+  name: guacamole-tomcat-web-mapping-{{ .Values.user }}
 data:
   web.xml: |
     <?xml version="1.0" encoding="ISO-8859-1"?>

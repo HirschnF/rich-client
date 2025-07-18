@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: user-xsession-{{ .Values.guacamole.username }}
+  name: user-xsession-{{ .Values.user }}
 data:
   .xsession: |
     #!/bin/bash

@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     sudo curl unzip gnupg2 software-properties-common \
     xrdp xfce4 dbus-x11 x11-xserver-utils \
     net-tools supervisor python3-pip \
-    tomcat9 tomcat9-common\
+    tomcat9 tomcat9-common tigervnc-standalone-server\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Java 17 installieren (Temurin)
@@ -97,7 +97,7 @@ COPY rc-client.tar.gz.part-* /workspace/usu/
 COPY resources/loginConfigurations.xml /home/tomcat/.valuemation/
 COPY resources/supervisord.conf /etc/supervisor/supervisord.conf
 COPY resources/uploadserver.py /workspace/usu/uploadserver.py
-COPY resources/set_env_user.sh /workspace/usu/rc-client/
+#COPY resources/set_env_user.sh /workspace/usu/rc-client/set_env_user.sh
 
 RUN mkdir -p /usr/share/tomcat9/conf
 COPY --chown=tomcat:adm resources/tomcat/web.xml /usr/share/tomcat9/conf/web.xml
@@ -105,6 +105,7 @@ COPY --chown=tomcat:adm resources/tomcat/context.xml /usr/share/tomcat9/conf/con
 COPY --chown=tomcat:adm resources/tomcat/tomcat-users.xml /usr/share/tomcat9/conf/tomcat-users.xml
 COPY --chown=tomcat:adm resources/tomcat/logging.properties /usr/share/tomcat9/conf/logging.properties
 COPY --chown=tomcat:adm resources/tomcat/server.xml /usr/share/tomcat9/conf/server.xml
+COPY --chown=tomcat:adm resources/xrdp/sesman.ini /etc/xrdp/sesman.ini
 
 # Java-App entpacken
 RUN echo "### Copy and Extract Rich Client as tar.gz... ###"

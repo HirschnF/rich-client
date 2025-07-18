@@ -1,28 +1,31 @@
 # # Kubernetes Namespace für die App
 # namespace: consult-summit-2025
-# helm upgrade --install jetty-usifhirsch ./myapp-helm --namespace consult-summit-2025
+# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-summit-2025 --set user="" --set pw=""
 namespace: consult-summit-2025
 
-#Username of Consultant
-# user: usifhirsch
-# userpw: changeIt
-guacamole:
-  username: usifhirsch
-  password: geheim123
+# Benutzer und PW werden zusammengefasst und in secret codiert
+user: ""
+pw: ""
+# #Username of Consultant
+# # user: usifhirsch
+# # userpw: changeIt
+# guacamole:
+#   username: usifhirsch
+#   password: geheim123
 
-rdp:
-  #host: 
-  #rc-usifhirsch-svc.consult-summit-2025.k8s-dev004.aspera.usu.grp
-  #rc-usifhirsch-svc.consult-summit-2025.svc.cluster.local
-  #port: 3389
-  username: usifhirsch
-  password: rdppass
+# rdp:
+#   #host: 
+#   #rc-usifhirsch-svc.consult-summit-2025.k8s-dev004.aspera.usu.grp
+#   #rc-usifhirsch-svc.consult-summit-2025.svc.cluster.local
+#   #port: 3389
+#   username: usifhirsch
+#   password: rdppass
 
 enablePersistence: false
 
 image:
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.01.50
+  tag: usm5.5.01.51
 # funktionierte gut, ohne upload server    tag: usm5.5.01.08
 #.05 hat im Web funktioniert
 

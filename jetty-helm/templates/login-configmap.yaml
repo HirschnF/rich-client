@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: login-config-{{ .Values.guacamole.username }}
+  name: login-config-{{ .Values.user }}
   namespace: {{ .Values.namespace }}
 data:
   loginConfigurations.xml: |
