@@ -61,6 +61,9 @@ spec:
               chown -R $RDP_USERNAME:$RDP_USERNAME /home/$RDP_USERNAME && \
               mkdir -p /run/xrdp/sockdir && \
               chown xrdp:xrdp /run/xrdp /run/xrdp/sockdir && \
+              echo -e "#!/bin/bash\nexec xterm" >/home/$RDP_USERNAME/.xsession && \
+              echo -e "LANG=de_DE.UTF-8\nLANGUAGE=de_DE:de\nLC_ALL=de_DE.UTF-8" > /etc/default/locale && \
+              { echo "auth required pam_debug.so"; cat /etc/pam.d/xrdp-sesman; } > temp && mv temp /etc/pam.d/xrdp-sesman && \
               su -s /bin/bash tomcat -c "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf" && \
               tail -f /dev/stdout
           
@@ -107,9 +110,9 @@ spec:
             - name: user-mapping
               mountPath: /etc/guacamole/user-mapping.xml
               subPath: user-mapping.xml
-            - name: user-xsession-tomcat
-              mountPath: /home/tomcat/.xsession
-              subPath: .xsession  
+            # - name: user-xsession-tomcat
+            #   mountPath: /home/tomcat/.xsession
+            #   subPath: .xsession  
             # - name: user-xsession-user
             #   mountPath: /home/{{ .Values.user }}/.xsession
             #   subPath: .xsession  
@@ -119,6 +122,9 @@ spec:
             - name: guacamole-properties
               mountPath: /etc/guacamole/guacamole.properties
               subPath: guacamole.properties
+            - name: sesman-ini
+              mountPath: /etc/xrdp/sesman.ini
+              subPath: sesman.ini
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
@@ -144,10 +150,10 @@ spec:
         - name: user-mapping
           configMap:
             name: guacamole-user-mapping-{{ .Values.user }}
-        - name: user-xsession-tomcat
-          configMap:
-            name: user-xsession-{{ .Values.user }}
-        # - name: user-xsession-user
+        # - name: user-xsession-tomcat
+        #   configMap:
+        #     name: user-xsession-{{ .Values.user }}
+        # # - name: user-xsession-user
         #   configMap:
         #     name: user-xsession-{{ .Values.user }}
         - name: tomcat-web
@@ -156,3 +162,6 @@ spec:
         - name: guacamole-properties
           configMap:
             name: guacamole-properties-mapping-{{ .Values.user }}
+        - name: sesman-ini
+          configMap:
+            name: sesman-ini-{{ .Values.user }}

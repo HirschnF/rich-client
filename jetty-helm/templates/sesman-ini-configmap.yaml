@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sesman-ini-{{ .Values.user }}
+data:
+  sesman.ini: |
+    [Globals]
+    ListenAddress=127.0.0.1
+    ListenPort=3350
+    EnableUserWindowManager=true
+
+    [Security]
+    AllowRootLogin=true
+    MaxLoginRetry=4
+    TerminalServerUsers=tsusers
+    TerminalServerAdmins=tsadmins
+    AlwaysGroupCheck=false
+
+    [Sessions]
+    X11DisplayOffset=10
+    MaxSessions=50
+    KillDisconnected=true
+    DisconnectedTimeLimit=0
+    IdleTimeLimit=0
+    Policy=Default
+
+    [Xvnc]
+    param=/usr/bin/Xvnc
+    param=-bs
+    param=-nolisten
+    param=tcp
+    param=-localhost
+    param=-dpi
+    param=96
+    param=-geometry
+    param=1280x800
+    param=-depth
+    param=24
+
+    [Logging]
+    LogFile=/var/log/xrdp-sesman.log
+    LogLevel=DEBUG
+    EnableSyslog=true
+    SyslogLevel=DEBUG
