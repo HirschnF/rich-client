@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     sudo curl unzip gnupg2 software-properties-common \
     xrdp xfce4 dbus-x11 x11-xserver-utils \
     net-tools supervisor python3-pip \
-    tomcat9 tomcat9-common tigervnc-standalone-server locales \
+    tomcat9 tomcat9-common tigervnc-standalone-server locales pamtester\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Java 17 installieren (Temurin)

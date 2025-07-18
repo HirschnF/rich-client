@@ -61,9 +61,11 @@ spec:
               chown -R $RDP_USERNAME:$RDP_USERNAME /home/$RDP_USERNAME && \
               mkdir -p /run/xrdp/sockdir && \
               chown xrdp:xrdp /run/xrdp /run/xrdp/sockdir && \
-              echo -e "#!/bin/bash\nexec xterm" >/home/$RDP_USERNAME/.xsession && \
-              echo -e "LANG=de_DE.UTF-8\nLANGUAGE=de_DE:de\nLC_ALL=de_DE.UTF-8" > /etc/default/locale && \
+              echo "#!/bin/bash\nexec xterm" >/home/$RDP_USERNAME/.xsession && \
+              echo "LANG=de_DE.UTF-8\nLANGUAGE=de_DE:de\nLC_ALL=de_DE.UTF-8" > /etc/default/locale && \
               { echo "auth required pam_debug.so"; cat /etc/pam.d/xrdp-sesman; } > temp && mv temp /etc/pam.d/xrdp-sesman && \
+              sed -i '/^# *de_DE.UTF-8 UTF-8/s/^# *//' /etc/locale.gen && \
+              locale-gen && \
               su -s /bin/bash tomcat -c "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf" && \
               tail -f /dev/stdout
           
