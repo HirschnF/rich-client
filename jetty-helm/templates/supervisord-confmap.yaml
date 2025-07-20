@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: supervisord-conf-{{ .Values.user }}
+data:
+  supervisord.conf: |
+    [supervisord]
+    logfile=/workspace/usu/data/log/supervisord.log
+    logfile_maxbytes=50MB
+    logfile_backups=10
+    loglevel=debug
+    pidfile=/tmp/supervisord.pid
+    nodaemon=false
+
+    [program:xrdp-sesman]
+    command=/usr/sbin/xrdp-sesman --nodaemon
+    stdout_logfile=/dev/stdout
+    stderr_logfile=/dev/stderr
+    autostart=true
+    autorestart=true
+    priority=0
+
+    [program:xrdp]
+    command=/usr/sbin/xrdp -n
+    stdout_logfile=/dev/stdout
+    stderr_logfile=/dev/stderr
+    autostart=true
+    autorestart=true
+    priority=1
+
+    [program:uploadserver]
+    command=python3 /workspace/usu/uploadserver.py
+    directory=/workspace/usu
+    autostart=true
+    autorestart=true
+    stderr_logfile=/workspace/usu/data/log/uploadserver.err.log
+    stdout_logfile=/workspace/usu/data/log/uploadserver.out.log
+    user=tomcat
+
+    [program:guacd]
+    #command=/opt/guacamole/sbin/guacd -f
+    command=/usr/local/sbin/guacd -b 0.0.0.0 -f
+    stdout_logfile=/dev/stdout
+    stderr_logfile=/dev/stderr
+    autostart=true
+    autorestart=true
+    priority=4
+
+    #[program:tomcat]
+    #command=/usr/sbin/service tomcat9 start && tail -f /var/log/tomcat9/catalina.out
+    [program:tomcat]
+    command=/usr/share/tomcat9/bin/catalina.sh run
+    environment=CATALINA_BASE=/var/lib/tomcat9
+    #stdout_logfile=/dev/stdout
+    #stderr_logfile=/dev/stderr
+    autostart=true
+    autorestart=true
+    stdout_logfile=/workspace/usu/data/log/tomcat.out.log
+    stderr_logfile=/workspace/usu/data/log/tomcat.err.log
+    priority=4
+

@@ -6,14 +6,16 @@ data:
   user-mapping.xml: |
     <user-mapping>
       <authorize 
-          username="{{ .Values.user }}" 
+          username="admin" 
           password="{{ .Values.pw }}">
         <connection name="Jetty-Rich-Client">
           <protocol>rdp</protocol>
           <param name="hostname">127.0.0.1</param>
-          <param name="port">3389</param>
+          <param name="port">-1</param>
           <param name="username">{{ .Values.user }}</param>
-          <param name="password">geheim</param>
+          <param name="password">{{ .Values.pw }}</param>
+          <param name="security">rdp</param>         <!-- <<< das ist entscheidend -->
+          <param name="ignore-cert">true</param>     <!-- optional, aber hilfreich -->
         </connection>
       </authorize>
     </user-mapping>

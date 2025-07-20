@@ -66,7 +66,8 @@ spec:
               { echo "auth required pam_debug.so"; cat /etc/pam.d/xrdp-sesman; } > temp && mv temp /etc/pam.d/xrdp-sesman && \
               sed -i '/^# *de_DE.UTF-8 UTF-8/s/^# *//' /etc/locale.gen && \
               locale-gen && \
-              su -s /bin/bash tomcat -c "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf" && \
+              usermod -aG shadow tomcat && \
+              /usr/bin/supervisord -c /etc/supervisor/supervisord.conf && \
               tail -f /dev/stdout
           
           #-m -s /bin/bash
@@ -94,15 +95,6 @@ spec:
             - name: login-config
               mountPath: /home/tomcat/.valuemation/loginConfigurations.xml
               subPath: loginConfigurations.xml
-            # - name: novnc-index
-            #   mountPath: /usr/share/novnc/index.html
-            #   subPath: index.html
-            # - name: novnc-lite
-            #   mountPath: /usr/share/novnc/vnc_lite.html
-            #   subPath: vnc_lite.html
-            # - name: bashrc
-            #   mountPath: /home/tomcat/.bashrc
-            #   subPath: .bashrc
             - name: flask
               mountPath: /workspace/usu/uploadserver.py
               subPath: uploadserver.py
@@ -112,12 +104,6 @@ spec:
             - name: user-mapping
               mountPath: /etc/guacamole/user-mapping.xml
               subPath: user-mapping.xml
-            # - name: user-xsession-tomcat
-            #   mountPath: /home/tomcat/.xsession
-            #   subPath: .xsession  
-            # - name: user-xsession-user
-            #   mountPath: /home/{{ .Values.user }}/.xsession
-            #   subPath: .xsession  
             - name: tomcat-web
               mountPath: /usr/share/tomcat9/conf/web.xml
               subPath: web.xml
@@ -127,6 +113,12 @@ spec:
             - name: sesman-ini
               mountPath: /etc/xrdp/sesman.ini
               subPath: sesman.ini
+            - name: xrdp-ini
+              mountPath: /etc/xrdp/xrdp.ini
+              subPath: xrdp.ini
+            - name: supervisord-conf
+              mountPath: /etc/supervisor/supervisord.conf
+              subPath: supervisord.conf
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
@@ -134,15 +126,6 @@ spec:
         - name: login-config
           configMap:
             name: login-config-{{ .Values.user }}
-        # - name: novnc-index
-        #   configMap:
-        #     name: novnc-index-{{ .Values.user }}
-        # - name: novnc-lite
-        #   configMap:
-        #     name: novnc-lite-{{ .Values.user }}
-        # - name: bashrc
-        #   configMap:
-        #     name: bashrc-{{ .Values.user }}
         - name: flask
           configMap:
             name: flask-uploadsrv-{{ .Values.user }}
@@ -152,12 +135,6 @@ spec:
         - name: user-mapping
           configMap:
             name: guacamole-user-mapping-{{ .Values.user }}
-        # - name: user-xsession-tomcat
-        #   configMap:
-        #     name: user-xsession-{{ .Values.user }}
-        # # - name: user-xsession-user
-        #   configMap:
-        #     name: user-xsession-{{ .Values.user }}
         - name: tomcat-web
           configMap:
             name: guacamole-tomcat-web-mapping-{{ .Values.user }}
@@ -167,3 +144,9 @@ spec:
         - name: sesman-ini
           configMap:
             name: sesman-ini-{{ .Values.user }}
+        - name: xrdp-ini
+          configMap:
+            name: xrdp-ini-{{ .Values.user }}
+        - name: supervisord-conf
+          configMap:
+            name: supervisord-conf-{{ .Values.user }}

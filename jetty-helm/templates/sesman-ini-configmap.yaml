@@ -8,6 +8,9 @@ data:
     ListenAddress=127.0.0.1
     ListenPort=3350
     EnableUserWindowManager=true
+    # Falls du ein zentrales Startskript verwenden willst:
+    #UserWindowManager=/etc/xrdp/startwm.sh
+    #DefaultWindowManager=startxfce4
 
     [Security]
     AllowRootLogin=true
@@ -36,9 +39,13 @@ data:
     param=1280x800
     param=-depth
     param=24
+    # Entfernt, da du keine VNC-Passwortdatei nutzt:
+    #param=-rfbauth
+    #param=/etc/xrdp/vncpasswd
 
     [Logging]
     LogFile=/var/log/xrdp-sesman.log
     LogLevel=DEBUG
-    EnableSyslog=true
+    EnableSyslog=false
     SyslogLevel=DEBUG
+
