@@ -37,7 +37,7 @@ spec:
                 port:
                   number: 8087
 # 28.06.2026 Upload und Download Server
-          - path: /{{ .Values.user }}/transfer(/|$)(.*)
+          - path: /transfer(/|$)(.*)
             pathType: ImplementationSpecific
             #pathType: Prefix
             backend:

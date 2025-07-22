@@ -145,7 +145,8 @@ data:
 
             file.save(save_path)
             #return redirect(url_for("index"))
-            return redirect(f"/{USER}/transfer")
+            #return redirect(f"/{USER}/transfer")
+            return redirect(f"/transfer")
         else:
             return "File type not allowed. Only .zip, .xml, .sql are accepted.", 400
 

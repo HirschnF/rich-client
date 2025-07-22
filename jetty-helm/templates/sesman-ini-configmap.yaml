@@ -28,6 +28,7 @@ data:
     Policy=Default
 
     [Xvnc]
+    #param=/usr/local/bin/xvnc-wrapper.sh
     param=/usr/bin/Xvnc
     param=-bs
     param=-nolisten
@@ -36,7 +37,7 @@ data:
     param=-dpi
     param=96
     param=-geometry
-    param=1280x800
+    param=1920x1080
     param=-depth
     param=24
     # Entfernt, da du keine VNC-Passwortdatei nutzt:

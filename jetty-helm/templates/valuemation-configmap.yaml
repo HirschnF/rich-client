@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: valuemation-config-{{ .Values.user }}
+  namespace: {{ .Values.namespace }}
+data:
+  valuemation.ini: |
+    LoginConfigurationDialog.column.Host.width=41
+    LoginConfigurationDialog.column.Last\ Used.width=73
+    LoginConfigurationDialog.enablePE=false
+    LoginConfigurationDialog.column.Name.width=164
+    LoginConfigurationDialog.column.VM\ User.width=41
+    LoginConfigurationDialog.filteredByVersion=false
+    LoginConfigurationDialog.height=494
+    LoginConfigurationDialog.column.DB\ Type.width=39
+    LoginConfigurationDialog.width=1070
+    LoginConfigurationDialog.openConsole=false

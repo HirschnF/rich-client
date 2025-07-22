@@ -12,7 +12,7 @@ data:
     tcp_nodelay=true
     tcp_keepalive=true
     security_layer=rdp
-    crypt_level=none  ; <---- war vorher high
+    crypt_level=high  ; <---- war vorher high
     ssl_protocols=TLSv1.2, TLSv1.3
     allow_channels=true
     allow_multimon=true

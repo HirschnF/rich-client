@@ -5,7 +5,7 @@ metadata:
 data:
   user-mapping.xml: |
     <user-mapping>
-      <authorize 
+      <authorize
           username="{{ .Values.user }}" 
           password="{{ .Values.pw }}">
         <connection name="Jetty-Rich-Client">

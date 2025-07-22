@@ -45,7 +45,10 @@ spec:
                 secretKeyRef:
                   name: rc-user-secret
                   key: password
-
+            - name: GEOMETRY
+              value: ${GEOMETRY:-{{ .Values.Geometry }}}
+            - name: DEPTH
+              value: ${DEPTH:-{{ .Values.Depth }}}
           # 11.06.2025 - den Container am Leben halten für 10h
           # 26.06.2025 - ADD special user
           #echo "Hello, Kubernetes! I am $(whoami)" && echo "My home directory: $HOME" && 
@@ -62,7 +65,7 @@ spec:
               chown -R $RDP_USERNAME:$RDP_USERNAME /home/$RDP_USERNAME && \
               mkdir -p /run/xrdp/sockdir && \
               chown xrdp:xrdp /run/xrdp /run/xrdp/sockdir && \
-              echo "#!/bin/bash\nexec xterm" >/home/$RDP_USERNAME/.xsession && \
+              echo "#!/bin/bash\ncd /workspace/usu/rc-client\nexec xterm -e ./admin.sh " >/home/$RDP_USERNAME/.xsession && \
               echo "LANG=de_DE.UTF-8\nLANGUAGE=de_DE:de\nLC_ALL=de_DE.UTF-8" > /etc/default/locale && \
               { echo "auth required pam_debug.so"; cat /etc/pam.d/xrdp-sesman; } > temp && mv temp /etc/pam.d/xrdp-sesman && \
               sed -i '/^# *de_DE.UTF-8 UTF-8/s/^# *//' /etc/locale.gen && \
@@ -71,14 +74,7 @@ spec:
               /usr/bin/supervisord -c /etc/supervisor/supervisord.conf && \
               tail -f /dev/stdout
           
-          #-m -s /bin/bash
-          #-s /bin/bash
-
-
-          #mkdir -p ~/.vnc && x11vnc -storepasswd 1234 ~/.vnc/passwd
-          # python3 -m uploadserver --directory /workspace/usu/data &&
-          # tail -f /dev/stdout'] # && tail -f /dev/null']
-          #echo "feh --bg-scale /workspace/usu/logo.png" >> &&'
+          #chmod +x /usr/local/bin/xvnc-wrapper.sh && \
           # It is for running as the root user
           securityContext:
             runAsUser: 0
@@ -120,6 +116,12 @@ spec:
             - name: supervisord-conf
               mountPath: /etc/supervisor/supervisord.conf
               subPath: supervisord.conf
+            - name: valuemation-config
+              mountPath: /home/tomcat/.valuemation/valuemation.ini
+              subPath: valuemation.ini
+            # - name: xvnc-wrapper
+            #   mountPath: /usr/local/bin/xvnc-wrapper.sh
+            #   subPath: xvnc-wrapper.sh
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
@@ -151,3 +153,9 @@ spec:
         - name: supervisord-conf
           configMap:
             name: supervisord-conf-{{ .Values.user }}
+        - name: valuemation-config
+          configMap:
+            name: valuemation-config-{{ .Values.user }}
+        # - name: xvnc-wrapper
+        #   configMap:
+        #     name: xvnc-wrapper-{{ .Values.user }}

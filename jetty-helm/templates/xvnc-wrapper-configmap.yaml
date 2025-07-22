@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xvnc-wrapper-{{ .Values.user }}
+  namespace: {{ .Values.namespace }}
+data:
+  xvnc-wrapper.sh: |
+    #!/bin/bash
+    # Standardwerte, falls nicht gesetzt
+    #GEOMETRY=${GEOMETRY:-1280x800}
+    #DEPTH=${DEPTH:-24}
+    DPI=-96
+    /usr/bin/Xvnc -geometry "$GEOMETRY" -depth "$DEPTH" -dpi "$DPI" -bs -nolisten tcp -localhost"
