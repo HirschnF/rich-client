@@ -1,7 +1,3 @@
-# Stage 1: guacd aus dem offiziellen Image extrahieren
-#FROM guacamole/guacd:1.5.4 as guacd
-
-# Stage 2: Hauptcontainer
 FROM debian:bullseye-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -14,8 +10,11 @@ RUN apt-get update && apt-get install -y \
     sudo curl unzip gnupg2 software-properties-common \
     xrdp xfce4 dbus-x11 x11-xserver-utils \
     net-tools supervisor python3-pip \
-    tomcat9 tomcat9-common tigervnc-standalone-server locales pamtester\
+    tomcat9 tomcat9-common tigervnc-standalone-server locales openbox\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# 2. Konfigurieren
+RUN dpkg-reconfigure locales
 
 # Java 17 installieren (Temurin)
 RUN echo "### Install JDK newest version from temurin"    
@@ -24,17 +23,10 @@ RUN curl -L -o temurin.tar.gz https://github.com/adoptium/temurin17-binaries/rel
     tar -xzf temurin.tar.gz -C /opt/java --strip-components=1 && \
     rm temurin.tar.gz
 
-# Benutzer anlegen
-# RUN useradd -m -s /bin/bash tomcat && \
-#     echo "tomcat:rdppass" | chpasswd && \
-#     adduser tomcat sudo
-
 # .xsession vorbereiten (wird später über ConfigMap überschrieben)
 RUN echo "### Create folders... ###"
-RUN mkdir -p /home/tomcat
-#  && \
-#     chmod +x /home/tomcat/.xsession && \
-#     chown -R tomcat:tomcat /home/tomcat
+RUN mkdir -p /home/tomcat && mkdir -p /run/xrdp/sockdir && chown -R xrdp:xrdp /run/xrdp
+
 COPY --chown=tomcat:adm resources/.xsession /home/tomcat    
 # Arbeitsverzeichnisse
 RUN mkdir -p /workspace/usu/rc-client /workspace/usu/data/log /home/tomcat/.valuemation && \
@@ -69,17 +61,16 @@ RUN apt-get purge -y build-essential libtool-bin && \
 RUN mkdir -p /var/log && \
     touch /var/log/xrdp.log /var/log/xrdp-sesman.log && \
     chown tomcat: /var/log/xrdp*.log
+RUN { echo "auth required pam_debug.so"; cat /etc/pam.d/xrdp-sesman; } > temp && mv temp /etc/pam.d/xrdp-sesman
 
 RUN xrdp-keygen xrdp /etc/xrdpkey 2048 && \
     chown -R tomcat: /etc/xrdp
 
-RUN locale-gen de_DE.UTF-8
-
-
-#COPY --from=guacd /opt/guacamole /opt/guacamole
-#/usr/local/sbin/guacd /usr/local/sbin/guacd
-#COPY --from=guacd /usr/local/lib /usr/local/lib
-#COPY --from=guacd /etc/guacamole /etc/guacamole
+RUN echo "LANG=de_DE.UTF-8\nLANGUAGE=de_DE:de\nLC_ALL=de_DE.UTF-8" > /etc/default/locale && \
+    sed -i '/^# *de_DE.UTF-8 UTF-8/s/^# *//' /etc/locale.gen && \
+    locale-gen de_DE.UTF-8 
+#    && \
+#    dpkg-reconfigure locales
 
 # Guacamole WebApp in Tomcat deployen
 RUN echo "### Guacamole WAR file... ###"
@@ -87,10 +78,6 @@ RUN curl -L -o /var/lib/tomcat9/webapps/guacamole.war https://downloads.apache.o
 RUN rm -rf /var/lib/tomcat9/webapps/ROOT && \
     mkdir -p /var/lib/tomcat9/webapps/guacamole && \
     unzip -o /var/lib/tomcat9/webapps/guacamole.war -d /var/lib/tomcat9/webapps/guacamole
-
-#RUN mkdir -p /var/lib/tomcat9/base/conf/Catalina/localhost
-#RUN mkdir -p /var/lib/tomcat9/base/work/Catalina/localhost
-#RUN chown tomcat:adm /var/lib/tomcat9/base
 
 # Flask Uploadserver installieren
 RUN echo "### Install uploadserver... ###"
@@ -103,13 +90,17 @@ COPY resources/supervisord.conf /etc/supervisor/supervisord.conf
 COPY resources/uploadserver.py /workspace/usu/uploadserver.py
 #COPY resources/set_env_user.sh /workspace/usu/rc-client/set_env_user.sh
 
-RUN mkdir -p /usr/share/tomcat9/conf
+RUN mkdir -p /usr/share/tomcat9/conf && \
+    mkdir -p /etc/guacamole   
 COPY --chown=tomcat:adm resources/tomcat/web.xml /usr/share/tomcat9/conf/web.xml
 COPY --chown=tomcat:adm resources/tomcat/context.xml /usr/share/tomcat9/conf/context.xml
 COPY --chown=tomcat:adm resources/tomcat/tomcat-users.xml /usr/share/tomcat9/conf/tomcat-users.xml
 COPY --chown=tomcat:adm resources/tomcat/logging.properties /usr/share/tomcat9/conf/logging.properties
 COPY --chown=tomcat:adm resources/tomcat/server.xml /usr/share/tomcat9/conf/server.xml
 COPY --chown=tomcat:adm resources/xrdp/sesman.ini /etc/xrdp/sesman.ini
+COPY --chown=tomcat:adm resources/xrdp/xrdp.ini /etc/xrdp/xrdp.ini
+COPY --chown=tomcat:adm resources/guacamole.properties /etc/guacamole/guacamole.properties
+RUN chmod 660 /etc/guacamole/guacamole.properties
 
 # Java-App entpacken
 RUN echo "### Copy and Extract Rich Client as tar.gz... ###"
@@ -117,12 +108,6 @@ RUN cat /workspace/usu/rc-client.tar.gz.part-* > /workspace/usu/rc-client.tar.gz
     tar -xzf /workspace/usu/rc-client.tar.gz -C /workspace/usu && \
     mv /workspace/usu/USM_*/* /workspace/usu/rc-client && \
     rm -rf /workspace/usu/rc-client.tar.gz*
-
-RUN mkdir -p /etc/guacamole   
-RUN echo "auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider" >/etc/guacamole/guacamole.properties
-RUN echo "basic-user-mapping: /etc/guacamole/user-mapping.xml" >>/etc/guacamole/guacamole.properties
-RUN chmod 660 /etc/guacamole/guacamole.properties
-RUN chown tomcat:adm /etc/guacamole/guacamole.properties
 
 RUN ln -s /var/log/tomcat9/ /usr/share/tomcat9/logs
 RUN touch /var/log/tomcat9/catalina.out
@@ -136,7 +121,8 @@ WORKDIR /workspace/usu
 EXPOSE 3389 8080 4822 8000 8087
 
 RUN chown tomcat:tomcat -R /workspace
-RUN usermod -aG adm tomcat
+RUN usermod -aG adm tomcat && \
+    usermod -aG shadow tomcat
 
 # Wechsel zu Benutzer
 USER tomcat

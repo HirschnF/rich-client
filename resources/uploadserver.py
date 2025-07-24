@@ -105,7 +105,7 @@ HTML_TEMPLATE = """
         <li><em>No files found.</em></li>
       {{ "{% endfor %}" }}
     </ul>
-    <a class="nav-link" href="./gui" target="_blank">🖥️ Open Jetty Client</a>
+    <a class="nav-link" href="../guacamole" target="_blank">🖥️ Open Jetty Client</a>
   </div>
 </body>
 </html>
@@ -138,7 +138,8 @@ def upload():
 
         file.save(save_path)
         #return redirect(url_for("index"))
-        return redirect(f"/{USER}/transfer")
+        #return redirect(f"/{USER}/transfer")
+        return redirect(f"/transfer")
     else:
         return "File type not allowed. Only .zip, .xml, .sql are accepted.", 400
 

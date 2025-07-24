@@ -1,3 +1,4 @@
+#wird über Ressources direkt im Basis Image kopiert und so nicht mehr benötigt
 apiVersion: v1
 kind: ConfigMap
 metadata:

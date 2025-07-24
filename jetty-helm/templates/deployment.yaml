@@ -63,14 +63,6 @@ spec:
               cp -r /home/tomcat/.valuemation /home/$RDP_USERNAME && \
               chmod +x /home/$RDP_USERNAME/.xsession && \
               chown -R $RDP_USERNAME:$RDP_USERNAME /home/$RDP_USERNAME && \
-              mkdir -p /run/xrdp/sockdir && \
-              chown xrdp:xrdp /run/xrdp /run/xrdp/sockdir && \
-              echo "#!/bin/bash\ncd /workspace/usu/rc-client\nexec xterm -e ./admin.sh " >/home/$RDP_USERNAME/.xsession && \
-              echo "LANG=de_DE.UTF-8\nLANGUAGE=de_DE:de\nLC_ALL=de_DE.UTF-8" > /etc/default/locale && \
-              { echo "auth required pam_debug.so"; cat /etc/pam.d/xrdp-sesman; } > temp && mv temp /etc/pam.d/xrdp-sesman && \
-              sed -i '/^# *de_DE.UTF-8 UTF-8/s/^# *//' /etc/locale.gen && \
-              locale-gen && \
-              usermod -aG shadow tomcat && \
               /usr/bin/supervisord -c /etc/supervisor/supervisord.conf && \
               tail -f /dev/stdout
           
@@ -92,33 +84,33 @@ spec:
             - name: login-config
               mountPath: /home/tomcat/.valuemation/loginConfigurations.xml
               subPath: loginConfigurations.xml
-            - name: flask
-              mountPath: /workspace/usu/uploadserver.py
-              subPath: uploadserver.py
+            # - name: flask
+            #   mountPath: /workspace/usu/uploadserver.py
+            #   subPath: uploadserver.py
             - name: setenvuser
               mountPath: /workspace/usu/rc-client/set_env_user.sh
               subPath: set_env_user.sh
             - name: user-mapping
               mountPath: /etc/guacamole/user-mapping.xml
               subPath: user-mapping.xml
-            - name: tomcat-web
-              mountPath: /usr/share/tomcat9/conf/web.xml
-              subPath: web.xml
-            - name: guacamole-properties
-              mountPath: /etc/guacamole/guacamole.properties
-              subPath: guacamole.properties
-            - name: sesman-ini
-              mountPath: /etc/xrdp/sesman.ini
-              subPath: sesman.ini
-            - name: xrdp-ini
-              mountPath: /etc/xrdp/xrdp.ini
-              subPath: xrdp.ini
-            - name: supervisord-conf
-              mountPath: /etc/supervisor/supervisord.conf
-              subPath: supervisord.conf
-            - name: valuemation-config
-              mountPath: /home/tomcat/.valuemation/valuemation.ini
-              subPath: valuemation.ini
+            # - name: tomcat-web
+            #   mountPath: /usr/share/tomcat9/conf/web.xml
+            #   subPath: web.xml
+            # - name: guacamole-properties
+            #   mountPath: /etc/guacamole/guacamole.properties
+            #   subPath: guacamole.properties
+            # - name: sesman-ini
+            #   mountPath: /etc/xrdp/sesman.ini
+            #   subPath: sesman.ini
+            # - name: xrdp-ini
+            #   mountPath: /etc/xrdp/xrdp.ini
+            #   subPath: xrdp.ini
+            # - name: supervisord-conf
+            #   mountPath: /etc/supervisor/supervisord.conf
+            #   subPath: supervisord.conf
+            # - name: valuemation-config
+            #   mountPath: /home/tomcat/.valuemation/valuemation.ini
+            #   subPath: valuemation.ini
             # - name: xvnc-wrapper
             #   mountPath: /usr/local/bin/xvnc-wrapper.sh
             #   subPath: xvnc-wrapper.sh
@@ -129,33 +121,33 @@ spec:
         - name: login-config
           configMap:
             name: login-config-{{ .Values.user }}
-        - name: flask
-          configMap:
-            name: flask-uploadsrv-{{ .Values.user }}
+        # - name: flask
+        #   configMap:
+        #     name: flask-uploadsrv-{{ .Values.user }}
         - name: setenvuser
           configMap:
             name: setenvuser-{{ .Values.user }}
         - name: user-mapping
           configMap:
             name: guacamole-user-mapping-{{ .Values.user }}
-        - name: tomcat-web
-          configMap:
-            name: guacamole-tomcat-web-mapping-{{ .Values.user }}
-        - name: guacamole-properties
-          configMap:
-            name: guacamole-properties-mapping-{{ .Values.user }}
-        - name: sesman-ini
-          configMap:
-            name: sesman-ini-{{ .Values.user }}
-        - name: xrdp-ini
-          configMap:
-            name: xrdp-ini-{{ .Values.user }}
-        - name: supervisord-conf
-          configMap:
-            name: supervisord-conf-{{ .Values.user }}
-        - name: valuemation-config
-          configMap:
-            name: valuemation-config-{{ .Values.user }}
+        # - name: tomcat-web
+        #   configMap:
+        #     name: guacamole-tomcat-web-mapping-{{ .Values.user }}
+        # - name: guacamole-properties
+        #   configMap:
+        #     name: guacamole-properties-mapping-{{ .Values.user }}
+        # - name: sesman-ini
+        #   configMap:
+        #     name: sesman-ini-{{ .Values.user }}
+        # - name: xrdp-ini
+        #   configMap:
+        #     name: xrdp-ini-{{ .Values.user }}
+        # - name: supervisord-conf
+        #   configMap:
+        #     name: supervisord-conf-{{ .Values.user }}
+        # - name: valuemation-config
+        #   configMap:
+        #     name: valuemation-config-{{ .Values.user }}
         # - name: xvnc-wrapper
         #   configMap:
         #     name: xvnc-wrapper-{{ .Values.user }}

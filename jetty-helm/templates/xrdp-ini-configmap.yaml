@@ -1,3 +1,4 @@
+#wird über Ressources initial befüllt und so nicht mehr notwendig
 apiVersion: v1
 kind: ConfigMap
 metadata:

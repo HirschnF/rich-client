@@ -1,3 +1,4 @@
+#wird aus Ressources direkt kopiert und so nicht mehr benötigt
 apiVersion: v1
 kind: ConfigMap
 metadata:

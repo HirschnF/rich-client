@@ -1,3 +1,4 @@
+# wird über ressources genauso kopiert und kann erst einmal deaktiviert werden
 apiVersion: v1
 kind: ConfigMap
 metadata:
