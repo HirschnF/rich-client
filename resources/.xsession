@@ -1,3 +1,4 @@
+#!/bin/bash
 # Tastatur und Locale setzen
 setxkbmap de &
 export LANG=de_DE.UTF-8
