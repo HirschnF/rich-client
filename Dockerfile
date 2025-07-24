@@ -118,7 +118,7 @@ RUN chown tomcat:adm -R /var/lib/tomcat9
 RUN chown tomcat:adm -R /usr/share/tomcat9
 
 # Postman herunterladen und installieren
-RUN wget https://dl.pstmn.io/download/latest/linux64 -O /tmp/postman.tar.gz && \
+RUN curl -L https://dl.pstmn.io/download/latest/linux64 -o /tmp/postman.tar.gz && \
     mkdir -p /opt/Postman && \
     tar -xzf /tmp/postman.tar.gz -C /opt/Postman && \
     ln -s /opt/Postman/Postman /usr/local/bin/postman && \
