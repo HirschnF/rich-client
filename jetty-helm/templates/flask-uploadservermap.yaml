@@ -14,6 +14,7 @@ data:
     UPLOAD_FOLDER = "/workspace/usu/data"
     ALLOWED_EXTENSIONS = {"zip", "xml", "sql"}
     USER = "{{ .Values.user }}"
+    VERSION = "{{ .Values.image.tag }}"
 
     app = Flask(__name__)
 
@@ -22,7 +23,7 @@ data:
     <html lang="en">
     <head>
       <meta charset="UTF-8">
-      <title>File Transfer - {{ "{{ user }}" }}</title>
+      <title>File Transfer - {{ "{{ user }}" }} (Consulting version: {{ "{{ version }}" }})</title>
         <style>
           body {
             margin: 0;
@@ -97,8 +98,11 @@ data:
     </head>
     <body>
       <div class="container">
-        <h1>📁 File Transfer for {{ "{{ user }}" }}</h1>
-
+        <h1 style="display: flex; justify-content: space-between; align-items: center;">
+        📁 File Transfer for {{ "{{ user }}" }}
+        <span style="font-size: 0.8em; color: #666;">Consulting version: {{ "{{ version }}" }}</span>
+        </h1>
+          
         <h2>🚀 Upload a File (.zip, .xml, .sql)</h2>
         <form action="transfer/upload" method="post" enctype="multipart/form-data">
           <input type="file" name="file" accept=".zip,.xml,.sql" required>
@@ -128,7 +132,7 @@ data:
             f for f in os.listdir(UPLOAD_FOLDER)
             if os.path.isfile(os.path.join(UPLOAD_FOLDER, f)) and allowed_file(f)
         ])
-        return render_template_string(HTML_TEMPLATE, files=files, user=USER)
+        return render_template_string(HTML_TEMPLATE, files=files, user=USER, version=VERSION)
 
     @app.route("/upload", methods=["POST"], strict_slashes=False)
     def upload():

@@ -20,7 +20,7 @@ data:
     HOSTVAR=RC_{{ .Values.user }}_SVC_SERVICE_HOST
     HOSTVAR=$(echo "$HOSTVAR" | tr '[:lower:]' '[:upper:]')
     #HOST=$(eval echo \$$HOSTVAR)
-    HOST="0.0.0.0"
+    HOST="localhost"
     EMBEDJETTY="$EMBEDJETTY -Dembeddedjettyhost=$HOST -Dembeddedjettyport=$PORT"
     echo "***** EMBEDDEDJETTY: $EMBEDJETTY *****"
 

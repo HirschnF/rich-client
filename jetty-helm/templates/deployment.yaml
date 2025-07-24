@@ -84,9 +84,9 @@ spec:
             - name: login-config
               mountPath: /home/tomcat/.valuemation/loginConfigurations.xml
               subPath: loginConfigurations.xml
-            # - name: flask
-            #   mountPath: /workspace/usu/uploadserver.py
-            #   subPath: uploadserver.py
+            - name: flask
+              mountPath: /workspace/usu/uploadserver.py
+              subPath: uploadserver.py
             - name: setenvuser
               mountPath: /workspace/usu/rc-client/set_env_user.sh
               subPath: set_env_user.sh
@@ -121,9 +121,9 @@ spec:
         - name: login-config
           configMap:
             name: login-config-{{ .Values.user }}
-        # - name: flask
-        #   configMap:
-        #     name: flask-uploadsrv-{{ .Values.user }}
+        - name: flask
+          configMap:
+            name: flask-uploadsrv-{{ .Values.user }}
         - name: setenvuser
           configMap:
             name: setenvuser-{{ .Values.user }}
