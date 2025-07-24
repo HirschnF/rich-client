@@ -1,12 +1,10 @@
 #!/bin/bash
 # Tastatur und Locale setzen
-setxkbmap de &
-export LANG=de_DE.UTF-8
-export LC_ALL=de_DE.UTF-8
-
-# Fenstermanager starten
+#setxkbmap de &
+# export LANG=de_DE.UTF-8
+# export LC_ALL=de_DE.UTF-8
 openbox &
-
+# Fenstermanager starten
 cd /workspace/usu/rc-client
 exec xterm -u8 -e ./admin.sh
 
