@@ -93,6 +93,9 @@ spec:
             - name: user-mapping
               mountPath: /etc/guacamole/user-mapping.xml
               subPath: user-mapping.xml
+            # - name: user-xsession
+            #   mountPath: /home/tomcat/.xsession
+            #   subPath: .xsession
             # - name: tomcat-web
             #   mountPath: /usr/share/tomcat9/conf/web.xml
             #   subPath: web.xml
@@ -130,6 +133,9 @@ spec:
         - name: user-mapping
           configMap:
             name: guacamole-user-mapping-{{ .Values.user }}
+        # - name: user-xsession
+        #   configMap:
+        #     name: user-xsession-mapping-{{ .Values.user }}
         # - name: tomcat-web
         #   configMap:
         #     name: guacamole-tomcat-web-mapping-{{ .Values.user }}
