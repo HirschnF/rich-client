@@ -19,10 +19,9 @@ ARCHIVE="firefox-profile.tar.gz"
 if [ -d "$PROFILE_DIR" ]; then
     echo "Profilverzeichnis '$PROFILE_DIR' existiert bereits. Entpacken wird übersprungen."
 else
-    echo "Entpacke Archiv nach $TARGET_DIR ..."
-    mkdir -p "$TARGET_DIR"
-    tar -xzvf "$ARCHIVE" -C "$TARGET_DIR"
-    echo "Entpacken abgeschlossen."
+    #mkdir -p "$TARGET_DIR"
+    cd $TARGET_DIR
+    tar -xf "$ARCHIVE"
 fi
 
 # # Profil erstellen (wenn nicht vorhanden)
@@ -30,22 +29,22 @@ fi
 #     firefox -CreateProfile "$PROFILE_NAME"
 # fi
 
-# Profilverzeichnis finden
-PROFILE_DIR=$(find ~/.mozilla/firefox -maxdepth 1 -type d -name "*.$PROFILE_NAME" | head -n 1)
+# # Profilverzeichnis finden
+# PROFILE_DIR=$(find ~/.mozilla/firefox -maxdepth 1 -type d -name "*.$PROFILE_NAME" | head -n 1)
 
-if [ -n "$PROFILE_DIR" ]; then
-    mkdir -p "$PROFILE_DIR/chrome"
+# if [ -n "$PROFILE_DIR" ]; then
+#     mkdir -p "$PROFILE_DIR/chrome"
 
-#     # userChrome.css schreiben
-#     cat > "$PROFILE_DIR/chrome/userChrome.css" <<EOF
-# #navigator-toolbox {
-#   display: none !important;
-# }
-# EOF
+# #     # userChrome.css schreiben
+# #     cat > "$PROFILE_DIR/chrome/userChrome.css" <<EOF
+# # #navigator-toolbox {
+# #   display: none !important;
+# # }
+# # EOF
 
-    # user.js schreiben
-    echo 'user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);' > "$PROFILE_DIR/user.js"
-fi
+#     # user.js schreiben
+#     echo 'user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);' > "$PROFILE_DIR/user.js"
+# fi
 
 # Firefox im App-Modus starten (mit Neustart bei Schließen)
 (
