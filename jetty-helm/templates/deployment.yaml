@@ -60,7 +60,7 @@ spec:
               useradd -m -s /bin/bash "$RDP_USERNAME" 2>/dev/null && \
               echo "$RDP_USERNAME:$RDP_PASSWORD" | chpasswd && \
               cp /home/tomcat/.xsession /home/$RDP_USERNAME && \
-              echo "#!/bin/bash\nopenbox &\nsetxkbmap de &\ncd /workspace/usu/rc-client\nexec xterm -u8 -e ./admin.sh " >/home/$RDP_USERNAME/.xsession && \
+              echo "#!/bin/bash\nopenbox &\nsetxkbmap de &\nxterm -u8 -e bash -c 'cd /workspace/usu/rc-client; while true; do ./admin.sh; echo "Restart in 2 seconds..."; sleep 2; done' &\n/usr/local/bin/postman/Postman >/tmp/postman.log 2>&1 &\nwait " >/home/$RDP_USERNAME/.xsession && \
               cp -r /home/tomcat/.valuemation /home/$RDP_USERNAME && \
               chmod +x /home/$RDP_USERNAME/.xsession && \
               chown -R $RDP_USERNAME:$RDP_USERNAME /home/$RDP_USERNAME && \

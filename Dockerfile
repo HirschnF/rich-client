@@ -9,7 +9,7 @@ RUN echo "### Update system... ###"
 RUN apt-get update && apt-get install -y \
     sudo curl unzip gnupg2 software-properties-common \
     xrdp xfce4 dbus-x11 x11-xserver-utils net-tools supervisor python3-pip \
-    tomcat9 tomcat9-common tigervnc-standalone-server locales openbox \
+    tomcat9 tomcat9-common tigervnc-standalone-server locales openbox chromium\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
     
     # lokaler Browser für jetty???
@@ -118,11 +118,12 @@ RUN chown tomcat:adm -R /var/lib/tomcat9
 RUN chown tomcat:adm -R /usr/share/tomcat9
 
 # Postman herunterladen und installieren
-RUN curl -L https://dl.pstmn.io/download/latest/linux64 -o /tmp/postman.tar.gz && \
-    mkdir -p /opt/Postman && \
-    tar -xzf /tmp/postman.tar.gz -C /opt/Postman && \
-    ln -s /opt/Postman/Postman /usr/local/bin/postman && \
-    rm /tmp/postman.tar.gz
+# version `GLIBC_2.34' not found (required by /usr/local/bin/postman/Postman) ggf. aeltere Version verwenden
+# RUN curl -L https://dl.pstmn.io/download/latest/linux64 -o /tmp/postman.tar.gz && \
+#     mkdir -p /opt/Postman && \
+#     tar -xzf /tmp/postman.tar.gz -C /opt/Postman && \
+#     ln -s /opt/Postman/Postman /usr/local/bin/postman && \
+#     rm /tmp/postman.tar.gz
 
 WORKDIR /workspace/usu
 # Ports freigeben
