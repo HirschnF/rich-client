@@ -59,7 +59,8 @@ $ cat ingress-urls.txt |grep "index"
 # Deployment.yaml - Zeile 68
 echo "#!/bin/bash\ncd /workspace/usu/rc-client\nexec xterm -e ./admin.sh " >/home/$RDP_USERNAME/.xsession && \
 # Schleife hat funktioniert
-#echo "#!/bin/bash\nopenbox &\nsetxkbmap de &\nxterm -u8 -e bash -c 'cd /workspace/usu/rc-client; while true; do ./admin.sh; echo "Restart in 2 seconds..."; sleep 2; done' &\n/usr/local/bin/postman/Postman >/tmp/postman.log 2>&1 &\nwait " >/home/$RDP_USERNAME/.xsession && \
+#echo "#!/bin/bash\nopenbox &\nsetxkbmap de &\nxterm -u8 -e bash -c 'cd /workspace/usu/rc-client; while true; do ./admin.sh >/tmp/xterm-admin.log 2>&1; echo "Restart in 2 seconds..."; sleep 2; done' &" >/home/$RDP_USERNAME/.xsession && \
+#\n/usr/local/bin/postman/Postman >/tmp/postman.log 2>&1 &\nwait " >/home/$RDP_USERNAME/.xsession && \
 
 # Diverse Anpassungen bereits im Basis Image
 mkdir -p /run/xrdp/sockdir && \

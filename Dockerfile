@@ -9,7 +9,7 @@ RUN echo "### Update system... ###"
 RUN apt-get update && apt-get install -y \
     sudo curl unzip gnupg2 software-properties-common \
     xrdp xfce4 dbus-x11 x11-xserver-utils net-tools supervisor python3-pip \
-    tomcat9 tomcat9-common tigervnc-standalone-server locales openbox chromium\
+    tomcat9 tomcat9-common tigervnc-standalone-server locales openbox firefox-esr\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
     
     # lokaler Browser für jetty???
