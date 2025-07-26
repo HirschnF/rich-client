@@ -31,7 +31,11 @@ enablePersistence: false
 
 image:
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.01.61
+  tag: usm5.5.01.62
+#  tag: usm5.5.01.57  # fehlerhaft
+#  tag: usm5.5.01.56  # fehlerhaft
+#  tag: usm5.5.01.55  # Openbox funktioniert einwandfrei
+#  tag: usm5.5.01.61  Stand geht nicht
 # funktionierte gut, ohne upload server    tag: usm5.5.01.08
 #.05 hat im Web funktioniert
 

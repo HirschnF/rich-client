@@ -8,12 +8,12 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 RUN echo "### Update system... ###"
 RUN apt-get update && apt-get install -y \
     sudo curl unzip gnupg2 software-properties-common \
-    xrdp xfce4 dbus-x11 x11-xserver-utils \
-    net-tools supervisor python3-pip \
-    tomcat9 tomcat9-common tigervnc-standalone-server locales \ 
-    chromium openbox \
+    xrdp xfce4 dbus-x11 x11-xserver-utils net-tools supervisor python3-pip \
+    tomcat9 tomcat9-common tigervnc-standalone-server locales openbox \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
-
+    
+    # lokaler Browser für jetty???
+    #chromium
 # 2. Konfigurieren
 RUN dpkg-reconfigure locales
 
