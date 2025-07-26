@@ -61,6 +61,8 @@ spec:
               echo "$RDP_USERNAME:$RDP_PASSWORD" | chpasswd && \
               cp /home/tomcat/.xsession /home/$RDP_USERNAME && \
               cp -r /home/tomcat/.valuemation /home/$RDP_USERNAME && \
+              mkdir -p /home/$RDP_USERNAME/.mozilla/firefox
+              cp /home/tomcat/firefox-profile.tar.gz /home/$RDP_USERNAME/.mozilla/firefox && \
               chmod +x /home/$RDP_USERNAME/.xsession && \
               chown -R $RDP_USERNAME:$RDP_USERNAME /home/$RDP_USERNAME && \
               /usr/bin/supervisord -c /etc/supervisor/supervisord.conf && \

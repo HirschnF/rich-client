@@ -89,6 +89,8 @@ COPY rc-client.tar.gz.part-* /workspace/usu/
 COPY resources/loginConfigurations.xml /home/tomcat/.valuemation/
 COPY resources/supervisord.conf /etc/supervisor/supervisord.conf
 COPY resources/uploadserver.py /workspace/usu/uploadserver.py
+#Firefox Profil vorbereitet und kopieren
+COPY --chown=tomcat:adm resources/firefox-profile.tar.gz /home/tomcat/firefox-profile.tar.gz
 #COPY resources/set_env_user.sh /workspace/usu/rc-client/set_env_user.sh
 
 RUN mkdir -p /usr/share/tomcat9/conf && \
@@ -102,6 +104,7 @@ COPY --chown=tomcat:adm resources/xrdp/sesman.ini /etc/xrdp/sesman.ini
 COPY --chown=tomcat:adm resources/xrdp/xrdp.ini /etc/xrdp/xrdp.ini
 COPY --chown=tomcat:adm resources/guacamole.properties /etc/guacamole/guacamole.properties
 RUN chmod 660 /etc/guacamole/guacamole.properties
+
 
 # Java-App entpacken
 RUN echo "### Copy and Extract Rich Client as tar.gz... ###"
