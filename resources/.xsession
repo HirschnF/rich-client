@@ -5,8 +5,8 @@ export LC_ALL=de_DE.UTF-8
 
 openbox &
 setxkbmap de &
-#cd /workspace/usu/rc-client
-#xterm -u8 -e ./admin.sh &
+
+
 
 #wir muessen Firefox vorbereiten
 # 🔧 Firefox-Profil automatisch einrichten (stateless container)
@@ -23,28 +23,6 @@ else
     cd $TARGET_DIR
     tar -xf "$ARCHIVE"
 fi
-
-# # Profil erstellen (wenn nicht vorhanden)
-# if ! firefox -P | grep -q "$PROFILE_NAME"; then
-#     firefox -CreateProfile "$PROFILE_NAME"
-# fi
-
-# # Profilverzeichnis finden
-# PROFILE_DIR=$(find ~/.mozilla/firefox -maxdepth 1 -type d -name "*.$PROFILE_NAME" | head -n 1)
-
-# if [ -n "$PROFILE_DIR" ]; then
-#     mkdir -p "$PROFILE_DIR/chrome"
-
-# #     # userChrome.css schreiben
-# #     cat > "$PROFILE_DIR/chrome/userChrome.css" <<EOF
-# # #navigator-toolbox {
-# #   display: none !important;
-# # }
-# # EOF
-
-#     # user.js schreiben
-#     echo 'user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);' > "$PROFILE_DIR/user.js"
-# fi
 
 # Firefox im App-Modus starten (mit Neustart bei Schließen)
 (

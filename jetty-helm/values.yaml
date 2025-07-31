@@ -1,10 +1,10 @@
 # # Kubernetes Namespace für die App
-# namespace: consult-usimheinz-202516
-# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-usimheinz-202516 --set user="" --set pw=""
+# namespace: consult-summit-2025
+# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-summit-2025 --set user="" --set pw=""
 
 #### CHANGE ALWAYS ####
 # search for the namespace and replace it in this file!
-namespace: consult-usimheinz-202516
+namespace: consult-summit-2025
 # change also the database password!!!
 #######################
 
@@ -20,8 +20,8 @@ pw: ""
 
 # rdp:
 #   #host: 
-#   #rc-usifhirsch-svc.consult-usimheinz-202516.k8s-dev004.aspera.usu.grp
-#   #rc-usifhirsch-svc.consult-usimheinz-202516.svc.cluster.local
+#   #rc-usifhirsch-svc.consult-summit-2025.k8s-dev004.aspera.usu.grp
+#   #rc-usifhirsch-svc.consult-summit-2025.svc.cluster.local
 #   #port: 3389
 #   username: usifhirsch
 #   password: rdppass
@@ -31,7 +31,9 @@ enablePersistence: false
 
 image:
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.01.69
+  tag: usm5.5.01.70
+#   tag: usm5.5.01.69 # fehlerhaft
+  tag: usm5.5.01.68 # ok aber noch falsches Tastaturlayout
 #  tag: usm5.5.01.57  # fehlerhaft
 #  tag: usm5.5.01.56  # fehlerhaft
 #  tag: usm5.5.01.55  # Openbox funktioniert einwandfrei
@@ -51,7 +53,7 @@ ingress:
   certManager: true
   annotations:
     cert-manager.io/cluster-issuer: usu-group-issuer
-  hostname: rc.consult-usimheinz-202516.k8s-dev004.aspera.usu.grp
+  hostname: rc.consult-summit-2025.k8s-dev004.aspera.usu.grp
   tls: true
 
 storage:
@@ -67,7 +69,7 @@ resources:
 
 # depends on the USC Package secrets.yaml
 db:
-  host: usm-mariadb.consult-usimheinz-202516.svc.cluster.local
+  host: usm-mariadb.consult-summit-2025.svc.cluster.local
   port: "3306"
   dbase: usm
   qualifier: ""

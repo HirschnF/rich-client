@@ -102,6 +102,7 @@ COPY --chown=tomcat:adm resources/tomcat/logging.properties /usr/share/tomcat9/c
 COPY --chown=tomcat:adm resources/tomcat/server.xml /usr/share/tomcat9/conf/server.xml
 COPY --chown=tomcat:adm resources/xrdp/sesman.ini /etc/xrdp/sesman.ini
 COPY --chown=tomcat:adm resources/xrdp/xrdp.ini /etc/xrdp/xrdp.ini
+COPY --chown=tomcat:adm resources/xrdp/xrdp_keyboard.ini /etc/xrdp/xrdp_keyboard.ini
 COPY --chown=tomcat:adm resources/guacamole.properties /etc/guacamole/guacamole.properties
 RUN chmod 660 /etc/guacamole/guacamole.properties
 

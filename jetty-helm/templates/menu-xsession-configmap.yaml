@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: menu-xsession-{{ .Values.user }}
+data:
+  .menu-xsession: |
+    #!/bin/bash
+
+    # === Sprache und Layout setzen ===
+    export LANG=de_DE.UTF-8
+    export LC_ALL=de_DE.UTF-8
+    setxkbmap -layout de -variant nodeadkeys
+
+    # === Funktionen ===
+    prepare_firefox_profile() {
+        PROFILE_NAME="minimalapp"
+        APP_URL="http://localhost:8087/vmwebjetty/vmweb"
+        TARGET_DIR="$HOME/.mozilla/firefox"
+        PROFILE_DIR="$TARGET_DIR/ba4y551j.minimalapp"
+        ARCHIVE="$TARGET_DIR/firefox-profile.tar.gz"
+
+        if [ -d "$PROFILE_DIR" ]; then
+            echo "Profilverzeichnis '$PROFILE_DIR' existiert bereits. Entpacken wird übersprungen."
+        else
+            echo "Entpacke Firefox-Profil..."
+            cd "$TARGET_DIR" || return
+            tar -xf "$ARCHIVE"
+        fi
+    }
+
+    start_firefox() {
+        if pgrep -lx firefox-esr > /dev/null; then
+            echo "⚠️ Firefox läuft bereits."
+        else
+            echo "✅ Starte Firefox..."
+            prepare_firefox_profile
+            firefox -P "minimalapp" --no-remote "http://localhost:8087/vmwebjetty/vmweb" &
+        fi
+    }
+
+    start_rich_client() {
+        if pgrep -f "/workspace/usu/rc-client/admin.sh" > /dev/null; then
+            echo "⚠️ Jetty Rich Client läuft bereits."
+        else
+            echo "✅ Starte Jetty Rich Client..."
+            cd /workspace/usu/rc-client || return
+            ./admin.sh &
+        fi
+    }
+
+    restart_container() {
+        echo "🔄 Container wird neu gestartet..."
+        sudo /bin/kill -9 -1 1
+        #/pfad/zum/container_restart.sh > /tmp/container_restart.log 2>&1 &
+    }
+
+    #clear_cache() {
+    #    echo "🧹 Leere Cache..."
+    #    nohup /pfad/zum/cache_leeren.sh > /tmp/cache_leeren.log 2>&1 &
+    #}
+
+    show_menu() {
+        clear
+        echo "======================================"
+        echo "        Jetty Umgebung Menü"
+        echo "======================================"
+        echo "1) Jetty Rich Client starten"
+        echo "2) Jetty Web Client (Firefox) starten"
+        echo "3) Container neu starten"
+        #echo "4) Cache leeren"
+        #echo "5) Beenden"
+        echo "======================================"
+        echo -n "Bitte Auswahl [1-3]: "
+    }
+
+    # === Hauptmenü ===
+    while true; do
+        show_menu
+        read -r choice
+        case "$choice" in
+            1) start_rich_client ;;
+            2) start_firefox ;;
+            3) restart_container ;;
+            #4) clear_cache ;;
+            #5) echo "👋 Sitzung wird beendet..."; exit 0 ;;
+            *) echo "❌ Ungültige Eingabe. Bitte 1-5 wählen." ;;
+        esac
+        sleep 2
+    done
