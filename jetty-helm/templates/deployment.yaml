@@ -3,6 +3,11 @@ kind: Deployment
 metadata:
   name: rc-{{ .Values.user }}
   namespace: {{ .Values.namespace }}
+  labels:
+    app: rc
+    user: {{ .Values.user }}
+    version: "{{ .Values.image.version }}"
+    revision: {{ .Release.Revision | quote }}
 spec:
   replicas: 1
   selector:
@@ -14,6 +19,8 @@ spec:
       labels:
         app: rc
         user: {{ .Values.user }}
+        version: "{{ .Values.image.version }}"
+        revision: {{ .Release.Revision | quote }}
     spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
@@ -61,8 +68,9 @@ spec:
               chmod +x /home/$RDP_USERNAME/.xsession && \
               chmod +x /home/$RDP_USERNAME/.menu-xsession && \
               chown -R $RDP_USERNAME:$RDP_USERNAME /home/$RDP_USERNAME && \
-              echo "$RDP_USERNAME ALL=(ALL) NOPASSWD: /bin/kill -9 -1 1" | sudo tee /etc/sudoers.d/killall && \
-              chmod 440 /etc/sudoers.d/killall && \
+              echo "$RDP_USERNAME ALL=(ALL) NOPASSWD: /bin/kill -9 -1 1" | sudo tee /etc/sudoers.d/killall 2>/dev/null && \
+              chmod 440 /etc/sudoers.d/killall 2>/dev/null && \
+              ln -s /workspace/usu/data/ /home/$RDP_USERNAME/data && \
               /usr/bin/supervisord -c /etc/supervisor/supervisord.conf && \
               tail -f /dev/stdout
           
