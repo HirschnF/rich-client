@@ -1,10 +1,10 @@
 # # Kubernetes Namespace für die App
-# namespace: consult-usiswagne-202516
-# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-usiswagne-202516 --set user="" --set pw=""
+# namespace: consult-usiswagner-202516
+# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-usiswagner-202516 --set user="" --set pw=""
 
 #### CHANGE ALWAYS ####
 # search for the namespace and replace it in this file!
-namespace: consult-usiswagne-202516
+namespace: consult-usiswagner-202516
 # change also the database password!!!
 #######################
 
@@ -20,8 +20,8 @@ pw: ""
 
 # rdp:
 #   #host: 
-#   #rc-usifhirsch-svc.consult-usiswagne-202516.k8s-dev004.aspera.usu.grp
-#   #rc-usifhirsch-svc.consult-usiswagne-202516.svc.cluster.local
+#   #rc-usifhirsch-svc.consult-usiswagner-202516.k8s-dev004.aspera.usu.grp
+#   #rc-usifhirsch-svc.consult-usiswagner-202516.svc.cluster.local
 #   #port: 3389
 #   username: usifhirsch
 #   password: rdppass
@@ -32,9 +32,10 @@ enablePersistence: false
 image:
   version: v1.0
   repository: frank1977/jetty-rich-client
+  tag: usm5.5.02.00 # ok aber noch falsches Tastaturlayout  
 #  tag: usm5.5.01.70 muss getestet werden!
 #   tag: usm5.5.01.69 # fehlerhaft
-  tag: usm5.5.01.68 # ok aber noch falsches Tastaturlayout
+#  tag: usm5.5.01.68 # ok aber noch falsches Tastaturlayout
 #  tag: usm5.5.01.57  # fehlerhaft
 #  tag: usm5.5.01.56  # fehlerhaft
 #  tag: usm5.5.01.55  # Openbox funktioniert einwandfrei
@@ -54,7 +55,7 @@ ingress:
   certManager: true
   annotations:
     cert-manager.io/cluster-issuer: usu-group-issuer
-  hostname: rc.consult-usiswagne-202516.k8s-dev004.aspera.usu.grp
+  hostname: rc.consult-usiswagner-202516.k8s-dev004.aspera.usu.grp
   tls: true
 
 storage:
@@ -70,13 +71,13 @@ resources:
 
 # depends on the USC Package secrets.yaml
 db:
-  host: usm-mariadb.consult-usiswagne-202516.svc.cluster.local
+  host: usm-mariadb.consult-usiswagner-202516.svc.cluster.local
   port: "3306"
   dbase: usm
   qualifier: ""
   dbuser: root
   #here is the secrets.yaml - usmMariadbRootPassword: 
-  dbpassword: changeMeR562zoUI2tX6
+  dbpassword: changeMe7IMuzjS4W5NR
   
   dbaseexport: usm_export
   dbasectm: usmctm

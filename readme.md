@@ -18,12 +18,15 @@ https://github.com/HirschnF/rich-client/actions/workflows/.github/workflows/dock
 #########################################################
 ```
 
-## Installation
+## Installation Preparation
 
-    - Prepare your values.yaml from the "Rich Client"
-    - set correct Namespace - replace it in the whole file (up to 7x)
-    - set correct Database Password 
-
+    - values.yaml
+      - Prepare your values.yaml from the "Rich Client"
+      - set correct Namespace - replace it in the whole file (up to 7x)
+      - set correct Database Password 
+    - Chart.yaml
+      - name modification
+      - 
 
 ```bash
 # Get the password from your USC package
