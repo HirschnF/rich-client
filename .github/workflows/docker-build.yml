@@ -31,4 +31,4 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: frank1977/jetty-rich-client:usm5.5.02.05
+        tags: frank1977/jetty-rich-client:usm5.5.02.06
