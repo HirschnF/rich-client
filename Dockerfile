@@ -9,8 +9,7 @@ RUN echo "### Update system... ###"
 RUN apt-get update && apt-get install -y \
     sudo curl unzip gnupg2 software-properties-common \
     xrdp xfce4 dbus-x11 x11-xserver-utils net-tools supervisor python3-pip \
-    tomcat9 tomcat9-common tigervnc-standalone-server locales openbox firefox-esr \
-    vim \
+    tomcat9 tomcat9-common tigervnc-standalone-server locales openbox firefox-esr\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
     
     # lokaler Browser für jetty???
@@ -18,17 +17,20 @@ RUN apt-get update && apt-get install -y \
 # 2. Konfigurieren
 RUN dpkg-reconfigure locales
 
-# Install kubectl (latest stable)
-RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
-    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && \
-    rm kubectl
-
 # Java 17 installieren (Temurin)
-RUN echo "### Install JDK newest version from temurin"    
+RUN echo "### Install JDK 17 version from temurin"    
 RUN curl -L -o temurin.tar.gz https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.15%2B6/OpenJDK17U-jre_x64_linux_hotspot_17.0.15_6.tar.gz && \
     mkdir -p /opt/java && \
     tar -xzf temurin.tar.gz -C /opt/java --strip-components=1 && \
     rm temurin.tar.gz
+
+# 13.10.2025 HiF
+# Java 21 installieren (Temurin)
+RUN echo "### Install JDK 21 version from temurin"    
+RUN curl -L -o temurin21.tar.gz https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.8%2B9/OpenJDK21U-jre_x64_linux_hotspot_21.0.8_9.tar.gz && \
+    mkdir -p /opt/java21 && \
+    tar -xzf temurin21.tar.gz -C /opt/java21 --strip-components=1 && \
+    rm temurin21.tar.gz
 
 # .xsession vorbereiten (wird später über ConfigMap überschrieben)
 RUN echo "### Create folders... ###"
@@ -112,6 +114,15 @@ COPY --chown=tomcat:adm resources/xrdp/xrdp_keyboard.ini /etc/xrdp/xrdp_keyboard
 COPY --chown=tomcat:adm resources/guacamole.properties /etc/guacamole/guacamole.properties
 RUN chmod 660 /etc/guacamole/guacamole.properties
 
+#13.10.2025
+#Orchestra App kopieren
+RUN echo"### Copy Orchestra... ###"
+RUN mkdir -p /workspace/usu/orchestra
+COPY orchestra* /workspace/usu/
+RUN tar -xzf orchestra*.tar.gz  -C ./workspace/usu/orchestra && rm -rf /workspace/usu/orchestra*.tar.gz*
+COPY resources/orchestra_env.sh /workspace/usu/orchestra/orchestra_env.sh
+RUN chmod +x /workspace/usu/orchestra/orchestra_env.sh
+RUN chmod +x /workspace/usu/orchestra/designer.sh
 
 # Java-App entpacken
 RUN echo "### Copy and Extract Rich Client as tar.gz... ###"

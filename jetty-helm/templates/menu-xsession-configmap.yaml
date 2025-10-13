@@ -43,8 +43,20 @@ data:
             echo "⚠️ Jetty Rich Client läuft bereits."
         else
             echo "✅ Starte Jetty Rich Client..."
-            cd /workspace/usu/rc-client || return
-            ./admin.sh &
+            #cd /workspace/usu/rc-client || return
+            #./admin.sh &
+            xterm -e /bin/bash -c "cd /workspace/usu/rc-client && ./admin.sh" &
+        fi
+    }
+
+    start_orchestra_designer() {
+        if pgrep -f "/workspace/usu/orchestra/Startscripts/Unix/designer.sh" > /dev/null; then
+            echo "⚠️ Orchestra Designer läuft bereits."
+        else
+            echo "✅ Starte Orchestra Designer Client..."
+            #cd /workspace/usu/rc-client || return
+            #./admin.sh &
+            xterm -e /bin/bash -c "cd /workspace/usu/orchestra/Startscripts/Unix && ./designer.sh" &
         fi
     }
 
@@ -66,11 +78,12 @@ data:
         echo "======================================"
         echo "1) Jetty Rich Client starten"
         echo "2) Jetty Web Client (Firefox) starten"
-        echo "3) Container neu starten"
+        echo "3) Orchestra Designer starten"
+        echo "4) Container neu starten"
         #echo "4) Cache leeren"
         #echo "5) Beenden"
         echo "======================================"
-        echo -n "Bitte Auswahl [1-3]: "
+        echo -n "Bitte Auswahl [1-4]: "
     }
 
     # === Hauptmenü ===
@@ -80,10 +93,11 @@ data:
         case "$choice" in
             1) start_rich_client ;;
             2) start_firefox ;;
-            3) restart_container ;;
+            3) start_orchestra_designer ;;
+            4) restart_container ;;
             #4) clear_cache ;;
             #5) echo "👋 Sitzung wird beendet..."; exit 0 ;;
-            *) echo "❌ Ungültige Eingabe. Bitte 1-5 wählen." ;;
+            *) echo "❌ Ungültige Eingabe. Bitte 1-4 wählen." ;;
         esac
-        sleep 2
+        sleep 1
     done

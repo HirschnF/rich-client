@@ -1,10 +1,10 @@
 # # Kubernetes Namespace für die App
-# namespace: consult-usiakauhl-202520
-# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-usiakauhl-202520 --set user="" --set pw=""
+# namespace: consult-usifhirsch-202525
+# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-usifhirsch-202525 --set user="" --set pw=""
 
 #### CHANGE ALWAYS ####
 # search for the namespace and replace it in this file!
-namespace: consult-usiakauhl-202520
+namespace: consult-usifhirsch-202525
 # change also the database password!!!
 #######################
 
@@ -20,8 +20,8 @@ pw: ""
 
 # rdp:
 #   #host: 
-#   #rc-usifhirsch-svc.consult-usiakauhl-202520.k8s-dev004.aspera.usu.grp
-#   #rc-usifhirsch-svc.consult-usiakauhl-202520.svc.cluster.local
+#   #rc-usifhirsch-svc.consult-usifhirsch-202525.k8s-dev004.aspera.usu.grp
+#   #rc-usifhirsch-svc.consult-usifhirsch-202525.svc.cluster.local
 #   #port: 3389
 #   username: usifhirsch
 #   password: rdppass
@@ -30,9 +30,11 @@ Depth: 24
 enablePersistence: false
 
 image:
-  version: v2.1
+  version: v3.0
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.02.05 # ok aber noch falsches Tastaturlayout  
+  tag: usm5.5.02.07 # mit orchestra
+#  tag: usm5.5.02.06 # ok, mit kubectl und vim
+#  tag: usm5.5.02.04 # ok aber noch falsches Tastaturlayout  
 #  tag: usm5.5.01.70 muss getestet werden!
 #   tag: usm5.5.01.69 # fehlerhaft
 #  tag: usm5.5.01.68 # ok aber noch falsches Tastaturlayout
@@ -43,8 +45,7 @@ image:
 # funktionierte gut, ohne upload server    tag: usm5.5.01.08
 #.05 hat im Web funktioniert
 
-  pullPolicy: Always
-
+  pullPolicy: IfNotPresent
 
 imagePullSecrets:
   - name: usu-regcred
@@ -55,8 +56,12 @@ ingress:
   certManager: true
   annotations:
     cert-manager.io/cluster-issuer: usu-group-issuer
-  hostname: rc.consult-usiakauhl-202520.k8s-dev004.aspera.usu.grp
+  hostname: rc.consult-usifhirsch-202525.k8s-dev004.aspera.usu.grp
   tls: true
+  uploadlimit: 800 #MB
+
+transfer:
+  filetypes: "zip,xml,sql,psc"
 
 storage:
   size: 1Gi
@@ -71,13 +76,16 @@ resources:
 
 # depends on the USC Package secrets.yaml
 db:
-  host: usm-mariadb.consult-usiakauhl-202520.svc.cluster.local
+  host: usm-mariadb.consult-usifhirsch-202525.svc.cluster.local
   port: "3306"
   dbase: usm
   qualifier: ""
   dbuser: root
   #here is the secrets.yaml - usmMariadbRootPassword: 
-  dbpassword: changeMe7IMuzjS4W5NR
+  dbpassword: changeMeO54aVCMUb06D
+  #2025.2.4 changeMePLFnw8fLVvz0
+  #2025.2.3 changeMeIl0MKYTBxlwn
+  #2025.2.0 changeMe7IMuzjS4W5NR
   
   dbaseexport: usm_export
   dbasectm: usmctm
