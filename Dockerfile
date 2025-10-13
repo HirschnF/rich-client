@@ -116,7 +116,7 @@ RUN chmod 660 /etc/guacamole/guacamole.properties
 
 #13.10.2025
 #Orchestra App kopieren
-RUN echo"### Copy Orchestra... ###"
+RUN echo "### Copy Orchestra... ###"
 RUN mkdir -p /workspace/usu/orchestra
 COPY orchestra* /workspace/usu/
 RUN tar -xzf orchestra*.tar.gz  -C ./workspace/usu/orchestra && rm -rf /workspace/usu/orchestra*.tar.gz*
