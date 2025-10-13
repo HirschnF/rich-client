@@ -119,7 +119,7 @@ RUN chmod 660 /etc/guacamole/guacamole.properties
 RUN echo "### Copy Orchestra... ###"
 RUN mkdir -p /workspace/usu/orchestra
 COPY orchestra* /workspace/usu/
-RUN tar -xzf orchestra*.tar.gz  -C ./workspace/usu/orchestra && rm -rf /workspace/usu/orchestra*.tar.gz*
+RUN tar -xzf orchestra*.tar.gz  -C /workspace/usu/orchestra && rm -rf /workspace/usu/orchestra*.tar.gz*
 COPY resources/orchestra_env.sh /workspace/usu/orchestra/orchestra_env.sh
 RUN chmod +x /workspace/usu/orchestra/orchestra_env.sh
 RUN chmod +x /workspace/usu/orchestra/designer.sh
