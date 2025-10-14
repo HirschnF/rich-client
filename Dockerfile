@@ -124,8 +124,8 @@ RUN cat /workspace/usu/orchestra_4.16.0.9.tar.gz.part-* > /workspace/usu/orchest
     tar -xzf /workspace/usu/orchestra_4.16.0.9.tar.gz -C /workspace/usu/orchestra && \
     rm -rf /workspace/usu/orchestra_4.16.0.9.tar.gz.part-*
 COPY resources/orchestra_env.sh /workspace/usu/orchestra/orchestra_env.sh
-RUN chmod +x /workspace/usu/orchestra/orchestra_env.sh
-RUN chmod +x /workspace/usu/orchestra/designer.sh
+RUN chmod +x /workspace/usu/orchestra/Startscripts/Unix/orchestra_env.sh
+RUN chmod +x /workspace/usu/orchestra/Startscripts/Unix/designer.sh
 
 # Java-App entpacken
 RUN echo "### Copy and Extract Rich Client as tar.gz... ###"

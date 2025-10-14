@@ -32,7 +32,7 @@ enablePersistence: false
 image:
   version: v3.0
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.02.12 # mit orchestra
+  tag: usm5.5.02.13 # mit orchestra
 #  tag: usm5.5.02.06 # ok, mit kubectl und vim
 #  tag: usm5.5.02.04 # ok aber noch falsches Tastaturlayout  
 #  tag: usm5.5.01.70 muss getestet werden!
