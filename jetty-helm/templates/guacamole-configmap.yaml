@@ -17,6 +17,7 @@ data:
           <param name="security">rdp</param>         <!-- <<< das ist entscheidend -->
           <param name="ignore-cert">true</param>     <!-- optional, aber hilfreich -->
           <param name="keyboard-layout">de</param>
+          <param name="server-layout">de-de-qwertz</param>
         </connection>
       </authorize>
     </user-mapping>

@@ -11,8 +11,13 @@ data:
     from werkzeug.utils import secure_filename
 
     # Configuration
+    # transfer:
+    # uploadlimit: 200 #MB
+    # filetypes: "zip,xml,sql"
     UPLOAD_FOLDER = "/workspace/usu/data"
-    ALLOWED_EXTENSIONS = {"zip", "xml", "sql"}
+    #ALLOWED_EXTENSIONS = {"zip", "xml", "sql"}
+    FILETYPES = "{{ .Values.transfer.filetypes }}"
+    ALLOWED_EXTENSIONS = set(FILETYPES.split(","))
     USER = "{{ .Values.user }}"
     VERSION = "{{ .Values.image.tag }}"
 
@@ -100,12 +105,16 @@ data:
       <div class="container">
         <h1 style="display: flex; justify-content: space-between; align-items: center;">
         📁 File Transfer for {{ "{{ user }}" }}
-        <span style="font-size: 0.8em; color: #666;">Consulting version: {{ "{{ version }}" }}</span>
         </h1>
+        <h2 style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.8em; color: #666;">Consulting version: {{ "{{ version }}" }} <br>Revision: {{ .Release.Revision }}<br>Upload-Limit: {{ .Values.ingress.uploadlimit }}m</span>
+        </h2>
           
-        <h2>🚀 Upload a File (.zip, .xml, .sql)</h2>
+        <!--<h2>🚀 Upload a File (.zip, .xml, .sql)</h2>-->
+        <h2>🚀 Upload a File ({{ .Values.transfer.filetypes }})</h2>
+        
         <form action="transfer/upload" method="post" enctype="multipart/form-data">
-          <input type="file" name="file" accept=".zip,.xml,.sql" required>
+          <input type="file" name="file" accept="{{ .Values.transfer.filetypes }}" required>
           <button type="submit">Upload</button>
         </form>
 
@@ -153,7 +162,8 @@ data:
             #return redirect(f"/{USER}/transfer")
             return redirect(f"/transfer")
         else:
-            return "File type not allowed. Only .zip, .xml, .sql are accepted.", 400
+            #return "File type not allowed. Only .zip, .xml, .sql are accepted.", 400
+            return "File type not allowed. Only {{ .Values.transfer.filetypes }} are accepted.", 400
 
     @app.route("/<path:filename>", strict_slashes=False)
     def download_file(filename):

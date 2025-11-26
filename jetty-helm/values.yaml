@@ -1,10 +1,10 @@
 # # Kubernetes Namespace für die App
-# namespace: consult-ext-usekschone-202525
-# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-ext-usekschone-202525 --set user="" --set pw=""
+# namespace: consult-usifhirsch-202525
+# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-usifhirsch-202525 --set user="" --set pw=""
 
 #### CHANGE ALWAYS ####
 # search for the namespace and replace it in this file!
-namespace: consult-ext-usekschone-202525
+namespace: consult-usifhirsch-202525
 # change also the database password!!!
 #######################
 
@@ -20,8 +20,8 @@ pw: ""
 
 # rdp:
 #   #host: 
-#   #rc-usifhirsch-svc.consult-ext-usekschone-202525.k8s-dev004.aspera.usu.grp
-#   #rc-usifhirsch-svc.consult-ext-usekschone-202525.svc.cluster.local
+#   #rc-usifhirsch-svc.consult-usifhirsch-202525.k8s-dev004.aspera.usu.grp
+#   #rc-usifhirsch-svc.consult-usifhirsch-202525.svc.cluster.local
 #   #port: 3389
 #   username: usifhirsch
 #   password: rdppass
@@ -58,12 +58,12 @@ ingress:
   certManager: true
   annotations:
     cert-manager.io/cluster-issuer: usu-group-issuer
-  hostname: rc.consult-ext-usekschone-202525.k8s-dev004.aspera.usu.grp
+  hostname: rc.consult-usifhirsch-202525.k8s-dev004.aspera.usu.grp
   tls: true
   uploadlimit: 800 #MB
 
 transfer:
-  filetypes: "zip,xml,sql,psc,txt,csv"
+  filetypes: "zip,xml,sql,psc,txt,csv,sh"
 
 storage:
   size: 1Gi
@@ -78,7 +78,7 @@ resources:
 
 # depends on the USC Package secrets.yaml
 db:
-  host: usm-mariadb.consult-ext-usekschone-202525.svc.cluster.local
+  host: usm-mariadb.consult-usifhirsch-202525.svc.cluster.local
   port: "3306"
   dbase: usm
   qualifier: ""
