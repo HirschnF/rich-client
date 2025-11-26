@@ -1,10 +1,10 @@
 # # Kubernetes Namespace für die App
-# namespace: consult-usi-orchestra
-# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-usi-orchestra --set user="" --set pw=""
+# namespace: consult-ext-usekschone-202525
+# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-ext-usekschone-202525 --set user="" --set pw=""
 
 #### CHANGE ALWAYS ####
 # search for the namespace and replace it in this file!
-namespace: consult-usi-orchestra
+namespace: consult-ext-usekschone-202525
 # change also the database password!!!
 #######################
 
@@ -20,8 +20,8 @@ pw: ""
 
 # rdp:
 #   #host: 
-#   #rc-usifhirsch-svc.consult-usi-orchestra.k8s-dev004.aspera.usu.grp
-#   #rc-usifhirsch-svc.consult-usi-orchestra.svc.cluster.local
+#   #rc-usifhirsch-svc.consult-ext-usekschone-202525.k8s-dev004.aspera.usu.grp
+#   #rc-usifhirsch-svc.consult-ext-usekschone-202525.svc.cluster.local
 #   #port: 3389
 #   username: usifhirsch
 #   password: rdppass
@@ -32,7 +32,8 @@ enablePersistence: false
 image:
   version: v3.0
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.02.14 # mit orchestra
+  tag: usm5.5.02.15 # neue Guacamole Version 1.6.0
+#  tag: usm5.5.02.14 # mit orchestra
 #  tag: usm5.5.02.13 # mit orchestra  
 #  tag: usm5.5.02.06 # ok, mit kubectl und vim
 #  tag: usm5.5.02.04 # ok aber noch falsches Tastaturlayout  
@@ -57,7 +58,7 @@ ingress:
   certManager: true
   annotations:
     cert-manager.io/cluster-issuer: usu-group-issuer
-  hostname: rc.consult-usi-orchestra.k8s-dev004.aspera.usu.grp
+  hostname: rc.consult-ext-usekschone-202525.k8s-dev004.aspera.usu.grp
   tls: true
   uploadlimit: 800 #MB
 
@@ -77,7 +78,7 @@ resources:
 
 # depends on the USC Package secrets.yaml
 db:
-  host: usm-mariadb.consult-usi-orchestra.svc.cluster.local
+  host: usm-mariadb.consult-ext-usekschone-202525.svc.cluster.local
   port: "3306"
   dbase: usm
   qualifier: ""

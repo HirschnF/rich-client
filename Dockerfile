@@ -53,9 +53,10 @@ RUN apt-get update && apt-get install -y \
     libpulse-dev libssl-dev libvorbis-dev libwebp-dev
 
 # Build guacd
-RUN curl -L -o /tmp/guacamole-server.tar.gz https://downloads.apache.org/guacamole/1.5.4/source/guacamole-server-1.5.4.tar.gz && \
+#RUN curl -L -o /tmp/guacamole-server.tar.gz https://downloads.apache.org/guacamole/1.5.4/source/guacamole-server-1.5.4.tar.gz && \
+RUN curl -L -o /tmp/guacamole-server.tar.gz https://downloads.apache.org/guacamole/1.6.0/source/guacamole-server-1.6.0.tar.gz && \
     tar -xzf /tmp/guacamole-server.tar.gz -C /tmp && \
-    cd /tmp/guacamole-server-1.5.4 && \
+    cd /tmp/guacamole-server-1.6.0 && \
     LDFLAGS="-lrt" ./configure --with-init-dir=/etc/init.d && \
     make && \
     make install && \
@@ -83,7 +84,8 @@ RUN echo "LANG=de_DE.UTF-8\nLANGUAGE=de_DE:de\nLC_ALL=de_DE.UTF-8" > /etc/defaul
 
 # Guacamole WebApp in Tomcat deployen
 RUN echo "### Guacamole WAR file... ###"
-RUN curl -L -o /var/lib/tomcat9/webapps/guacamole.war https://downloads.apache.org/guacamole/1.5.4/binary/guacamole-1.5.4.war
+#RUN curl -L -o /var/lib/tomcat9/webapps/guacamole.war https://downloads.apache.org/guacamole/1.5.4/binary/guacamole-1.5.4.war
+RUN curl -L -o /var/lib/tomcat9/webapps/guacamole.war https://downloads.apache.org/guacamole/1.6.0/binary/guacamole-1.6.0.war
 RUN rm -rf /var/lib/tomcat9/webapps/ROOT && \
     mkdir -p /var/lib/tomcat9/webapps/guacamole && \
     unzip -o /var/lib/tomcat9/webapps/guacamole.war -d /var/lib/tomcat9/webapps/guacamole

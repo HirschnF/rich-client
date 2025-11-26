@@ -16,6 +16,7 @@ data:
           <param name="password">{{ .Values.pw }}</param>
           <param name="security">rdp</param>         <!-- <<< das ist entscheidend -->
           <param name="ignore-cert">true</param>     <!-- optional, aber hilfreich -->
+          <param name="keyboard-layout">de</param>
         </connection>
       </authorize>
     </user-mapping>
