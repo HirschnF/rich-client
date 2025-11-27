@@ -17,7 +17,7 @@ data:
     openbox &
 
     # Starte Clipboard-Manager (für Copy & Paste)
-    parcellite &
+    clipit &
 
     # Starte dein eigenes Menü-Skript im modernen Terminal
     xfce4-terminal --title="Session-Start" --command="$HOME/.menu-xsession"

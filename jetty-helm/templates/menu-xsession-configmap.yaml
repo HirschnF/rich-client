@@ -45,7 +45,8 @@ data:
             echo "✅ Starte Jetty Rich Client..."
             #cd /workspace/usu/rc-client || return
             #./admin.sh &
-            xterm -e /bin/bash -c "cd /workspace/usu/rc-client && ./admin.sh" &
+            #xterm -e /bin/bash -c "cd /workspace/usu/rc-client && ./admin.sh" &
+            xfce4-terminal --title="Jetty Rich Client" --working-directory=/workspace/usu/rc-client --command="./admin.sh" &
         fi
     }
 
@@ -56,7 +57,8 @@ data:
             echo "✅ Starte Orchestra Designer Client..."
             #cd /workspace/usu/rc-client || return
             #./admin.sh &
-            xterm -e /bin/bash -c "cd /workspace/usu/orchestra/Startscripts/Unix && ./designer.sh" &
+            #xterm -e /bin/bash -c "cd /workspace/usu/orchestra/Startscripts/Unix && ./designer.sh" &
+            xfce4-terminal --title="Orchestra Designer" --working-directory=/workspace/usu/orchestra/Startscripts/Unix --command="./designer.sh" &
         fi
     }
 
