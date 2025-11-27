@@ -6,20 +6,19 @@ data:
   .xsession: |
     #!/bin/bash
 
+    # Setze deutsche UTF-8 Locale
     export LANG=de_DE.UTF-8
     export LC_ALL=de_DE.UTF-8
 
-    openbox &
+    # Setze deutsches Tastaturlayout (QWERTZ) ohne "Tottasten"
     setxkbmap -layout de -variant nodeadkeys
-    
-    #xterm -e bash -c ~/.menu-xsession.sh
-    xterm -e "$HOME/.menu-xsession"
-    #xterm -e bash -c "ls -la $HOME; sleep 3; mv $HOME/.menu-xsession.sh $HOME/menu.sh; echo 'Fertig'; sleep 2; $HOME/menu.sh; read -p 'Enter drücken...'" &
-    #xterm -e bash
 
-    ## Starte Menü in einem Terminalfenster
-    #while true; do
-    #    xterm -fa 'Monospace' -fs 10 -geometry 80x24+100+100 -u8 -e bash -c ~/.menu-xsession.sh
-    #    echo "Menü wurde geschlossen. Neustart in 3 Sekunden..."
-    #    sleep 3
-    #done
+    # Starte Openbox als Fenstermanager
+    openbox &
+
+    # Starte Clipboard-Manager (für Copy & Paste)
+    parcellite &
+
+    # Starte dein eigenes Menü-Skript im modernen Terminal
+    xfce4-terminal --title="Session-Start" --command="$HOME/.menu-xsession"
+    

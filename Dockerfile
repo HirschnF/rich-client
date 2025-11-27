@@ -8,10 +8,11 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 RUN echo "### Update system... ###"
 RUN apt-get update && apt-get install -y \
     sudo curl unzip gnupg2 software-properties-common \
-    xrdp xfce4 dbus-x11 x11-xserver-utils net-tools supervisor python3-pip \
+    xrdp xfce4-terminal parcellite dbus-x11 x11-xserver-utils net-tools supervisor python3-pip \
     tomcat9 tomcat9-common tigervnc-standalone-server locales openbox firefox-esr\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
-    
+    #xfce4
+
     # lokaler Browser für jetty???
     #chromium
 # 2. Konfigurieren
