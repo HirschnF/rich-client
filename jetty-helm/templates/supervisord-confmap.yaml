@@ -14,20 +14,22 @@ data:
     nodaemon=false
 
     [program:xrdp-sesman]
-    command=/usr/sbin/xrdp-sesman --nodaemon
+    #command=/usr/sbin/xrdp-sesman --nodaemon
+    command=/usr/local/bin/xrdp-wrapper.sh
+    #command=sh -c "/usr/sbin/xrdp-sesman --nodaemon && sleep 1 && exec /usr/sbin/xrdp -n"
     stdout_logfile=/dev/stdout
     stderr_logfile=/dev/stderr
     autostart=true
     autorestart=true
     priority=0
 
-    [program:xrdp]
-    command=/usr/sbin/xrdp -n
-    stdout_logfile=/dev/stdout
-    stderr_logfile=/dev/stderr
-    autostart=true
-    autorestart=true
-    priority=1
+    #[program:xrdp]
+    #command=/usr/sbin/xrdp -n
+    #stdout_logfile=/dev/stdout
+    #stderr_logfile=/dev/stderr
+    #autostart=true
+    #autorestart=true
+    #priority=1
 
     [program:uploadserver]
     command=python3 /workspace/usu/uploadserver.py

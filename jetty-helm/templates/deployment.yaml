@@ -52,6 +52,12 @@ spec:
               value: ${GEOMETRY:-{{ .Values.Geometry }}}
             - name: DEPTH
               value: ${DEPTH:-{{ .Values.Depth }}}
+            - name: JAVA_OPTS
+              value: "-Dguacamole.home=/etc/guacamole"
+            #- name: PATH
+            #  value: "/usr/sbin:/usr/bin:/bin"
+
+
           # 11.06.2025 - den Container am Leben halten
           # 26.06.2025 - ADD special user
           command: 
@@ -71,6 +77,12 @@ spec:
               echo "$RDP_USERNAME ALL=(ALL) NOPASSWD: /bin/kill -9 -1 1" | sudo tee /etc/sudoers.d/killall 2>/dev/null && \
               chmod 440 /etc/sudoers.d/killall 2>/dev/null && \
               ln -s /workspace/usu/data/ /home/$RDP_USERNAME/data && \
+              echo '#!/bin/bash
+              set -e
+              /usr/sbin/xrdp-sesman --nodaemon &
+              sleep 1
+              exec /usr/sbin/xrdp -n' > /usr/local/bin/xrdp-wrapper.sh && \
+              chmod +x /usr/local/bin/xrdp-wrapper.sh
               /usr/bin/supervisord -c /etc/supervisor/supervisord.conf && \
               tail -f /dev/stdout
           
@@ -117,18 +129,18 @@ spec:
             # - name: sesman-ini
             #   mountPath: /etc/xrdp/sesman.ini
             #   subPath: sesman.ini
-            # - name: xrdp-ini
-            #   mountPath: /etc/xrdp/xrdp.ini
-            #   subPath: xrdp.ini
-            # - name: supervisord-conf
-            #   mountPath: /etc/supervisor/supervisord.conf
-            #   subPath: supervisord.conf
+            - name: xrdp-ini
+              mountPath: /etc/xrdp/xrdp.ini
+              subPath: xrdp.ini
+            - name: supervisord-conf
+              mountPath: /etc/supervisor/supervisord.conf
+              subPath: supervisord.conf
             # - name: valuemation-config
             #   mountPath: /home/tomcat/.valuemation/valuemation.ini
             #   subPath: valuemation.ini
-            # - name: xvnc-wrapper
-            #   mountPath: /usr/local/bin/xvnc-wrapper.sh
-            #   subPath: xvnc-wrapper.sh
+            #- name: xrdp-wrapper
+            #  mountPath: /usr/local/bin/xrdp-wrapper.sh
+            #  subPath: xrdp-wrapper.sh
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
@@ -151,6 +163,9 @@ spec:
         - name: menu-xsession
           configMap:
             name: menu-xsession-{{ .Values.user }}
+        #- name: xrdp-wrapper
+        #  configMap:
+        #    name: xrdp-wrapper-{{ .Values.user }}    
 
         # - name: tomcat-web
         #   configMap:
@@ -161,12 +176,12 @@ spec:
         # - name: sesman-ini
         #   configMap:
         #     name: sesman-ini-{{ .Values.user }}
-        # - name: xrdp-ini
-        #   configMap:
-        #     name: xrdp-ini-{{ .Values.user }}
-        # - name: supervisord-conf
-        #   configMap:
-        #     name: supervisord-conf-{{ .Values.user }}
+        - name: xrdp-ini
+          configMap:
+            name: xrdp-ini-{{ .Values.user }}
+        - name: supervisord-conf
+          configMap:
+            name: supervisord-conf-{{ .Values.user }}
         # - name: valuemation-config
         #   configMap:
         #     name: valuemation-config-{{ .Values.user }}

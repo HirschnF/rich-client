@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: xrdp-wrapper-{{ .Values.user }}
+  namespace: {{ .Values.namespace }}
+data:
+  xrdp-wrapper.sh: |
+    #!/bin/bash
+    set -e
+
+    echo "[start-xrdp] Starting xrdp-sesman..."
+    /usr/sbin/xrdp-sesman --nodaemon &
+
+    # Warten, damit sesman bereit ist
+    sleep 1
+
+    echo "[start-xrdp] Starting xrdp..."
+    exec /usr/sbin/xrdp -n

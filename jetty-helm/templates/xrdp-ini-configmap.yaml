@@ -9,6 +9,7 @@ data:
     ini_version=1
     fork=true
     port=3389
+    use_unix_socket=true
     use_vsock=false
     tcp_nodelay=true
     tcp_keepalive=true
