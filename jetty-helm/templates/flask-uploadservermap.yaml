@@ -6,7 +6,186 @@ metadata:
   namespace: {{ .Values.namespace }}
 data:
   uploadserver.py: |
-    from flask import Flask, request, send_from_directory, render_template_string, redirect, url_for, abort
+    # from flask import Flask, request, send_from_directory, render_template_string, redirect, url_for, abort
+    # import os
+    # from werkzeug.utils import secure_filename
+
+    # # Configuration
+    # # transfer:
+    # # uploadlimit: 200 #MB
+    # # filetypes: "zip,xml,sql"
+    # UPLOAD_FOLDER = "/workspace/usu/data"
+    # #ALLOWED_EXTENSIONS = {"zip", "xml", "sql"}
+    # FILETYPES = "{{ .Values.transfer.filetypes }}"
+    # ALLOWED_EXTENSIONS = set(FILETYPES.split(","))
+    # USER = "{{ .Values.user }}"
+    # VERSION = "{{ .Values.image.tag }}"
+
+    # app = Flask(__name__)
+
+    # HTML_TEMPLATE = """
+    # <!DOCTYPE html>
+    # <html lang="en">
+    # <head>
+    #   <meta charset="UTF-8">
+    #   <title>File Transfer - {{ "{{ user }}" }} (Consulting version: {{ "{{ version }}" }})</title>
+    #     <style>
+    #       body {
+    #         margin: 0;
+    #         padding: 0;
+    #         font-family: sans-serif;
+    #         background-image: url('data:image/png;base64,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QCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCSAIFIAgQiCRCIJEAgkgCBSAIEIgkQiCRAIJIAgUgCBCIJEIgkQCCS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'); /* Füge hier den vollständigen Base64-String ein */
+    #         background-repeat: no-repeat;
+    #         background-position: center center;
+    #         background-size: cover;
+    #         color: white;
+    #       }
+
+    #       .container {
+    #         max-width: 800px;
+    #         margin: 3rem auto;
+    #         background-color: rgba(0, 0, 0, 0.6);
+    #         padding: 2rem;
+    #         border-radius: 10px;
+    #       }
+
+    #       h1, h2 {
+    #         color: white;
+    #       }
+
+    #       input[type="file"] {
+    #         margin-bottom: 1rem;
+    #       }
+
+    #       button {
+    #         padding: 0.5rem 1rem;
+    #         font-size: 1rem;
+    #         background-color: #ffffff;
+    #         color: #003366;
+    #         border: none;
+    #         border-radius: 4px;
+    #         cursor: pointer;
+    #       }
+
+    #       button:hover {
+    #         background-color: #eeeeee;
+    #       }
+
+    #       ul {
+    #         list-style: none;
+    #         padding: 0;
+    #       }
+
+    #       li a {
+    #         color: #ffffff;
+    #         text-decoration: underline;
+    #       }
+
+    #       li a:hover {
+    #         color: #cccccc;
+    #       }
+
+    #       .nav-link {
+    #         display: inline-block;
+    #         margin-top: 1rem;
+    #         padding: 0.5rem 1rem;
+    #         background-color: #ffffff;
+    #         color: #003366;
+    #         text-decoration: none;
+    #         border-radius: 4px;
+    #       }
+
+    #       .nav-link:hover {
+    #         background-color: #eeeeee;
+    #       }
+    #     </style>
+
+    # </head>
+    # <body>
+    #   <div class="container">
+    #     <h1 style="display: flex; justify-content: space-between; align-items: center;">
+    #     📁 File Transfer for {{ "{{ user }}" }}
+    #     </h1>
+    #     <h2 style="display: flex; justify-content: space-between; align-items: center;">
+    #     <span style="font-size: 0.8em; color: #666;">Consulting version: {{ "{{ version }}" }} <br>Revision: {{ .Release.Revision }}<br>Upload-Limit: {{ .Values.ingress.uploadlimit }}m</span>
+    #     </h2>
+          
+    #     <!--<h2>🚀 Upload a File (.zip, .xml, .sql)</h2>-->
+    #     <h2>🚀 Upload a File ({{ .Values.transfer.filetypes }})</h2>
+        
+    #     <form action="transfer/upload" method="post" enctype="multipart/form-data">
+    #       <input type="file" name="file" accept="{{ .Values.transfer.filetypes }}" required>
+    #       <button type="submit">Upload</button>
+    #     </form>
+
+    #     <h2>📄 Available Files</h2>
+    #     <ul>
+    #       {{ "{% for file in files %}" }}
+    #         <li><a href="transfer/{{ "{{ file }}" }}">{{ "{{ file }}" }}</a></li>
+    #       {{ "{% else %}" }}
+    #         <li><em>No files found.</em></li>
+    #       {{ "{% endfor %}" }}
+    #     </ul>
+    #     <a class="nav-link" href="../guacamole" target="_blank">🖥️ Open Rich Client (via Guacamole Authentication)</a>
+    #   </div>
+    # </body>
+    # </html>
+    # """
+
+    # def allowed_file(filename):
+    #     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+    # @app.route("/", strict_slashes=False)
+    # def index():
+    #     files = sorted([
+    #         f for f in os.listdir(UPLOAD_FOLDER)
+    #         if os.path.isfile(os.path.join(UPLOAD_FOLDER, f)) and allowed_file(f)
+    #     ])
+    #     return render_template_string(HTML_TEMPLATE, files=files, user=USER, version=VERSION)
+
+    # @app.route("/upload", methods=["POST"], strict_slashes=False)
+    # def upload():
+    #     if "file" not in request.files:
+    #         return "No file part", 400
+    #     file = request.files["file"]
+    #     if file.filename == "":
+    #         return "No selected file", 400
+    #     if file and allowed_file(file.filename):
+    #         filename = secure_filename(file.filename)
+    #         save_path = os.path.join(UPLOAD_FOLDER, filename)
+
+    #         if not os.path.abspath(save_path).startswith(os.path.abspath(UPLOAD_FOLDER)):
+    #             return "Invalid file path", 400
+
+    #         file.save(save_path)
+    #         #return redirect(url_for("index"))
+    #         #return redirect(f"/{USER}/transfer")
+    #         return redirect(f"/transfer")
+    #     else:
+    #         #return "File type not allowed. Only .zip, .xml, .sql are accepted.", 400
+    #         return "File type not allowed. Only {{ .Values.transfer.filetypes }} are accepted.", 400
+
+    # @app.route("/<path:filename>", strict_slashes=False)
+    # def download_file(filename):
+    #     if not allowed_file(filename):
+    #         abort(403)
+    #     safe_name = secure_filename(filename)
+    #     full_path = os.path.join(UPLOAD_FOLDER, safe_name)
+
+    #     if not os.path.isfile(full_path) or not os.path.abspath(full_path).startswith(os.path.abspath(UPLOAD_FOLDER)):
+    #         abort(404)
+
+    #     return send_from_directory(UPLOAD_FOLDER, safe_name, as_attachment=True)
+
+    # if __name__ == "__main__":
+    #     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    #     app.run(host="0.0.0.0", port=8000)
+    
+    
+    
+    
+    #     # Die obige Flask-Anwendung wurde deaktiviert und um eine Clipboard-Funktionalität erweitert.
+    from flask import Flask, request, send_from_directory, render_template_string, redirect, url_for, abort, jsonify
     import os
     from werkzeug.utils import secure_filename
 
@@ -15,6 +194,7 @@ data:
     # uploadlimit: 200 #MB
     # filetypes: "zip,xml,sql"
     UPLOAD_FOLDER = "/workspace/usu/data"
+    #CLIPBOARD_FILE = "/tmp/clipboard.txt"
     #ALLOWED_EXTENSIONS = {"zip", "xml", "sql"}
     FILETYPES = "{{ .Values.transfer.filetypes }}"
     ALLOWED_EXTENSIONS = set(FILETYPES.split(","))
@@ -99,7 +279,6 @@ data:
             background-color: #eeeeee;
           }
         </style>
-
     </head>
     <body>
       <div class="container">
@@ -126,8 +305,34 @@ data:
             <li><em>No files found.</em></li>
           {{ "{% endfor %}" }}
         </ul>
+
         <a class="nav-link" href="../guacamole" target="_blank">🖥️ Open Rich Client (via Guacamole Authentication)</a>
+
+        <h2>📋 Clipboard Sync</h2>
+        <!--<textarea id="clipboardText" placeholder="Gib hier Text ein oder lade ihn aus der Datei..."></textarea><br>
+        <button onclick="writeClipboard()">Write to Guest Clipboard</button>-->
+        <form action="/transfer/clipboard/write" method="post" enctype="multipart/form-data">
+          <input type="text" name="content" id="clipboardTextInput" placeholder="Insert your clipboard content here..." style="width: 100%; height: 150px;">
+          <button type="submit">Write to Guest Clipboard</button>
+          <button type="button" onclick="loadClipboard()">Load from Guest Clipboard</button>
+        </form>        
+        <!--<button onclick="readClipboard()">Read from Guest Clipboard</button>-->
       </div>
+
+      <script>
+        function loadClipboard() {
+          fetch('/transfer/clipboard/read', {
+            method: 'POST'
+          })
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById('clipboardTextInput').value = data;
+          })
+          .catch(error => {
+            console.error('Error loading clipboard:', error);
+          });
+        }
+      </script>
     </body>
     </html>
     """
@@ -141,7 +346,7 @@ data:
             f for f in os.listdir(UPLOAD_FOLDER)
             if os.path.isfile(os.path.join(UPLOAD_FOLDER, f)) and allowed_file(f)
         ])
-        return render_template_string(HTML_TEMPLATE, files=files, user=USER, version=VERSION)
+        return render_template_string(HTML_TEMPLATE, files=files, user=USER, version=VERSION, filetypes=FILETYPES)
 
     @app.route("/upload", methods=["POST"], strict_slashes=False)
     def upload():
@@ -153,16 +358,12 @@ data:
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             save_path = os.path.join(UPLOAD_FOLDER, filename)
-
             if not os.path.abspath(save_path).startswith(os.path.abspath(UPLOAD_FOLDER)):
                 return "Invalid file path", 400
-
             file.save(save_path)
-            #return redirect(url_for("index"))
-            #return redirect(f"/{USER}/transfer")
             return redirect(f"/transfer")
         else:
-            #return "File type not allowed. Only .zip, .xml, .sql are accepted.", 400
+            #return f"File type not allowed. Only {FILETYPES} are accepted.", 400
             return "File type not allowed. Only {{ .Values.transfer.filetypes }} are accepted.", 400
 
     @app.route("/<path:filename>", strict_slashes=False)
@@ -171,11 +372,37 @@ data:
             abort(403)
         safe_name = secure_filename(filename)
         full_path = os.path.join(UPLOAD_FOLDER, safe_name)
-
         if not os.path.isfile(full_path) or not os.path.abspath(full_path).startswith(os.path.abspath(UPLOAD_FOLDER)):
             abort(404)
-
         return send_from_directory(UPLOAD_FOLDER, safe_name, as_attachment=True)
+
+    # 📋 Clipboard API: Schreiben
+    @app.route("/clipboard/write", methods=["POST"])
+    def write_clipboard():
+        try:
+            content = request.form.get("content", "")
+            with open("/tmp/clipboardhost.txt", "w", encoding="utf-8") as f:
+                f.write(content)
+            return redirect("/transfer")  # oder return "OK", wenn kein Redirect gewünscht ist
+        except Exception as e:
+            return f"Fehler beim Schreiben: {str(e)}", 500
+        return "TEST CLIPBOARD WRITE"
+
+    # 📋 Clipboard API: Lesen
+    @app.route("/clipboard/read", methods=["POST"])
+    def read_clipboard():
+        try:
+            if os.path.exists('/tmp/clipboardguest.txt'):
+                with open('/tmp/clipboardguest.txt', "r", encoding="utf-8") as f:
+                    content = f.read()
+            else:
+                content = ""
+            #return jsonify({"content": content})
+            #return content
+            return content, 200, {'Content-Type': 'text/plain; charset=utf-8'}
+        except Exception as e:
+            #return jsonify({"status": "error", "message": str(e)}), 500
+            return "Fehler beim Lesen: {str(e)}", 500
 
     if __name__ == "__main__":
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)

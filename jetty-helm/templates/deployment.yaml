@@ -59,6 +59,7 @@ spec:
             - name: XRDP_SOCKET_PATH
               value: /tmp
               #/.xrdp-sockdir
+              # zieht leider nicht für den Benutzer, sondern nur für root
 
           # 11.06.2025 - den Container am Leben halten
           # 26.06.2025 - ADD special user
@@ -84,7 +85,13 @@ spec:
               /usr/sbin/xrdp-sesman --nodaemon &
               sleep 1
               exec /usr/sbin/xrdp -n' > /usr/local/bin/xrdp-wrapper.sh && \
-              chmod +x /usr/local/bin/xrdp-wrapper.sh
+              chmod +x /usr/local/bin/xrdp-wrapper.sh && \
+              touch /tmp/clipboardhost.txt && \
+              chown tomcat:$RDP_USERNAME /tmp/clipboardhost.txt && \
+              chmod 660 /tmp/clipboardhost.txt && \
+              touch /tmp/clipboardguest.txt && \
+              chown $RDP_USERNAME:tomcat /tmp/clipboardguest.txt && \
+              chmod 660 /tmp/clipboardguest.txt && \
               /usr/bin/supervisord -c /etc/supervisor/supervisord.conf && \
               tail -f /dev/stdout
           

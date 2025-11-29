@@ -68,6 +68,24 @@ data:
         #/pfad/zum/container_restart.sh > /tmp/container_restart.log 2>&1 &
     }
 
+    read_host_clipboard() {
+        if [ -f /tmp/clipboardhost.txt ]; then
+            cat /tmp/clipboardhost.txt | xclip -selection clipboard
+            echo "✅ Host-Zwischenablage wurde in die Container-Zwischenablage kopiert."
+        else
+            echo "❌ Host-Zwischenablage-Datei nicht gefunden."
+        fi
+    }
+
+    write_guest_clipboard() {
+        if [ -f /tmp/clipboardguest.txt ]; then
+            xclip -selection clipboard -o > /tmp/clipboardguest.txt
+            echo "✅ Container-Zwischenablage wurde in die Host-Zwischenablage kopiert."
+        else
+            echo "❌ Container-Zwischenablage-Datei nicht gefunden."
+        fi
+    }
+
     #clear_cache() {
     #    echo "🧹 Leere Cache..."
     #    nohup /pfad/zum/cache_leeren.sh > /tmp/cache_leeren.log 2>&1 &
@@ -82,10 +100,12 @@ data:
         echo "2) Jetty Web Client (Firefox) starten"
         echo "3) Orchestra Designer starten"
         echo "4) Container neu starten"
+        echo "v) Zwischenablage vom Host lesen"
+        echo "c) Zwischenablage zum Host schreiben"
         #echo "4) Cache leeren"
         #echo "5) Beenden"
         echo "======================================"
-        echo -n "Bitte Auswahl [1-4]: "
+        echo -n "Bitte Auswahl [1-4][cv]: "
     }
 
     # === Hauptmenü ===
@@ -97,6 +117,8 @@ data:
             2) start_firefox ;;
             3) start_orchestra_designer ;;
             4) restart_container ;;
+            c) write_guest_clipboard ;;
+            v) read_host_clipboard ;;
             #4) clear_cache ;;
             #5) echo "👋 Sitzung wird beendet..."; exit 0 ;;
             *) echo "❌ Ungültige Eingabe. Bitte 1-4 wählen." ;;

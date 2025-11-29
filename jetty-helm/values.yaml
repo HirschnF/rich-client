@@ -32,7 +32,8 @@ enablePersistence: false
 image:
   version: v3.0
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.02.19 # neue Terminal Emulation und Clipboard Manager
+  tag: usm5.5.02.20 # Flask Upload Server und Clipboard Erweiterung
+#  tag: neue Terminal Emulation und Clipboard Manager
 #  tag: usm5.5.02.16+17 # neue Guacamole Version 1.6.0
 #  tag: usm5.5.02.14 # mit orchestra
 #  tag: usm5.5.02.13 # mit orchestra  
