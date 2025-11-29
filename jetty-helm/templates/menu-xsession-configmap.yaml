@@ -20,9 +20,9 @@ data:
         ARCHIVE="$TARGET_DIR/firefox-profile.tar.gz"
 
         if [ -d "$PROFILE_DIR" ]; then
-            echo "Profilverzeichnis '$PROFILE_DIR' existiert bereits. Entpacken wird übersprungen."
+            echo "Firefox profile folder '$PROFILE_DIR' already exists. Extraction ignored."
         else
-            echo "Entpacke Firefox-Profil..."
+            echo "Extract Firefox-Profile..."
             cd "$TARGET_DIR" || return
             tar -xf "$ARCHIVE"
         fi
@@ -30,9 +30,9 @@ data:
 
     start_firefox() {
         if pgrep -lx firefox-esr > /dev/null; then
-            echo "⚠️ Firefox läuft bereits."
+            echo "⚠️ Firefox already started."
         else
-            echo "✅ Starte Firefox..."
+            echo "✅ Start Firefox..."
             prepare_firefox_profile
             firefox -P "minimalapp" --no-remote "http://localhost:8087/vmwebjetty/vmweb" &
         fi
@@ -40,9 +40,9 @@ data:
 
     start_rich_client() {
         if pgrep -f "/workspace/usu/rc-client/admin.sh" > /dev/null; then
-            echo "⚠️ Jetty Rich Client läuft bereits."
+            echo "⚠️ Jetty Rich Client already started."
         else
-            echo "✅ Starte Jetty Rich Client..."
+            echo "✅ Start Jetty Rich Client..."
             #cd /workspace/usu/rc-client || return
             #./admin.sh &
             #xterm -e /bin/bash -c "cd /workspace/usu/rc-client && ./admin.sh" &
@@ -52,9 +52,9 @@ data:
 
     start_orchestra_designer() {
         if pgrep -f "/workspace/usu/orchestra/Startscripts/Unix/designer.sh" > /dev/null; then
-            echo "⚠️ Orchestra Designer läuft bereits."
+            echo "⚠️ Orchestra Designer already started."
         else
-            echo "✅ Starte Orchestra Designer Client..."
+            echo "✅ Start Orchestra Designer Client..."
             #cd /workspace/usu/rc-client || return
             #./admin.sh &
             #xterm -e /bin/bash -c "cd /workspace/usu/orchestra/Startscripts/Unix && ./designer.sh" &
@@ -63,7 +63,7 @@ data:
     }
 
     restart_container() {
-        echo "🔄 Container wird neu gestartet..."
+        echo "🔄 Container Restart..."
         sudo /bin/kill -9 -1 1
         #/pfad/zum/container_restart.sh > /tmp/container_restart.log 2>&1 &
     }
@@ -71,18 +71,18 @@ data:
     read_host_clipboard() {
         if [ -f /tmp/clipboardhost.txt ]; then
             cat /tmp/clipboardhost.txt | xclip -selection clipboard
-            echo "✅ Host-Zwischenablage wurde in die Container-Zwischenablage kopiert."
+            echo "✅ Host-Clipboard copied to Container-Clipboard."
         else
-            echo "❌ Host-Zwischenablage-Datei nicht gefunden."
+            echo "❌ Host-Clipboard not found."
         fi
     }
 
     write_guest_clipboard() {
         if [ -f /tmp/clipboardguest.txt ]; then
             xclip -selection clipboard -o > /tmp/clipboardguest.txt
-            echo "✅ Container-Zwischenablage wurde in die Host-Zwischenablage kopiert."
+            echo "✅ Container-Clipboard copied to Host-Clipboard."
         else
-            echo "❌ Container-Zwischenablage-Datei nicht gefunden."
+            echo "❌ Container-Clipboard not found."
         fi
     }
 
@@ -94,18 +94,18 @@ data:
     show_menu() {
         clear
         echo "======================================"
-        echo "        Jetty Umgebung Menü"
+        echo "        Jetty environment menu"
         echo "======================================"
-        echo "1) Jetty Rich Client starten"
-        echo "2) Jetty Web Client (Firefox) starten"
-        echo "3) Orchestra Designer starten"
-        echo "4) Container neu starten"
-        echo "v) Zwischenablage vom Host lesen"
-        echo "c) Zwischenablage zum Host schreiben"
-        #echo "4) Cache leeren"
-        #echo "5) Beenden"
+        echo "1) Start Jetty Rich Client"
+        echo "2) Start Jetty Web Client (Firefox)"
+        echo "3) Start Orchestra Designer"
+        echo "4) Restart Container"
+        echo "v) Read clipboard from Host"
+        echo "c) Write clipboard to Host"
+        #echo "4) Clear Cache"
+        #echo "5) Exit"
         echo "======================================"
-        echo -n "Bitte Auswahl [1-4][cv]: "
+        echo -n "Your choice [1-4][cv]: "
     }
 
     # === Hauptmenü ===
@@ -120,8 +120,8 @@ data:
             c) write_guest_clipboard ;;
             v) read_host_clipboard ;;
             #4) clear_cache ;;
-            #5) echo "👋 Sitzung wird beendet..."; exit 0 ;;
-            *) echo "❌ Ungültige Eingabe. Bitte 1-4 wählen." ;;
+            #5) echo "👋 Session will closed..."; exit 0 ;;
+            *) echo "❌ Wrong input. Please select 1-4, c,v" ;;
         esac
         sleep 1
     done

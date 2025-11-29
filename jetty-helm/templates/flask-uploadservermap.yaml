@@ -309,14 +309,16 @@ data:
         <a class="nav-link" href="../guacamole" target="_blank">🖥️ Open Rich Client (via Guacamole Authentication)</a>
 
         <h2>📋 Clipboard Sync</h2>
-        <!--<textarea id="clipboardText" placeholder="Gib hier Text ein oder lade ihn aus der Datei..."></textarea><br>
-        <button onclick="writeClipboard()">Write to Guest Clipboard</button>-->
-        <form action="/transfer/clipboard/write" method="post" enctype="multipart/form-data">
+        <!--<form action="/transfer/clipboard/write" method="post" enctype="multipart/form-data">
           <input type="text" name="content" id="clipboardTextInput" placeholder="Insert your clipboard content here..." style="width: 100%; height: 150px;">
           <button type="submit">Write to Guest Clipboard</button>
           <button type="button" onclick="loadClipboard()">Load from Guest Clipboard</button>
-        </form>        
-        <!--<button onclick="readClipboard()">Read from Guest Clipboard</button>-->
+        </form>-->
+        <form id="clipboardForm" method="post" enctype="multipart/form-data" onkeydown="return event.key !== 'Enter';">
+          <textarea name="content" id="clipboardTextInput" placeholder="Insert your clipboard content here..." style="width: 100%; height: 150px;"></textarea>
+          <button type="submit" formaction="/transfer/clipboard/write">Write to Guest Clipboard</button>
+          <button type="button" onclick="loadClipboard()">Load from Guest Clipboard</button>
+        </form>
       </div>
 
       <script>
