@@ -56,7 +56,9 @@ spec:
               value: "-Dguacamole.home=/etc/guacamole"
             #- name: PATH
             #  value: "/usr/sbin:/usr/bin:/bin"
-
+            - name: XRDP_SOCKET_PATH
+              value: /tmp
+              #/.xrdp-sockdir
 
           # 11.06.2025 - den Container am Leben halten
           # 26.06.2025 - ADD special user

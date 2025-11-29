@@ -9,6 +9,7 @@ data:
     # Setze deutsche UTF-8 Locale
     export LANG=de_DE.UTF-8
     export LC_ALL=de_DE.UTF-8
+    export XRDP_SOCKET_PATH=/tmp
 
     # Setze deutsches Tastaturlayout (QWERTZ) ohne "Tottasten"
     setxkbmap -layout de -variant nodeadkeys
