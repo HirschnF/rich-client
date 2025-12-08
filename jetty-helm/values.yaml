@@ -86,7 +86,9 @@ db:
   qualifier: ""
   dbuser: root
   #here is the secrets.yaml - usmMariadbRootPassword: 
-  dbpassword: changeMeO54aVCMUb06D
+  dbpassword: changeMeHMOODhktI8mW
+  #2025.3.1 changeMeHMOODhktI8mW
+  #2025.2.5 changeMeO54aVCMUb06D
   #2025.2.4 changeMePLFnw8fLVvz0
   #2025.2.3 changeMeIl0MKYTBxlwn
   #2025.2.0 changeMe7IMuzjS4W5NR
