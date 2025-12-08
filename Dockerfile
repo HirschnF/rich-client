@@ -11,10 +11,7 @@ RUN apt-get update && apt-get install -y \
     xrdp xfce4-terminal diodon xclip dbus-x11 x11-xserver-utils net-tools supervisor python3-pip \
     tomcat9 tomcat9-common tigervnc-standalone-server locales openbox firefox-esr\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
-    #xfce4
 
-    # lokaler Browser für jetty???
-    #chromium
 # 2. Konfigurieren
 RUN dpkg-reconfigure locales
 

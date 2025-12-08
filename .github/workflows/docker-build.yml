@@ -2,7 +2,7 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches: [ guacamole-2025.2.0 ]
+    branches: [ guacamole-2025.3.1 ]
     paths:
       - Dockerfile
       - rc-client/**
