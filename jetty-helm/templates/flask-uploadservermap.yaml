@@ -200,6 +200,7 @@ data:
     ALLOWED_EXTENSIONS = set(FILETYPES.split(","))
     USER = "{{ .Values.user }}"
     VERSION = "{{ .Values.image.tag }}"
+    INDEXPAGE = "{{ .Values.ingress.indexpage }}"
 
     app = Flask(__name__)
 
@@ -307,6 +308,8 @@ data:
         </ul>
 
         <a class="nav-link" href="../guacamole" target="_blank">🖥️ Open Rich Client (via Guacamole Authentication)</a>
+        <a class="nav-link" href="{{ "{{ indexpage }}" }}" target="_blank">🌐 Open USC Index Page</a>
+        
 
         <h2>📋 Clipboard Sync</h2>
         <!--<form action="/transfer/clipboard/write" method="post" enctype="multipart/form-data">

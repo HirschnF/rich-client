@@ -63,6 +63,7 @@ ingress:
   hostname: rc.consult-usi-orchestra.k8s-dev004.aspera.usu.grp
   tls: true
   uploadlimit: 800 #MB
+  indexpage: https://index.consult-usi-orchestra.k8s-dev004.aspera.usu.grp/
 
 transfer:
   filetypes: "zip,xml,sql,psc,txt,csv,sh"
