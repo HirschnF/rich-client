@@ -3,6 +3,7 @@ FROM debian:bullseye-slim
 ENV DEBIAN_FRONTEND=noninteractive
 ENV JAVA_HOME=/opt/java
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
+ENV ORCHESTRA_VERSION=4.16.0.10
 
 # Systempakete installieren
 RUN echo "### Update system... ###"
@@ -118,11 +119,11 @@ RUN chmod 660 /etc/guacamole/guacamole.properties
 #Orchestra App kopieren
 RUN echo "### Copy Orchestra... ###"
 RUN mkdir -p /workspace/usu/orchestra
-COPY Orchestra_4.16.0.10.tar.gz.part-* /workspace/usu/
-RUN cat /workspace/usu/Orchestra_4.16.0.10.tar.gz.part-* > /workspace/usu/Orchestra_4.16.0.10.tar.gz && \
+COPY Orchestra_${ORCHESTRA_VERSION}.tar.gz.part-* /workspace/usu/
+RUN cat /workspace/usu/Orchestra_${ORCHESTRA_VERSION}.tar.gz.part-* > /workspace/usu/Orchestra_${ORCHESTRA_VERSION}.tar.gz && \
     ls -l /workspace/usu/ && \
-    tar -xzf /workspace/usu/Orchestra_4.16.0.10.tar.gz -C /workspace/usu/orchestra && \
-    rm -rf /workspace/usu/Orchestra_4.16.0.10.tar.gz.part-*
+    tar -xzf /workspace/usu/Orchestra_${ORCHESTRA_VERSION}.tar.gz -C /workspace/usu/orchestra && \
+    rm -rf /workspace/usu/Orchestra_${ORCHESTRA_VERSION}.tar.gz.part-*
 COPY resources/orchestra_env.sh /workspace/usu/orchestra/orchestra_env.sh
 RUN chmod +x /workspace/usu/orchestra/Startscripts/Unix/orchestra_env.sh
 RUN chmod +x /workspace/usu/orchestra/Startscripts/Unix/designer.sh
