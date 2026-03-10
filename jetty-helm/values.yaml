@@ -1,10 +1,10 @@
 # # Kubernetes Namespace für die App
-# namespace: consult-usicbraun-202532
-# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-usicbraun-202532 --set user="" --set pw=""
+# namespace: consult-ext-usesoeztue-202532
+# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-ext-usesoeztue-202532 --set user="" --set pw=""
 
 #### CHANGE ALWAYS ####
 # search for the namespace and replace it in this file!
-namespace: consult-usicbraun-202532
+namespace: consult-ext-usesoeztue-202532
 # change also the database password!!!
 #######################
 
@@ -20,8 +20,8 @@ pw: ""
 
 # rdp:
 #   #host: 
-#   #rc-usifhirsch-svc.consult-usicbraun-202532.k8s-dev004.aspera.usu.grp
-#   #rc-usifhirsch-svc.consult-usicbraun-202532.svc.cluster.local
+#   #rc-usifhirsch-svc.consult-ext-usesoeztue-202532.k8s-dev004.aspera.usu.grp
+#   #rc-usifhirsch-svc.consult-ext-usesoeztue-202532.svc.cluster.local
 #   #port: 3389
 #   username: usifhirsch
 #   password: rdppass
@@ -60,10 +60,10 @@ ingress:
   certManager: true
   annotations:
     cert-manager.io/cluster-issuer: usu-group-issuer
-  hostname: rc.consult-usicbraun-202532.k8s-dev004.aspera.usu.grp
+  hostname: rc.consult-ext-usesoeztue-202532.k8s-dev004.aspera.usu.grp
   tls: true
   uploadlimit: 800 #MB
-  indexpage: https://index.consult-usicbraun-202532.k8s-dev004.aspera.usu.grp/
+  indexpage: https://index.consult-ext-usesoeztue-202532.k8s-dev004.aspera.usu.grp/
 
 transfer:
   filetypes: "zip,xml,sql,psc,txt,csv,sh"
@@ -81,7 +81,7 @@ resources:
 
 # depends on the USC Package secrets.yaml
 db:
-  host: usm-mariadb.consult-usicbraun-202532.svc.cluster.local
+  host: usm-mariadb.consult-ext-usesoeztue-202532.svc.cluster.local
   port: "3306"
   dbase: usm
   qualifier: ""
