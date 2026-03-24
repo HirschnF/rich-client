@@ -3,19 +3,10 @@ kind: Ingress
 metadata:
   name: rc-{{ .Values.user }}-ingress
   namespace: {{ .Values.namespace }}  
-    {{- if .Values.ingress.annotations }}
+  {{- if .Values.ingress.annotations }}
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
-    nginx.ingress.kubernetes.io/connection-proxy-header: "keep-alive"
-    {{- if .Values.ingress.annotations }}
+    haproxy.org/path-rewrite: '^/transfer/?(.*)$ /\1'
     {{- toYaml .Values.ingress.annotations | nindent 4 }}
-    {{- end }}
   {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
@@ -29,17 +20,10 @@ spec:
     - host: {{ .Values.ingress.hostname }}
       http:
         paths:
-          - path: /{{ .Values.user }}/jetty(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: rc-{{ .Values.user }}-svc
-                port:
-                  number: 8087
-# 28.06.2026 Upload und Download Server
-          - path: /transfer(/|$)(.*)
-            pathType: ImplementationSpecific
-            #pathType: Prefix
+          #- path: /transfer(/|$)(.*)
+          #  pathType: ImplementationSpecific
+          - path: /transfer
+            pathType: Prefix
             backend:
               service:
                 name: rc-{{ .Values.user }}-svc

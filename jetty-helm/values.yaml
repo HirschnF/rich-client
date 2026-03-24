@@ -1,10 +1,10 @@
 # # Kubernetes Namespace für die App
-# namespace: consult-usiswagner-202540
-# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-usiswagner-202540 --set user="" --set pw=""
+# namespace: consult-usifhirsch-202540
+# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-usifhirsch-202540 --set user="" --set pw=""
 
 #### CHANGE ALWAYS ####
 # search for the namespace and replace it in this file!
-namespace: consult-usiswagner-202540
+namespace: consult-usifhirsch-202540
 # change also the database password!!!
 #######################
 
@@ -20,8 +20,8 @@ pw: ""
 
 # rdp:
 #   #host: 
-#   #rc-usifhirsch-svc.consult-usiswagner-202540.k8s-dev004.aspera.usu.grp
-#   #rc-usifhirsch-svc.consult-usiswagner-202540.svc.cluster.local
+#   #rc-usifhirsch-svc.consult-usifhirsch-202540.k8s-dev004.aspera.usu.grp
+#   #rc-usifhirsch-svc.consult-usifhirsch-202540.svc.cluster.local
 #   #port: 3389
 #   username: usifhirsch
 #   password: rdppass
@@ -32,7 +32,7 @@ enablePersistence: false
 image:
   version: v3.0
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.03.22 # USM RC 5.5HF03, index url
+  tag: usm5.5.04.01 # USM RC 5.5HF03, index url
 #  tag: usm5.5.03.20 neue Terminal Emulation und Clipboard Manager
 #  tag: usm5.5.02.16+17 # neue Guacamole Version 1.6.0
 #  tag: usm5.5.02.14 # mit orchestra
@@ -56,14 +56,16 @@ imagePullSecrets:
 
 ingress:
   enabled: true
-  className: nginx
+  className: haproxy
   certManager: true
   annotations:
     cert-manager.io/cluster-issuer: usu-group-issuer
-  hostname: rc.consult-usiswagner-202540.k8s-dev004.aspera.usu.grp
+    haproxy.org/ssl-redirect: "true"
+    haproxy.org/ssl-redirect-port: "443"
+  hostname: rc.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp
   tls: true
   uploadlimit: 800 #MB
-  indexpage: https://index.consult-usiswagner-202540.k8s-dev004.aspera.usu.grp/
+  indexpage: https://index.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/
 
 transfer:
   filetypes: "zip,xml,sql,psc,txt,csv,sh"
@@ -81,7 +83,7 @@ resources:
 
 # depends on the USC Package secrets.yaml
 db:
-  host: usm-mariadb.consult-usiswagner-202540.svc.cluster.local
+  host: usm-mariadb.consult-usifhirsch-202540.svc.cluster.local
   port: "3306"
   dbase: usm
   qualifier: ""

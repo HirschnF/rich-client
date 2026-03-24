@@ -3,20 +3,9 @@ kind: Ingress
 metadata:
   name: rc-{{ .Values.user }}-guacamole-ingress
   namespace: {{ .Values.namespace }}  
-    {{- if .Values.ingress.annotations }}
+  {{- if .Values.ingress.annotations }}
   annotations:
-    #nginx.ingress.kubernetes.io/use-regex: "true"
-    #nginx.ingress.kubernetes.io/rewrite-target: /guacamole$2
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
-    nginx.ingress.kubernetes.io/connection-proxy-header: "keep-alive"
-    nginx.ingress.kubernetes.io/enable-websocket: "true"
-    {{- if .Values.ingress.annotations }}
     {{- toYaml .Values.ingress.annotations | nindent 4 }}
-    {{- end }}
   {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
@@ -31,8 +20,6 @@ spec:
       http:
         paths:
           - path: /guacamole
-          #(/|$)(.*)
-          #{{ .Values.user }}/
             pathType: Prefix #ImplementationSpecific
             backend:
               service:
@@ -40,19 +27,9 @@ spec:
                 port:
                   number: 80
           - path: /guacamole/
-          #(/|$)(.*)
-          #{{ .Values.user }}/
             pathType: Prefix #ImplementationSpecific
             backend:
               service:
                 name: rc-{{ .Values.user }}-svc
                 port:
                   number: 80
-          # # Direktpfad für Redirects
-          # - path: /guacamole(/|$)(.*)
-          #   pathType: ImplementationSpecific
-          #   backend:
-          #     service:
-          #       name: rc-{{ .Values.user }}-svc
-          #       port:
-          #         number: 80
