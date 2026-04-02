@@ -1,0 +1,60 @@
+-----BEGIN CERTIFICATE-----
+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
+-----END CERTIFICATE-----
+---
+Server certificate
+subject=
+
+issuer=C = DE, ST = NRW, L = Aachen, O = USU Technologies GmbH, OU = Infrastructure, CN = USU Technologies K8S Issuing CA, emailAddress = infrastructure-sam@usu.com
+
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: RSA-PSS
+Server Temp Key: X25519, 253 bits
+---
+SSL handshake has read 5057 bytes and written 439 bytes
+Verification error: unable to get local issuer certificate
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Server public key is 2048 bit
+Secure Renegotiation IS NOT supported
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 20 (unable to get local issuer certificate)
+---

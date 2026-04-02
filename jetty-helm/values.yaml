@@ -32,7 +32,7 @@ enablePersistence: false
 image:
   version: v4.0
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.04.02 # USM RC 5.5HF04, keycloak Test
+  tag: usm5.5.04.03 # USM RC 5.5HF04, keycloak Test
 #  tag: usm5.5.04.01 # USM RC 5.5HF04, index url
 #  tag: usm5.5.03.20 neue Terminal Emulation und Clipboard Manager
 #  tag: usm5.5.02.16+17 # neue Guacamole Version 1.6.0
