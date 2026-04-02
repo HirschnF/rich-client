@@ -2,7 +2,7 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches: [ guacamole-2025.4.0 ]
+    branches: [ guacamole-2025.4.0-keycloak ]
     paths:
       - Dockerfile
       - rc-client/**
@@ -31,4 +31,4 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: frank1977/jetty-rich-client:usm5.5.04.01
+        tags: frank1977/jetty-rich-client:usm5.5.04.02

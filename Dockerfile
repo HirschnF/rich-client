@@ -90,8 +90,9 @@ RUN rm -rf /var/lib/tomcat9/webapps/ROOT && \
     unzip -o /var/lib/tomcat9/webapps/guacamole.war -d /var/lib/tomcat9/webapps/guacamole
 
 # Flask Uploadserver installieren
-RUN echo "### Install uploadserver... ###"
-RUN pip3 install flask
+RUN echo "### Install uploadserver... ###" \
+    && pip3 install --no-cache-dir flask Authlib
+#RUN pip3 install flask
 
 # Ressourcen kopieren (werden teilweise durch ConfigMaps überschrieben)
 COPY rc-client.tar.gz.part-* /workspace/usu/
