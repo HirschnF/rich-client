@@ -33,6 +33,24 @@ spec:
           env:
             - name: TZ
               value: Europe/Berlin
+            # 28.03.2026 HiF: Die Proxy-Settings sind hier direkt in der values.yaml, damit sie auch für die Init-Container gelten, die ja vor der eigentlichen Applikation laufen und daher noch keinen Zugriff auf die Secrets haben. Sobald die Proxy-Settings in den Secrets geändert werden müssen, müssen sie hier manuell angepasst werden. Es wäre zwar möglich, die Proxy-Settings auch in den Secrets zu hinterlegen und dann per Init-Container in Umgebungsvariablen zu schreiben, aber das ist deutlich aufwändiger umzusetzen.
+            {{- if .Values.proxy.enabled }}
+            - name: HTTP_PROXY
+              value: {{ .Values.proxy.httpProxy | quote }}
+            - name: HTTPS_PROXY
+              value: {{ .Values.proxy.httpsProxy | quote }}
+            - name: NO_PROXY
+              value: {{ .Values.proxy.noProxy | quote }}
+
+            # Manche Tools erwarten lowercase-Varianten
+            - name: http_proxy
+              value: {{ .Values.proxy.httpProxy | quote }}
+            - name: https_proxy
+              value: {{ .Values.proxy.httpsProxy | quote }}
+            - name: no_proxy
+              value: {{ .Values.proxy.noProxy | quote }}
+            {{- end }}
+
             - name: HOME
               value: "/home/tomcat"
             - name: CATALINA_BASE
@@ -144,6 +162,12 @@ spec:
             - name: supervisord-conf
               mountPath: /etc/supervisor/supervisord.conf
               subPath: supervisord.conf
+            - name: logo-usermap
+              mountPath: /var/lib/tomcat9/webapps/guacamole/images/guac-tricolor.svg
+              subPath: guac-tricolor.svg
+            - name: translation-usermap
+              mountPath: /var/lib/tomcat9/webapps/guacamole/translations/en.json
+              subPath: en.json
             # - name: valuemation-config
             #   mountPath: /home/tomcat/.valuemation/valuemation.ini
             #   subPath: valuemation.ini
@@ -172,6 +196,7 @@ spec:
         - name: menu-xsession
           configMap:
             name: menu-xsession-{{ .Values.user }}
+        
         #- name: xrdp-wrapper
         #  configMap:
         #    name: xrdp-wrapper-{{ .Values.user }}    
@@ -191,6 +216,12 @@ spec:
         - name: supervisord-conf
           configMap:
             name: supervisord-conf-{{ .Values.user }}
+        - name: logo-usermap
+          configMap:
+            name: logo-usermap-{{ .Values.user }}
+        - name: translation-usermap
+          configMap:
+            name: translation-usermap-{{ .Values.user }}
         # - name: valuemation-config
         #   configMap:
         #     name: valuemation-config-{{ .Values.user }}

@@ -11,6 +11,15 @@ data:
     export LC_ALL=de_DE.UTF-8
     export XRDP_SOCKET_PATH=/tmp
 
+    # Setze Proxy-Umgebungsvariablen für die Session, damit sie auch in der Shell und anderen Anwendungen verfügbar sind
+    export HTTP_PROXY="{{ .Values.proxy.httpProxy }}"
+    export HTTPS_PROXY="{{ .Values.proxy.httpsProxy }}"
+    export NO_PROXY="{{ .Values.proxy.noProxy }}"
+    export http_proxy="{{ .Values.proxy.httpProxy }}"
+    export https_proxy="{{ .Values.proxy.httpsProxy }}"
+    export no_proxy="{{ .Values.proxy.noProxy }}"
+
+
     # Setze deutsches Tastaturlayout (QWERTZ) ohne "Tottasten"
     setxkbmap -layout de -variant nodeadkeys
 

@@ -102,3 +102,34 @@ db:
   dbasectm: usmctm
   dbasehistory: usm_history
   dbasetest: usm_archive
+
+proxy:
+  enabled: true
+
+  # Für Linux/Tools (HTTP(S)_PROXY)
+  httpProxy: "http://webproxy-internal.aspera.usu.grp:3128"
+  httpsProxy: "http://webproxy-internal.aspera.usu.grp:3128"
+
+  # Für Java (Jetty/Tomcat) als Host/Port, damit wir -D... sauber setzen können
+  host: "webproxy-internal.aspera.usu.grp"
+  port: "3128"
+
+  # Komma-getrennt, wie üblich bei NO_PROXY
+  # Hinweis: viele Clients akzeptieren Einträge wie ".svc" und ".cluster.local" als Suffix-Match.
+  noProxy: "localhost,127.0.0.1,.svc,.cluster.local,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+
+  # Java-Konvention (Pipe-separiert, Wildcards erlaubt)
+  javaNonProxyHosts: "localhost|127.*|[::1]|*.svc|*.cluster.local|kubernetes|kubernetes.default|kubernetes.default.svc|kubernetes.default.svc.cluster.local"
+
+richclient:
+  # Hier können weitere Einstellungen für den Rich Client hinterlegt werden, z.B.:
+  # - Startparameter
+  # - Umgebungsvariablen
+  # - Konfigurationen für die Terminal-Emulation
+  memargs: "-Xms256m -Xmx4g -XX:NewSize=20m -XX:MaxNewSize=20m -XX:SurvivorRatio=8 -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40 -XX:+UseContainerSupport -XX:-UseStringDeduplication -XX:-CreateCoredumpOnCrash -Djava.awt.headless=false"
+  processInterpreter: true
+  processInterpreterUser: "PROCESSINTERPRETER"
+  processInterpreterPassword: "9A1E8801BD3B8B1AFF764F3709D0DF19"
+  taskExecutor: true
+  taskExecutorUser: "TASKEXECUTOR01"
+  taskExecutorPassword: "9A1E8801BD3B8B1AFF764F3709D0DF19"

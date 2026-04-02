@@ -41,13 +41,17 @@ data:
     cat $VMCONFIGUSER
 
     # # Process Engine in Rich Client
-    PE="-DProcessInterpreter.enabled=true -DProcessInterpreter.userName=PROCESSINTERPRETER -DProcessInterpreter.cryptedPassword=9A1E8801BD3B8B1AFF764F3709D0DF19 -DProcessInterpreter.stepInMillis=2000 -DProcessInterpreter.startOnLoad=false -DTaskExecutor.enabled=true -DTaskExecutor.userName=TASKEXECUTOR01 -DTaskExecutor.cryptedPassword=9A1E8801BD3B8B1AFF764F3709D0DF19 -DTaskExecutor.stepInMillis=2003 -DTaskExecutor.startOnLoad=false"
+    #PE="-DProcessInterpreter.enabled=true -DProcessInterpreter.userName=PROCESSINTERPRETER -DProcessInterpreter.cryptedPassword=9A1E8801BD3B8B1AFF764F3709D0DF19 -DProcessInterpreter.stepInMillis=2000 -DProcessInterpreter.startOnLoad=false -DTaskExecutor.enabled=true -DTaskExecutor.userName=TASKEXECUTOR01 -DTaskExecutor.cryptedPassword=9A1E8801BD3B8B1AFF764F3709D0DF19 -DTaskExecutor.stepInMillis=2003 -DTaskExecutor.startOnLoad=false"
+    PE="-DProcessInterpreter.enabled={{ .Values.richclient.processInterpreter }} -DProcessInterpreter.userName={{ .Values.richclient.processInterpreterUser }} -DProcessInterpreter.cryptedPassword={{ .Values.richclient.processInterpreterPassword }} -DProcessInterpreter.stepInMillis=2000 -DProcessInterpreter.startOnLoad=false -DTaskExecutor.enabled={{ .Values.richclient.taskExecutor }} -DTaskExecutor.userName={{ .Values.richclient.taskExecutorUser }} -DTaskExecutor.cryptedPassword={{ .Values.richclient.taskExecutorPassword }} -DTaskExecutor.stepInMillis=2003 -DTaskExecutor.startOnLoad=false"
     JAVA_PARAMS="-Dvm.local.dir=$LOCAL_DIR -Dvm.vmcache.dir=$LOCAL_DIR/vmcache -Dvm.log.dir=$LOCAL_DIR -Dvm.inifile.use.valuemation.dir=true -Dvm.config=$VMCONFIGUSER $PE"
+    PROXY="-Dhttp.proxyHost={{ .Values.proxy.host }} -Dhttp.proxyPort={{ .Values.proxy.port }} -Dhttps.proxyHost={{ .Values.proxy.host }} -Dhttps.proxyPort={{ .Values.proxy.port }} -Dhttp.nonProxyHosts=\"{{ .Values.proxy.noProxy }}\""
+    JAVA_PARAMS="$JAVA_PARAMS $PROXY $EMBEDJETTY"
     echo "***** show JAVA_PARAMS *****"
     echo "$JAVA_PARAMS"
     
     # # Set JVM Options - Memory Options
-    export MEM_ARGS="-Xms256m -Xmx2g -XX:NewSize=20m -XX:MaxNewSize=20m -XX:SurvivorRatio=8 -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40 -XX:+UseContainerSupport -XX:-UseStringDeduplication -XX:-CreateCoredumpOnCrash -Djava.awt.headless=false" 
+    #export MEM_ARGS="-Xms256m -Xmx2g -XX:NewSize=20m -XX:MaxNewSize=20m -XX:SurvivorRatio=8 -XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=40 -XX:+UseContainerSupport -XX:-UseStringDeduplication -XX:-CreateCoredumpOnCrash -Djava.awt.headless=false" 
+    export MEM_ARGS="{{ .Values.richclient.memargs }}"
     # zwecks Debugging hinzugefügt, da die Java Umgebung abstürzte: -XX:-UseStringDeduplication -XX:-CreateCoredumpOnCrash
 
     # Set JVM Options  - e.g. system property values
