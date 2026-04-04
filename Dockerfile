@@ -91,7 +91,7 @@ RUN rm -rf /var/lib/tomcat9/webapps/ROOT && \
 
 # Flask Uploadserver installieren
 RUN echo "### Install uploadserver... ###" \
-    && pip3 install --no-cache-dir flask Authlib
+    && pip3 install --no-cache-dir flask Authlib requests
 #RUN pip3 install flask
 
 # Ressourcen kopieren (werden teilweise durch ConfigMaps überschrieben)

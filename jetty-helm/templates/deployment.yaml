@@ -78,6 +78,26 @@ spec:
               value: /tmp
               #/.xrdp-sockdir
               # zieht leider nicht für den Benutzer, sondern nur für root
+            - name: KEYCLOAK_BASE_URL
+              value: {{ .Values.keycloak.url }}
+            - name: KEYCLOAK_REALM
+              value: {{ .Values.keycloak.realm }}
+            - name: KEYCLOAK_CLIENT_ID
+              value: {{ .Values.keycloak.clientId }}
+            - name: KEYCLOAK_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: rc-transfer-oidc
+                  key: KEYCLOAK_CLIENT_SECRET
+            - name: FLASK_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: rc-transfer-oidc
+                  key: FLASK_SECRET_KEY
+            - name: EXTERNAL_BASE_PATH
+              value: /transfer
+            - name: REQUIRE_AUTH
+              value: "{{ .Values.keycloak.enabled }}"
 
           # 11.06.2025 - den Container am Leben halten
           # 26.06.2025 - ADD special user

@@ -7,7 +7,16 @@ metadata:
 data:
   uploadserver.py: |
     #     # Die obige Flask-Anwendung wurde deaktiviert und um eine Clipboard-Funktionalität erweitert.
-    from flask import Flask, request, send_from_directory, render_template_string, redirect, url_for, abort, jsonify
+    #Keycloak Anpassung
+    #from flask import Flask, request, send_from_directory, render_template_string, redirect, url_for, abort, jsonify
+    from flask import Flask, request, send_from_directory, render_template_string, redirect, abort, jsonify, session
+    import secrets
+    from urllib.parse import quote
+
+    from authlib.integrations.flask_client import OAuth
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    #keycloak Anpassung Ende
+
     import os
     from werkzeug.utils import secure_filename
 
@@ -25,6 +34,63 @@ data:
     #INDEXPAGE = "{{ .Values.ingress.indexpage }}"
 
     app = Flask(__name__)
+    #keycloak Anpassung
+    # --- External base path (because Ingress rewrites /transfer -> /) ---
+    EXTERNAL_BASE_PATH = os.environ.get("EXTERNAL_BASE_PATH", "/transfer").rstrip("/")
+
+    # --- Flask session / cookies ---
+    app.secret_key = os.environ.get("FLASK_SECRET_KEY") or secrets.token_hex(32)
+
+    # Trust X-Forwarded-* headers from HAProxy/Ingress
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
+    app.config.update(
+        SESSION_COOKIE_SECURE=True,
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE="Lax",
+        SESSION_COOKIE_PATH=EXTERNAL_BASE_PATH,
+    )
+
+    # --- Keycloak / OIDC ---
+    KEYCLOAK_BASE_URL = os.environ.get("KEYCLOAK_BASE_URL", "").rstrip("/")
+    KEYCLOAK_REALM = os.environ.get("KEYCLOAK_REALM", "master")
+    KEYCLOAK_CLIENT_ID = os.environ.get("KEYCLOAK_CLIENT_ID", "")
+    KEYCLOAK_CLIENT_SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET", "")
+    REQUIRE_AUTH = os.environ.get("REQUIRE_AUTH", "false").lower() in ("1", "true", "yes", "on")
+
+    oauth = OAuth(app)
+
+    if KEYCLOAK_BASE_URL and KEYCLOAK_CLIENT_ID:
+        server_metadata_url = f"{KEYCLOAK_BASE_URL}/realms/{KEYCLOAK_REALM}/.well-known/openid-configuration"
+
+        oauth.register(
+            name="keycloak",
+            client_id=KEYCLOAK_CLIENT_ID,
+            client_secret=KEYCLOAK_CLIENT_SECRET,
+            server_metadata_url=server_metadata_url,
+            client_kwargs={
+                "scope": "openid profile email",
+            },
+        )
+
+
+    def _external_url(path: str) -> str:
+        """
+        Build external URL as seen by the browser.
+        Needed because Ingress rewrites /transfer -> / for Flask.
+        """
+        if not path.startswith("/"):
+            path = "/" + path
+
+        scheme = request.headers.get("X-Forwarded-Proto", request.scheme)
+        host = request.headers.get("X-Forwarded-Host", request.host)
+
+        return f"{scheme}://{host}{EXTERNAL_BASE_PATH}{path}"
+
+
+    def _is_authenticated() -> bool:
+        return "token" in session
+    #keycloak Anpassung Ende
 
     HTML_TEMPLATE = """
     <!DOCTYPE html>
@@ -115,7 +181,10 @@ data:
         <!--<h2>🚀 Upload a File (.zip, .xml, .sql)</h2>-->
         <h2>🚀 Upload a File ({{ .Values.transfer.filetypes }})</h2>
         
-        <form action="transfer/upload" method="post" enctype="multipart/form-data">
+        <!-- keycloak Anpassung
+        <form action="transfer/upload" method="post" enctype="multipart/form-data"> -->
+        <form action="{{ "{{ base_path }}" }}/upload" method="post" enctype="multipart/form-data">
+
           <input type="file" name="file" accept="{{ .Values.transfer.filetypes }}" required>
           <button type="submit">Upload</button>
         </form>
@@ -123,7 +192,11 @@ data:
         <h2>📄 Available Files</h2>
         <ul>
           {{ "{% for file in files %}" }}
+            <!-- keycloak Anpassung
             <li><a href="transfer/{{ "{{ file }}" }}">{{ "{{ file }}" }}</a></li>
+            -->
+            <li><a href="{{ "{{ base_path }}" }}/{{ "{{ file }}" }}">{{ "{{ file }}" }}</a></li>
+
           {{ "{% else %}" }}
             <li><em>No files found.</em></li>
           {{ "{% endfor %}" }}
@@ -141,14 +214,19 @@ data:
         </form>-->
         <form id="clipboardForm" method="post" enctype="multipart/form-data" onkeydown="return event.key !== 'Enter';">
           <textarea name="content" id="clipboardTextInput" placeholder="Insert your clipboard content here..." style="width: 100%; height: 150px;"></textarea>
-          <button type="submit" formaction="/transfer/clipboard/write">Write to Guest Clipboard</button>
+          <!-- keycloak Anpassung
+          <button type="submit" formaction="/transfer/clipboard/write">
+          -->
+          <button type="submit" formaction="{{ "{{ base_path }}" }}/clipboard/write">
+          Write to Guest Clipboard</button>
           <button type="button" onclick="loadClipboard()">Load from Guest Clipboard</button>
         </form>
       </div>
 
       <script>
         function loadClipboard() {
-          fetch('/transfer/clipboard/read', {
+          //fetch('/transfer/clipboard/read', {
+          fetch('{{ "{{ base_path }}" }}/clipboard/read', {
             method: 'POST'
           })
           .then(response => response.text())
@@ -167,13 +245,111 @@ data:
     def allowed_file(filename):
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+    #keycloak Anpassung
+    @app.route("/login", strict_slashes=False)
+    def login():
+        if "keycloak" not in oauth._clients:
+            return "Keycloak is not configured (missing env vars).", 500
+
+        redirect_uri = _external_url("/oidc/callback")
+        return oauth.keycloak.authorize_redirect(redirect_uri)
+
+
+    @app.route("/oidc/callback", strict_slashes=False)
+    def oidc_callback():
+        if "keycloak" not in oauth._clients:
+            return "Keycloak is not configured (missing env vars).", 500
+
+        token = oauth.keycloak.authorize_access_token()
+
+        userinfo = token.get("userinfo")
+        if not userinfo:
+            userinfo = oauth.keycloak.userinfo(token=token)
+
+        session["token"] = token
+        session["user"] = userinfo
+
+        return redirect(EXTERNAL_BASE_PATH)
+
+
+    @app.route("/logout", strict_slashes=False)
+    def logout():
+        token = session.get("token", {})
+        id_token = token.get("id_token")
+
+        session.clear()
+
+        if "keycloak" not in oauth._clients:
+            return redirect(EXTERNAL_BASE_PATH)
+
+        metadata = oauth.keycloak.load_server_metadata()
+        end_session_endpoint = metadata.get("end_session_endpoint")
+        if not end_session_endpoint:
+            return redirect(EXTERNAL_BASE_PATH)
+
+        post_logout_redirect_uri = _external_url("/")
+        url = f"{end_session_endpoint}?post_logout_redirect_uri={quote(post_logout_redirect_uri)}"
+
+        if id_token:
+            url += f"&id_token_hint={quote(id_token)}"
+
+        return redirect(url)
+
+
+    @app.route("/me", strict_slashes=False)
+    def me():
+        if not _is_authenticated():
+            return jsonify({"authenticated": False}), 200
+
+        return jsonify(
+            {
+                "authenticated": True,
+                "user": session.get("user"),
+            }
+        ), 200
+    #keycloak Anpassung Ende
+    
+    #keycloak Anpassung: Alle Routen außer den explizit freigegebenen erfordern Authentifizierung. Wenn nicht authentifiziert, Weiterleitung zur Login-Seite.
+    @app.before_request
+    def maybe_require_auth():
+        if not REQUIRE_AUTH:
+            return None
+
+        open_paths = {
+            "/health",
+            "/login",
+            "/oidc/callback",
+            "/logout",
+            "/me",
+        }
+
+        if request.path in open_paths:
+            return None
+
+        if not _is_authenticated():
+            return redirect(f"{EXTERNAL_BASE_PATH}/login")
+
+        return None
+      #keycloak Anpassung Ende
+    
     @app.route("/", strict_slashes=False)
     def index():
         files = sorted([
             f for f in os.listdir(UPLOAD_FOLDER)
             if os.path.isfile(os.path.join(UPLOAD_FOLDER, f)) and allowed_file(f)
         ])
-        return render_template_string(HTML_TEMPLATE, files=files, user=USER, version=VERSION, filetypes=FILETYPES)
+        #keycloak Anpassung
+        #return render_template_string(HTML_TEMPLATE, files=files, user=USER, version=VERSION, filetypes=FILETYPES)
+        return render_template_string(
+            HTML_TEMPLATE,
+            files=files,
+            user=USER,
+            version=VERSION,
+            filetypes=FILETYPES,
+            base_path=EXTERNAL_BASE_PATH,
+        )
+
+        #keycloak Anpassung Ende
 
     @app.route("/upload", methods=["POST"], strict_slashes=False)
     def upload():
@@ -188,7 +364,10 @@ data:
             if not os.path.abspath(save_path).startswith(os.path.abspath(UPLOAD_FOLDER)):
                 return "Invalid file path", 400
             file.save(save_path)
-            return redirect(f"/transfer")
+            #keycloak Anpassung
+            #return redirect(f"/transfer")
+            return redirect(EXTERNAL_BASE_PATH)
+            #keycloak Anpassung Ende
         else:
             #return f"File type not allowed. Only {FILETYPES} are accepted.", 400
             return "File type not allowed. Only {{ .Values.transfer.filetypes }} are accepted.", 400
@@ -210,7 +389,10 @@ data:
             content = request.form.get("content", "")
             with open("/tmp/clipboardhost.txt", "w", encoding="utf-8") as f:
                 f.write(content)
-            return redirect("/transfer")  # oder return "OK", wenn kein Redirect gewünscht ist
+            #keycloak Anpassung
+            #return redirect("/transfer")  # oder return "OK", wenn kein Redirect gewünscht ist
+            return redirect(EXTERNAL_BASE_PATH)
+            #keycloak Anpassung Ende
         except Exception as e:
             return f"Fehler beim Schreiben: {str(e)}", 500
         return "TEST CLIPBOARD WRITE"
