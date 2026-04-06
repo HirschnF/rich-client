@@ -115,6 +115,7 @@ COPY --chown=tomcat:adm resources/xrdp/xrdp.ini /etc/xrdp/xrdp.ini
 COPY --chown=tomcat:adm resources/xrdp/xrdp_keyboard.ini /etc/xrdp/xrdp_keyboard.ini
 COPY --chown=tomcat:adm resources/guacamole.properties /etc/guacamole/guacamole.properties
 RUN chmod 660 /etc/guacamole/guacamole.properties
+
 # Zertifikat der USU Root CA hinzufügen
 COPY --chown=tomcat:adm resources/certs/usu-tech-root-ca.crt /usr/local/share/ca-certificates/usu-tech-root-ca.crt
 COPY --chown=tomcat:adm resources/certs/usu-group-root-ca.crt /usr/local/share/ca-certificates/usu-group-root-ca.crt
