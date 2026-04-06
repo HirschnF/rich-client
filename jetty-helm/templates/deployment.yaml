@@ -98,6 +98,11 @@ spec:
               value: /transfer
             - name: REQUIRE_AUTH
               value: "{{ .Values.keycloak.enabled }}"
+            - name: REQUESTS_CA_BUNDLE
+              value: /etc/ssl/certs/ca-certificates.crt
+            - name: SSL_CERT_FILE
+              value: /etc/ssl/certs/ca-certificates.crt
+
 
           # 11.06.2025 - den Container am Leben halten
           # 26.06.2025 - ADD special user

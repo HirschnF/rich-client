@@ -115,12 +115,15 @@ proxy:
   host: "webproxy-internal.aspera.usu.grp"
   port: "3128"
 
+  # Für No-Proxy, damit lokale Adressen nicht über den Proxy geleitet werden. Wichtig für die interne Kommunikation im Cluster! 
+  # ob *.ha.k8s-dev004.aspera.usu.grp funktioniert, muss getestet werden, da es manchmal Probleme mit Wildcards in NO_PROXY gibt. 
+  # Alternativ  können auch die konkreten Service- und Cluster-Domains aufgelistet werden, z.B. "localhost,
   # Komma-getrennt, wie üblich bei NO_PROXY
   # Hinweis: viele Clients akzeptieren Einträge wie ".svc" und ".cluster.local" als Suffix-Match.
-  noProxy: "localhost,127.0.0.1,.svc,.cluster.local,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+  noProxy: "localhost,127.0.0.1,.svc,.cluster.local,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp,*.ha.k8s-dev004.aspera.usu.grp"
 
   # Java-Konvention (Pipe-separiert, Wildcards erlaubt)
-  javaNonProxyHosts: "localhost|127.*|[::1]|*.svc|*.cluster.local|kubernetes|kubernetes.default|kubernetes.default.svc|kubernetes.default.svc.cluster.local"
+  javaNonProxyHosts: "localhost|127.*|[::1]|*.svc|*.cluster.local|kubernetes|kubernetes.default|kubernetes.default.svc|kubernetes.default.svc.cluster.local,uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp,*.ha.k8s-dev004.aspera.usu.grp"
 
 richclient:
   # Hier können weitere Einstellungen für den Rich Client hinterlegt werden, z.B.:
