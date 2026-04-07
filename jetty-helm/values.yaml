@@ -32,7 +32,7 @@ enablePersistence: false
 image:
   version: v4.0
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.04.04 # USM RC 5.5HF04, keycloak Test
+  tag: usm5.5.04.f # USM RC 5.5HF04, keycloak Test
 #  tag: usm5.5.04.01 # USM RC 5.5HF04, index url
 #  tag: usm5.5.03.20 neue Terminal Emulation und Clipboard Manager
 #  tag: usm5.5.02.16+17 # neue Guacamole Version 1.6.0
@@ -139,7 +139,7 @@ richclient:
   taskExecutorPassword: "9A1E8801BD3B8B1AFF764F3709D0DF19"
 
 keycloak:
-  enabled: "false"
+  enabled: "true"
   url: "https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth"
   realm: "master"
   clientId: "rc-transfer"

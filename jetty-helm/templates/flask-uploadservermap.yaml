@@ -18,6 +18,20 @@ data:
     #keycloak Anpassung Ende
 
     import os
+    import base64
+    import hashlib
+
+    def _pkce_verifier() -> str:
+        # RFC7636: 43..128 chars
+        verifier = secrets.token_urlsafe(64)
+        return verifier[:128]
+
+
+    def _pkce_challenge_s256(verifier: str) -> str:
+        digest = hashlib.sha256(verifier.encode("ascii")).digest()
+        return base64.urlsafe_b64encode(digest).decode("ascii").rstrip("=")
+
+
     from werkzeug.utils import secure_filename
 
     # Configuration
@@ -252,7 +266,22 @@ data:
             return "Keycloak is not configured (missing env vars).", 500
 
         redirect_uri = _external_url("/oidc/callback")
-        return oauth.keycloak.authorize_redirect(redirect_uri)
+        #return oauth.keycloak.authorize_redirect(redirect_uri)
+        #return oauth.keycloak.authorize_redirect(
+        #    redirect_uri,
+        #    code_challenge_method="S256",
+        #)
+        verifier = _pkce_verifier()
+        session["pkce_verifier"] = verifier
+        challenge = _pkce_challenge_s256(verifier)
+
+        return oauth.keycloak.authorize_redirect(
+            redirect_uri,
+            code_challenge=challenge,
+            code_challenge_method="S256",
+        )
+
+
 
 
     @app.route("/oidc/callback", strict_slashes=False)
@@ -260,7 +289,10 @@ data:
         if "keycloak" not in oauth._clients:
             return "Keycloak is not configured (missing env vars).", 500
 
-        token = oauth.keycloak.authorize_access_token()
+        #token = oauth.keycloak.authorize_access_token()
+        verifier = session.pop("pkce_verifier", None)
+        token = oauth.keycloak.authorize_access_token(code_verifier=verifier)
+
 
         userinfo = token.get("userinfo")
         if not userinfo:

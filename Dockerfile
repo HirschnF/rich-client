@@ -62,6 +62,21 @@ RUN curl -L -o /tmp/guacamole-server.tar.gz https://downloads.apache.org/guacamo
     ldconfig && \
     rm -rf /tmp/guacamole-server*
 
+# Guacamole OpenID + File authentication extensions (Guacamole 1.6.0)
+RUN set -eux; \
+    mkdir -p /etc/guacamole/extensions; \
+    cd /tmp; \
+    curl -fsSL -o guacamole-auth-openid-1.6.0.tar.gz https://archive.apache.org/dist/guacamole/1.6.0/binary/guacamole-auth-openid-1.6.0.tar.gz; \
+    tar -xzf guacamole-auth-openid-1.6.0.tar.gz; \
+    cp guacamole-auth-openid-1.6.0/guacamole-auth-openid-1.6.0.jar /etc/guacamole/extensions/; \
+    \
+    curl -fsSL -o guacamole-auth-file-1.6.0.tar.gz https://archive.apache.org/dist/guacamole/1.6.0/binary/guacamole-auth-file-1.6.0.tar.gz; \
+    tar -xzf guacamole-auth-file-1.6.0.tar.gz; \
+    cp guacamole-auth-file-1.6.0/guacamole-auth-file-1.6.0.jar /etc/guacamole/extensions/; \
+    \
+    rm -rf /tmp/guacamole-auth-openid-1.6.0* /tmp/guacamole-auth-file-1.6.0*
+
+
 # Optional: Clean up
 RUN apt-get purge -y build-essential libtool-bin && \
     apt-get autoremove -y && \
