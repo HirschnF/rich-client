@@ -67,7 +67,7 @@ RUN set -eux; \
     mkdir -p /etc/guacamole/extensions; \
     cd /tmp; \
     curl -fsSL --retry 5 --retry-all-errors -o guacamole-auth-sso-1.6.0.tar.gz \
-      https://downloads.apache.org/guacamole/1.6.0/binary/guacamole-auth-sso-1.6.0.tar.gz; \
+    https://downloads.apache.org/guacamole/1.6.0/binary/guacamole-auth-sso-1.6.0.tar.gz; \
     tar -xzf guacamole-auth-sso-1.6.0.tar.gz; \
     cp guacamole-auth-sso-1.6.0/openid/guacamole-auth-sso-openid-1.6.0.jar /etc/guacamole/extensions/; \
     rm -rf /tmp/guacamole-auth-sso-1.6.0*
