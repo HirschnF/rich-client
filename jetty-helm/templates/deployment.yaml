@@ -140,6 +140,22 @@ spec:
               touch /tmp/clipboardguest.txt && \
               chown $RDP_USERNAME:tomcat /tmp/clipboardguest.txt && \
               chmod 660 /tmp/clipboardguest.txt && \
+              chown -R tomcat:adm /etc/guacamole/extensions && \
+              chmod 775 /etc/guacamole/extensions && \
+              chmod 644 /etc/guacamole/extensions/*.jar || true && \
+              mkdir /var/lib/tomcat9/temp && \
+              chown tomcat:adm /var/lib/tomcat9/temp && \
+              chmod 660 /var/lib/tomcat9/temp && \
+              keytool -importcert -noprompt \
+                -alias usu-group-root-ca \
+                -file /usr/local/share/ca-certificates/usu-group-root-ca.crt \
+                -keystore /opt/java/lib/security/cacerts \
+                -storepass changeit || true && \
+              keytool -importcert -noprompt \
+                -alias usu-tech-root-ca \
+                -file /usr/local/share/ca-certificates/usu-tech-root-ca.crt \
+                -keystore /opt/java/lib/security/cacerts \
+                -storepass changeit || true && \
               /usr/bin/supervisord -c /etc/supervisor/supervisord.conf && \
               tail -f /dev/stdout
           

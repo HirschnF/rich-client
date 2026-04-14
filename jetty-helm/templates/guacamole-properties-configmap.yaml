@@ -15,8 +15,16 @@ data:
     openid-issuer: {{ .Values.openid.issuer }}
     openid-client-id: {{ .Values.openid.clientId }}
     openid-client-secret: {{ .Values.openid.clientSecret }}
+    #openid-client-secret: ${GUAC_OIDC_CLIENT_SECRET} # das wird zur Laufzeit nicht ersetzt
+
+    # Keycloak realm endpoints (realm: master)
+    openid-authorization-endpoint: {{ .Values.openid.authorizationEndpoint }}
+    openid-token-endpoint:         {{ .Values.openid.tokenEndpoint }}
+    openid-jwks-endpoint:          {{ .Values.openid.jwksEndpoint }}
+    openid-userinfo-endpoint:      {{ .Values.openid.userinfoEndpoint }}
+
+    # Redirect must match Keycloak client redirect URI
     openid-redirect-uri: {{ .Values.openid.redirectUri }}
 
     # Username that Guacamole will use internally (must match user-mapping.xml usernames)
     openid-username-claim-type: preferred_username
-

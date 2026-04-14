@@ -149,4 +149,11 @@ openid:
   issuer: "https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master"
   clientId: "rc-guacamole"
   clientSecret: "abcBwrRgEoJePmL18VcoxNelHoawhlQQ"
-  redirectUri: "https://rc.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/guacamole/api/ext/openid/callback"
+  #redirectUri: "https://rc.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/guacamole/api/ext/openid/callback"
+  redirectUri: "https://rc.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/guacamole/"
+
+  # Keycloak realm endpoints (realm: master)
+  authorizationEndpoint: https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/auth
+  tokenEndpoint:         https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/token
+  jwksEndpoint:          https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/certs
+  userinfoEndpoint:      https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/userinfo
