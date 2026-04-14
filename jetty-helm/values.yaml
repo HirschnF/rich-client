@@ -143,3 +143,10 @@ keycloak:
   url: "https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth"
   realm: "master"
   clientId: "rc-transfer"
+
+openid:
+  enabled: "true"
+  issuer: "https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master"
+  clientId: "rc-guacamole"
+  clientSecret: "abcBwrRgEoJePmL18VcoxNelHoawhlQQ"
+  redirectUri: "https://rc.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/guacamole/api/ext/openid/callback"

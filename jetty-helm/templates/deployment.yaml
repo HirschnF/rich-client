@@ -102,6 +102,11 @@ spec:
               value: /etc/ssl/certs/ca-certificates.crt
             - name: SSL_CERT_FILE
               value: /etc/ssl/certs/ca-certificates.crt
+            - name: GUAC_OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: rc-guacamole-oidc
+                  key: GUAC_OIDC_CLIENT_SECRET
 
 
           # 11.06.2025 - den Container am Leben halten
@@ -175,9 +180,9 @@ spec:
             # - name: tomcat-web
             #   mountPath: /usr/share/tomcat9/conf/web.xml
             #   subPath: web.xml
-            # - name: guacamole-properties
-            #   mountPath: /etc/guacamole/guacamole.properties
-            #   subPath: guacamole.properties
+            - name: guacamole-properties
+              mountPath: /etc/guacamole/guacamole.properties
+              subPath: guacamole.properties
             # - name: sesman-ini
             #   mountPath: /etc/xrdp/sesman.ini
             #   subPath: sesman.ini
@@ -229,9 +234,9 @@ spec:
         # - name: tomcat-web
         #   configMap:
         #     name: guacamole-tomcat-web-mapping-{{ .Values.user }}
-        # - name: guacamole-properties
-        #   configMap:
-        #     name: guacamole-properties-mapping-{{ .Values.user }}
+        - name: guacamole-properties
+          configMap:
+            name: guacamole-properties-mapping-{{ .Values.user }}
         # - name: sesman-ini
         #   configMap:
         #     name: sesman-ini-{{ .Values.user }}
