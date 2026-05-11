@@ -1,30 +1,31 @@
-#wird so nicht mehr benötigt da im Basis Image bereits kopiert
+# guacamole.properties für Guacamole 1.6.0 mit OpenID-Connect (Keycloak).
+# Hinweise:
+#   * "auth-provider" und "basic-user-mapping" sind Legacy-Properties (vor 1.0)
+#     und werden in 1.6.0 ignoriert. Die file-basierte Authentifizierung wird
+#     automatisch aktiviert, sobald /etc/guacamole/user-mapping.xml existiert.
+#   * Die OpenID-Extension nutzt den Implicit Flow (response_type=id_token).
+#     Daher werden weder openid-client-secret noch token-/userinfo-Endpoint
+#     verwendet. Erforderlich: issuer, client-id, authorization-endpoint,
+#     jwks-endpoint, redirect-uri und (für Keycloak) username-claim-type.
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: guacamole-properties-mapping-{{ .Values.user }}
 data:
   guacamole.properties: |
-    auth-provider: net.sourceforge.guacamole.net.basic.BasicFileAuthenticationProvider
-    basic-user-mapping: /etc/guacamole/user-mapping.xml
     guacd-hostname: localhost
     guacd-port: 4822
     enable-clipboard-autopaste: true
 
-    # --- OpenID Connect (Keycloak) ---
-    openid-issuer: {{ .Values.openid.issuer }}
-    openid-client-id: {{ .Values.openid.clientId }}
-    openid-client-secret: {{ .Values.openid.clientSecret }}
-    #openid-client-secret: ${GUAC_OIDC_CLIENT_SECRET} # das wird zur Laufzeit nicht ersetzt
-
-    # Keycloak realm endpoints (realm: master)
+    # --- OpenID Connect (Keycloak, Implicit Flow) ---
+    openid-issuer:                 {{ .Values.openid.issuer }}
+    openid-client-id:              {{ .Values.openid.clientId }}
     openid-authorization-endpoint: {{ .Values.openid.authorizationEndpoint }}
-    openid-token-endpoint:         {{ .Values.openid.tokenEndpoint }}
     openid-jwks-endpoint:          {{ .Values.openid.jwksEndpoint }}
-    openid-userinfo-endpoint:      {{ .Values.openid.userinfoEndpoint }}
 
-    # Redirect must match Keycloak client redirect URI
-    openid-redirect-uri: {{ .Values.openid.redirectUri }}
+    # Redirect muss exakt mit "Valid Redirect URIs" im Keycloak-Client uebereinstimmen.
+    openid-redirect-uri:           {{ .Values.openid.redirectUri }}
 
-    # Username that Guacamole will use internally (must match user-mapping.xml usernames)
-    openid-username-claim-type: preferred_username
+    # Claim, der als Guacamole-Username verwendet wird. Muss zu den
+    # username-Attributen in user-mapping.xml passen.
+    openid-username-claim-type:    preferred_username

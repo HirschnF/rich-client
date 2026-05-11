@@ -70,8 +70,20 @@ spec:
               value: ${GEOMETRY:-{{ .Values.Geometry }}}
             - name: DEPTH
               value: ${DEPTH:-{{ .Values.Depth }}}
+            # JAVA_OPTS: Guacamole-Home + Proxy-System-Properties für Tomcat-JVM.
+            # Java honoriert HTTP_PROXY/HTTPS_PROXY als Env-Variable nicht; ohne diese
+            # System-Properties kann die Guacamole OpenID-Extension den JWKS-Endpoint
+            # ggf. nicht erreichen, wenn der Pod nur über den Cluster-Proxy raus kommt.
             - name: JAVA_OPTS
-              value: "-Dguacamole.home=/etc/guacamole"
+              value: >-
+                -Dguacamole.home=/etc/guacamole
+                {{- if .Values.proxy.enabled }}
+                -Dhttp.proxyHost={{ .Values.proxy.host }}
+                -Dhttp.proxyPort={{ .Values.proxy.port }}
+                -Dhttps.proxyHost={{ .Values.proxy.host }}
+                -Dhttps.proxyPort={{ .Values.proxy.port }}
+                -Dhttp.nonProxyHosts={{ .Values.proxy.javaNonProxyHosts | quote }}
+                {{- end }}
             #- name: PATH
             #  value: "/usr/sbin:/usr/bin:/bin"
             - name: XRDP_SOCKET_PATH
