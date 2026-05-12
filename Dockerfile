@@ -183,6 +183,7 @@ RUN chown tomcat:adm -R /var/lib/tomcat9
 RUN chown tomcat:adm -R /usr/share/tomcat9
 
 # Postman herunterladen und installieren
+# ist nicht notwendig, denn die URL ist von aussen ja erreichbar
 # version `GLIBC_2.34' not found (required by /usr/local/bin/postman/Postman) ggf. aeltere Version verwenden
 # RUN curl -L https://dl.pstmn.io/download/latest/linux64 -o /tmp/postman.tar.gz && \
 #     mkdir -p /opt/Postman && \
