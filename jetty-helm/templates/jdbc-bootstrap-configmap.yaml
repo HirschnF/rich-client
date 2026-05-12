@@ -103,3 +103,38 @@ data:
       CROSS JOIN guacamole_connection c
       WHERE e.name = 'rc-users' AND e.type = 'USER_GROUP'
         AND c.connection_name = 'Jetty-Rich-Client';
+
+    -- Default-Admin "guacadmin" entfernen, der vom Schema-Skript
+    -- 002-create-admin-user.sql automatisch angelegt wird. Ohne diese Loeschung
+    -- bliebe ein guacadmin/guacadmin-Login als Hintertuer offen, was wir bei
+    -- reinem OIDC-Setup nicht wollen.
+    DELETE FROM guacamole_user_permission
+      WHERE entity_id IN (
+        SELECT entity_id FROM guacamole_entity WHERE name = 'guacadmin' AND type = 'USER'
+      )
+      OR affected_user_id IN (
+        SELECT entity_id FROM guacamole_entity WHERE name = 'guacadmin' AND type = 'USER'
+      );
+
+    DELETE FROM guacamole_system_permission
+      WHERE entity_id IN (
+        SELECT entity_id FROM guacamole_entity WHERE name = 'guacadmin' AND type = 'USER'
+      );
+
+    DELETE FROM guacamole_connection_permission
+      WHERE entity_id IN (
+        SELECT entity_id FROM guacamole_entity WHERE name = 'guacadmin' AND type = 'USER'
+      );
+
+    DELETE FROM guacamole_connection_group_permission
+      WHERE entity_id IN (
+        SELECT entity_id FROM guacamole_entity WHERE name = 'guacadmin' AND type = 'USER'
+      );
+
+    DELETE FROM guacamole_user
+      WHERE entity_id IN (
+        SELECT entity_id FROM guacamole_entity WHERE name = 'guacadmin' AND type = 'USER'
+      );
+
+    DELETE FROM guacamole_entity
+      WHERE name = 'guacadmin' AND type = 'USER';

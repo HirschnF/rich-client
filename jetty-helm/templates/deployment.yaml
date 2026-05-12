@@ -225,9 +225,9 @@ spec:
             - name: setenvuser
               mountPath: /workspace/usu/rc-client/set_env_user.sh
               subPath: set_env_user.sh
-            - name: user-mapping
-              mountPath: /etc/guacamole/user-mapping.xml
-              subPath: user-mapping.xml
+            # - name: user-mapping
+            #   mountPath: /etc/guacamole/user-mapping.xml
+            #   subPath: user-mapping.xml
             - name: user-xsession
               mountPath: /home/tomcat/.xsession
               subPath: .xsession
@@ -274,9 +274,9 @@ spec:
         - name: setenvuser
           configMap:
             name: setenvuser-{{ .Values.user }}
-        - name: user-mapping
-          configMap:
-            name: guacamole-user-mapping-{{ .Values.user }}
+        # - name: user-mapping
+        #   configMap:
+        #     name: guacamole-user-mapping-{{ .Values.user }}
         - name: user-xsession
           configMap:
             name: user-xsession-{{ .Values.user }}
