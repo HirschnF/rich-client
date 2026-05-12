@@ -169,5 +169,6 @@ guacamoleDb:
   username: guacamole
   # Passwort fuer den Guacamole-DB-User
   password: changeMeGuacDb20260512
-  # Treiber fuer Guacamole JDBC: 'mariadb' = MariaDB-JDBC-Driver
-  driver: mariadb
+  # Treiber fuer Guacamole JDBC: 'mysql' = MySQL Connector/J (auch fuer MariaDB ok,
+  # da wire-kompatibel). 'mariadb' nur wenn MariaDB Connector/J 2.x im Image liegt.
+  driver: mysql

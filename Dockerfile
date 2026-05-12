@@ -86,8 +86,11 @@ RUN set -eux; \
     cp guacamole-auth-jdbc-1.6.0/mysql/guacamole-auth-jdbc-mysql-1.6.0.jar /etc/guacamole/extensions/; \
     cp guacamole-auth-jdbc-1.6.0/mysql/schema/*.sql /opt/guacamole-jdbc/schema/; \
     chmod -R a+r /opt/guacamole-jdbc; \
-    curl -fsSL --retry 5 --retry-all-errors -o /etc/guacamole/lib/mariadb-java-client.jar \
-      https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.4.1/mariadb-java-client-3.4.1.jar; \
+    # MySQL Connector/J 8.4.0 -- MariaDB Connector/J 3.x akzeptiert kein
+    # jdbc:mysql://-Prefix mehr, das die Guacamole JDBC-Extension intern aufbaut.
+    # MySQL Connector/J spricht wire-kompatibel mit der bestehenden MariaDB.
+    curl -fsSL --retry 5 --retry-all-errors -o /etc/guacamole/lib/mysql-connector-java.jar \
+      https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.4.0/mysql-connector-j-8.4.0.jar; \
     rm -rf /tmp/guacamole-auth-jdbc-1.6.0*
 
 
