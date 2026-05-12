@@ -65,9 +65,35 @@ data:
     INSERT IGNORE INTO guacamole_user_group (entity_id)
       SELECT entity_id FROM guacamole_entity WHERE name = 'rc-users' AND type = 'USER_GROUP';
 
-    -- Connection "Jetty-Rich-Client" anlegen, falls noch nicht vorhanden.
-    INSERT IGNORE INTO guacamole_connection (connection_name, protocol)
-      VALUES ('Jetty-Rich-Client', 'rdp');
+    -- Duplikate der Connection 'Jetty-Rich-Client' aufraeumen, die in
+    -- vorherigen Init-Container-Laeufen entstanden sind. Die Unique-Constraint
+    -- auf guacamole_connection ist (connection_name, parent_id); MariaDB
+    -- behandelt parent_id IS NULL als distinct, weshalb INSERT IGNORE jedes
+    -- Mal eine neue Zeile angelegt hat. Wir behalten die mit der niedrigsten
+    -- connection_id; Parameter und Permissions werden per ON DELETE CASCADE
+    -- mitgeloescht.
+    DELETE FROM guacamole_connection
+    WHERE connection_name = 'Jetty-Rich-Client'
+      AND parent_id IS NULL
+      AND connection_id > (
+        SELECT min_id FROM (
+          SELECT MIN(connection_id) AS min_id
+          FROM guacamole_connection
+          WHERE connection_name = 'Jetty-Rich-Client' AND parent_id IS NULL
+        ) AS x
+      );
+
+    -- Connection "Jetty-Rich-Client" anlegen, falls noch keine mit dem Namen
+    -- und parent_id IS NULL existiert. Wir verwenden bewusst nicht INSERT IGNORE,
+    -- weil die Unique-Constraint NULL-parent_id als distinct behandelt und somit
+    -- nicht greift.
+    INSERT INTO guacamole_connection (connection_name, protocol)
+      SELECT 'Jetty-Rich-Client', 'rdp'
+      FROM dual
+      WHERE NOT EXISTS (
+        SELECT 1 FROM guacamole_connection
+        WHERE connection_name = 'Jetty-Rich-Client' AND parent_id IS NULL
+      );
 
     -- Connection-Parameter initial befuellen (idempotent: INSERT IGNORE).
     INSERT IGNORE INTO guacamole_connection_parameter (connection_id, parameter_name, parameter_value)
