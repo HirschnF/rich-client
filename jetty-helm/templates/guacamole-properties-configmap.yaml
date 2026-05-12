@@ -1,12 +1,15 @@
-# guacamole.properties für Guacamole 1.6.0 mit OpenID-Connect (Keycloak).
+# guacamole.properties fuer Guacamole 1.6.0 mit OpenID-Connect (Keycloak) +
+# JDBC-Auth gegen die bestehende MariaDB.
 # Hinweise:
 #   * "auth-provider" und "basic-user-mapping" sind Legacy-Properties (vor 1.0)
-#     und werden in 1.6.0 ignoriert. Die file-basierte Authentifizierung wird
-#     automatisch aktiviert, sobald /etc/guacamole/user-mapping.xml existiert.
+#     und werden in 1.6.0 ignoriert.
+#   * Der FileAuthenticationProvider liefert fuer per OIDC authentisierte Nutzer
+#     keine Connections (Architekturlimit). Stattdessen verwendet diese
+#     Konfiguration die JDBC-Extension; die Connections werden per Init-Container
+#     in die Datenbank vorbefuellt.
 #   * Die OpenID-Extension nutzt den Implicit Flow (response_type=id_token).
-#     Daher werden weder openid-client-secret noch token-/userinfo-Endpoint
-#     verwendet. Erforderlich: issuer, client-id, authorization-endpoint,
-#     jwks-endpoint, redirect-uri und (für Keycloak) username-claim-type.
+#     Erforderlich: issuer, client-id, authorization-endpoint, jwks-endpoint,
+#     redirect-uri und (fuer Keycloak) username-claim-type.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -27,5 +30,21 @@ data:
     openid-redirect-uri:           {{ .Values.openid.redirectUri }}
 
     # Claim, der als Guacamole-Username verwendet wird. Muss zu den
-    # username-Attributen in user-mapping.xml passen.
+    # Eintraegen in der guacamole_user-Tabelle passen (per Init-Container vorbefuellt).
     openid-username-claim-type:    preferred_username
+
+    # --- JDBC (MariaDB) ---
+    mysql-hostname:                {{ .Values.db.host }}
+    mysql-port:                    {{ .Values.db.port }}
+    mysql-database:                {{ .Values.guacamoleDb.database }}
+    mysql-username:                {{ .Values.guacamoleDb.username }}
+    mysql-password:                {{ .Values.guacamoleDb.password }}
+    mysql-driver:                  {{ .Values.guacamoleDb.driver }}
+
+    # Bei OIDC-Login einen neuen User in der JDBC-DB anlegen, falls noch nicht
+    # vorhanden. Dann muessen Verbindungs-Permissions per User-Group erteilt
+    # werden -- der Init-Container legt dafuer die Gruppe "rc-users" an,
+    # weist ihr die Connection zu, und ueber openid-default-user-groups landet
+    # jeder OIDC-User automatisch in dieser Gruppe.
+    mysql-auto-create-accounts:    true
+    openid-default-user-groups:    rc-users

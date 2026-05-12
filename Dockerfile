@@ -10,7 +10,8 @@ RUN echo "### Update system... ###"
 RUN apt-get update && apt-get install -y \
     sudo curl unzip gnupg2 software-properties-common \
     xrdp xfce4-terminal diodon xclip dbus-x11 x11-xserver-utils net-tools supervisor python3-pip \
-    tomcat9 tomcat9-common tigervnc-standalone-server locales openbox firefox-esr\
+    tomcat9 tomcat9-common tigervnc-standalone-server locales openbox firefox-esr \
+    mariadb-client \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # 2. Konfigurieren
@@ -71,6 +72,23 @@ RUN set -eux; \
     tar -xzf guacamole-auth-sso-1.6.0.tar.gz; \
     cp guacamole-auth-sso-1.6.0/openid/guacamole-auth-sso-openid-1.6.0.jar /etc/guacamole/extensions/; \
     rm -rf /tmp/guacamole-auth-sso-1.6.0*
+
+# Guacamole JDBC (MySQL/MariaDB) extension + MariaDB JDBC-Treiber + Schema-SQL
+# Damit der FileAuthenticationProvider obsolet wird: Connections kommen aus der
+# MariaDB. Schema wird per Init-Container in die DB eingespielt; die SQL-Skripte
+# legen wir unter /opt/guacamole-jdbc/schema/ ab.
+RUN set -eux; \
+    mkdir -p /etc/guacamole/extensions /etc/guacamole/lib /opt/guacamole-jdbc/schema; \
+    cd /tmp; \
+    curl -fsSL --retry 5 --retry-all-errors -o guacamole-auth-jdbc-1.6.0.tar.gz \
+      https://downloads.apache.org/guacamole/1.6.0/binary/guacamole-auth-jdbc-1.6.0.tar.gz; \
+    tar -xzf guacamole-auth-jdbc-1.6.0.tar.gz; \
+    cp guacamole-auth-jdbc-1.6.0/mysql/guacamole-auth-jdbc-mysql-1.6.0.jar /etc/guacamole/extensions/; \
+    cp guacamole-auth-jdbc-1.6.0/mysql/schema/*.sql /opt/guacamole-jdbc/schema/; \
+    chmod -R a+r /opt/guacamole-jdbc; \
+    curl -fsSL --retry 5 --retry-all-errors -o /etc/guacamole/lib/mariadb-java-client.jar \
+      https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/3.4.1/mariadb-java-client-3.4.1.jar; \
+    rm -rf /tmp/guacamole-auth-jdbc-1.6.0*
 
 
 

@@ -157,3 +157,16 @@ openid:
   tokenEndpoint:         https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/token
   jwksEndpoint:          https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/certs
   userinfoEndpoint:      https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/userinfo
+
+# JDBC-Konfiguration fuer die Guacamole-Datenbank in der bereits vorhandenen
+# USM-MariaDB (.Values.db.host). Der Init-Container legt diese DB einmalig an
+# (idempotent) und spielt das Schema ein.
+guacamoleDb:
+  # Eigene Datenbank fuer Guacamole in der bestehenden MariaDB-Instanz
+  database: guacamole
+  # Eigener Datenbank-Benutzer (nicht root) fuer Guacamole zur Laufzeit
+  username: guacamole
+  # Passwort fuer den Guacamole-DB-User
+  password: changeMeGuacDb20260512
+  # Treiber fuer Guacamole JDBC: 'mariadb' = MariaDB-JDBC-Driver
+  driver: mariadb

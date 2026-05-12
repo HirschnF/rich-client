@@ -25,6 +25,35 @@ spec:
       imagePullSecrets:
         {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       serviceAccountName: rc-{{ .Values.user }}-svca
+      initContainers:
+        # Legt einmalig die Guacamole-DB + den DB-User in der bestehenden
+        # USM-MariaDB an, spielt das Schema ein und seeded die Connection +
+        # die "rc-users"-Gruppe + die READ-Permissions. Idempotent: laeuft bei
+        # jedem Helm-Upgrade durch.
+        - name: jdbc-bootstrap
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            runAsUser: 0
+          env:
+            - name: DB_HOST
+              value: "{{ .Values.db.host }}"
+            - name: DB_PORT
+              value: "{{ .Values.db.port }}"
+            - name: DB_ROOT_USER
+              value: "{{ .Values.db.dbuser }}"
+            - name: DB_ROOT_PASSWORD
+              value: "{{ .Values.db.dbpassword }}"
+            - name: GUAC_DB
+              value: "{{ .Values.guacamoleDb.database }}"
+            - name: GUAC_USER
+              value: "{{ .Values.guacamoleDb.username }}"
+            - name: GUAC_PASSWORD
+              value: "{{ .Values.guacamoleDb.password }}"
+          command: ["bash", "/opt/guac-bootstrap/bootstrap.sh"]
+          volumeMounts:
+            - name: jdbc-bootstrap
+              mountPath: /opt/guac-bootstrap
       containers:
         - name: rc
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -265,6 +294,10 @@ spec:
         - name: guacamole-properties
           configMap:
             name: guacamole-properties-mapping-{{ .Values.user }}
+        - name: jdbc-bootstrap
+          configMap:
+            name: guacamole-jdbc-bootstrap-{{ .Values.user }}
+            defaultMode: 0555
         # - name: sesman-ini
         #   configMap:
         #     name: sesman-ini-{{ .Values.user }}

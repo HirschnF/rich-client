@@ -1,0 +1,105 @@
+# Bootstrap-ConfigMap fuer die Guacamole-JDBC-Datenbank.
+# Enthaelt das Bash-Skript, das ein Init-Container ausfuehrt, sowie das
+# Helm-templatisierte Seed-SQL fuer Connection und Berechtigungen.
+#
+# Idempotent: Schema wird nur eingespielt wenn 'guacamole_entity' fehlt;
+# Connection-/Group-/Permission-Eintraege per INSERT IGNORE.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: guacamole-jdbc-bootstrap-{{ .Values.user }}
+data:
+  bootstrap.sh: |
+    #!/bin/bash
+    set -euo pipefail
+
+    : "${DB_HOST:?DB_HOST not set}"
+    : "${DB_PORT:?DB_PORT not set}"
+    : "${DB_ROOT_USER:?DB_ROOT_USER not set}"
+    : "${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD not set}"
+    : "${GUAC_DB:?GUAC_DB not set}"
+    : "${GUAC_USER:?GUAC_USER not set}"
+    : "${GUAC_PASSWORD:?GUAC_PASSWORD not set}"
+
+    MYSQL_ROOT=(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_ROOT_USER" -p"$DB_ROOT_PASSWORD")
+
+    echo "[bootstrap] Waiting for MariaDB at $DB_HOST:$DB_PORT ..."
+    for i in $(seq 1 60); do
+      if "${MYSQL_ROOT[@]}" -e "SELECT 1" >/dev/null 2>&1; then
+        echo "[bootstrap] MariaDB reachable after ${i} attempts."
+        break
+      fi
+      sleep 2
+    done
+
+    echo "[bootstrap] Ensuring database '$GUAC_DB' and user '$GUAC_USER' exist ..."
+    "${MYSQL_ROOT[@]}" <<SQL
+    CREATE DATABASE IF NOT EXISTS \`$GUAC_DB\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    CREATE USER IF NOT EXISTS '$GUAC_USER'@'%' IDENTIFIED BY '$GUAC_PASSWORD';
+    ALTER USER '$GUAC_USER'@'%' IDENTIFIED BY '$GUAC_PASSWORD';
+    GRANT ALL PRIVILEGES ON \`$GUAC_DB\`.* TO '$GUAC_USER'@'%';
+    FLUSH PRIVILEGES;
+    SQL
+
+    SCHEMA_EXISTS=$("${MYSQL_ROOT[@]}" -N -B \
+      -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$GUAC_DB' AND table_name='guacamole_entity'")
+
+    if [ "$SCHEMA_EXISTS" -eq 0 ]; then
+      echo "[bootstrap] Applying Guacamole schema (one-time) ..."
+      for sql in /opt/guacamole-jdbc/schema/*.sql; do
+        echo "[bootstrap]   applying $sql"
+        "${MYSQL_ROOT[@]}" "$GUAC_DB" < "$sql"
+      done
+    else
+      echo "[bootstrap] Schema already present, skipping."
+    fi
+
+    echo "[bootstrap] Seeding/refreshing rc-users group, connection and permissions ..."
+    "${MYSQL_ROOT[@]}" "$GUAC_DB" < /opt/guac-bootstrap/seed.sql
+
+    echo "[bootstrap] Done."
+
+  seed.sql: |
+    -- User-Group "rc-users" anlegen, falls noch nicht vorhanden.
+    INSERT IGNORE INTO guacamole_entity (name, type) VALUES ('rc-users', 'USER_GROUP');
+    INSERT IGNORE INTO guacamole_user_group (entity_id)
+      SELECT entity_id FROM guacamole_entity WHERE name = 'rc-users' AND type = 'USER_GROUP';
+
+    -- Connection "Jetty-Rich-Client" anlegen, falls noch nicht vorhanden.
+    INSERT IGNORE INTO guacamole_connection (connection_name, protocol)
+      VALUES ('Jetty-Rich-Client', 'rdp');
+
+    -- Connection-Parameter initial befuellen (idempotent: INSERT IGNORE).
+    INSERT IGNORE INTO guacamole_connection_parameter (connection_id, parameter_name, parameter_value)
+      SELECT c.connection_id, p.name, p.value
+      FROM guacamole_connection c
+      CROSS JOIN (
+        SELECT 'hostname'        AS name, '127.0.0.1'                AS value UNION ALL
+        SELECT 'port',                    '3389'                              UNION ALL
+        SELECT 'username',                '{{ .Values.user }}'                UNION ALL
+        SELECT 'password',                '{{ .Values.pw }}'                  UNION ALL
+        SELECT 'security',                'rdp'                               UNION ALL
+        SELECT 'ignore-cert',             'true'                              UNION ALL
+        SELECT 'keyboard-layout',         'de'                                UNION ALL
+        SELECT 'server-layout',           'de-de-qwertz'
+      ) p
+      WHERE c.connection_name = 'Jetty-Rich-Client';
+
+    -- Bei spaeterem helm upgrade ggf. geaenderte user/pw aktualisieren.
+    UPDATE guacamole_connection_parameter cp
+      JOIN guacamole_connection c ON c.connection_id = cp.connection_id
+      SET cp.parameter_value = '{{ .Values.user }}'
+      WHERE c.connection_name = 'Jetty-Rich-Client' AND cp.parameter_name = 'username';
+
+    UPDATE guacamole_connection_parameter cp
+      JOIN guacamole_connection c ON c.connection_id = cp.connection_id
+      SET cp.parameter_value = '{{ .Values.pw }}'
+      WHERE c.connection_name = 'Jetty-Rich-Client' AND cp.parameter_name = 'password';
+
+    -- Der Gruppe "rc-users" READ-Permission auf die Connection geben.
+    INSERT IGNORE INTO guacamole_connection_permission (entity_id, connection_id, permission)
+      SELECT e.entity_id, c.connection_id, 'READ'
+      FROM guacamole_entity e
+      CROSS JOIN guacamole_connection c
+      WHERE e.name = 'rc-users' AND e.type = 'USER_GROUP'
+        AND c.connection_name = 'Jetty-Rich-Client';
