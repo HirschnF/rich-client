@@ -216,7 +216,7 @@ data:
           {{ "{% endfor %}" }}
         </ul>
 
-        <a class="nav-link" href="../guacamole" target="_blank">🖥️ Open Rich Client (via Guacamole Authentication)</a>
+        <a class="nav-link" href="../guacamole/api/ext/openid/login" target="_blank">🖥️ Open Rich Client (via Guacamole Authentication)</a>
         <a class="nav-link" href="{{ .Values.ingress.indexpage }}" target="_blank">🌐 Open USC Index Page</a>
         
 
