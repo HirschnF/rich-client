@@ -2,7 +2,7 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches: [ guacamole-2025.4.0-keycloak ]
+    branches: [ guacamole-2025.4.0-keycloak-claude ]
     paths:
       - Dockerfile
       - rc-client/**
