@@ -104,6 +104,34 @@ data:
       WHERE e.name = 'rc-users' AND e.type = 'USER_GROUP'
         AND c.connection_name = 'Jetty-Rich-Client';
 
+    -- OIDC-User vor-anlegen, damit er beim ersten Keycloak-Login schon in
+    -- der rc-users-Gruppe steckt und somit READ-Permission auf die Connection
+    -- hat. mysql-auto-create-accounts findet den existierenden User dann vor
+    -- und uebernimmt ihn (statt einen neuen ohne Gruppe anzulegen).
+    -- Das password_hash ist Random und nicht reproduzierbar -> kein lokaler
+    -- Username/Passwort-Login moeglich, OIDC bleibt der einzige Weg.
+    INSERT IGNORE INTO guacamole_entity (name, type)
+      VALUES ('{{ .Values.user }}', 'USER');
+
+    INSERT IGNORE INTO guacamole_user (entity_id, password_hash, password_salt, password_date)
+      SELECT entity_id,
+             UNHEX(SHA2(CONCAT(UUID(), UUID()), 256)),
+             UNHEX(SHA2(UUID(), 256)),
+             NOW()
+      FROM guacamole_entity
+      WHERE name = '{{ .Values.user }}' AND type = 'USER'
+        AND entity_id NOT IN (SELECT entity_id FROM guacamole_user);
+
+    -- User in die rc-users-Gruppe einhaengen.
+    INSERT IGNORE INTO guacamole_user_group_member (user_group_id, member_entity_id)
+      SELECT g.user_group_id, eu.entity_id
+      FROM guacamole_user_group g
+      INNER JOIN guacamole_entity eg ON eg.entity_id = g.entity_id
+                                      AND eg.name = 'rc-users'
+                                      AND eg.type = 'USER_GROUP'
+      INNER JOIN guacamole_entity eu ON eu.name = '{{ .Values.user }}'
+                                      AND eu.type = 'USER';
+
     -- Default-Admin "guacadmin" entfernen, der vom Schema-Skript
     -- 002-create-admin-user.sql automatisch angelegt wird. Ohne diese Loeschung
     -- bliebe ein guacadmin/guacadmin-Login als Hintertuer offen, was wir bei
