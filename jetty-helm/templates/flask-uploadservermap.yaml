@@ -195,7 +195,8 @@ data:
         📁 File Transfer for {{ "{{ user }}" }}
         </h1>
         <h2 style="display: flex; justify-content: space-between; align-items: center;">
-        <span style="font-size: 0.8em; color: #666;">Consulting version: {{ "{{ version }}" }} <br>Revision: {{ .Release.Revision }}<br>Upload-Limit: {{ .Values.ingress.uploadlimit }}m</span>
+        <span style="font-size: 0.8em; color: #666;">Consulting version: {{ "{{ version }}" }} <br>Revision: {{ .Release.Revision }}<br>Upload-Limit: {{ .Values.ingress.uploadlimit }}m
+        </span>
         </h2>
           
         <!--<h2>🚀 Upload a File (.zip, .xml, .sql)</h2>-->
