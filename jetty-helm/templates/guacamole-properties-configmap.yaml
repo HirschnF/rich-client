@@ -41,10 +41,9 @@ data:
     mysql-password:                {{ .Values.guacamoleDb.password }}
     mysql-driver:                  {{ .Values.guacamoleDb.driver }}
 
-    # Bei OIDC-Login einen neuen User in der JDBC-DB anlegen, falls noch nicht
-    # vorhanden. Dann muessen Verbindungs-Permissions per User-Group erteilt
-    # werden -- der Init-Container legt dafuer die Gruppe "rc-users" an,
-    # weist ihr die Connection zu, und ueber openid-default-user-groups landet
-    # jeder OIDC-User automatisch in dieser Gruppe.
-    mysql-auto-create-accounts:    true
-    openid-default-user-groups:    rc-users
+    # Auto-Create AUS: Nur User, die der Init-Container vorab in die JDBC-DB
+    # eingetragen hat (= der per Helm konfigurierte {{ .Values.user }}), duerfen
+    # sich ueber OIDC einloggen. Unbekannte Realm-Nutzer werden auf JDBC-Ebene
+    # abgewiesen. Zusammen mit dem ALLOWED_USER-Check im Flask-Server bildet das
+    # die Zugriffsbeschraenkung pro Pod (Stufe B Access-Control).
+    mysql-auto-create-accounts:    false

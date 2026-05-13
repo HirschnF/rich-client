@@ -72,6 +72,12 @@ data:
     KEYCLOAK_CLIENT_SECRET = os.environ.get("KEYCLOAK_CLIENT_SECRET", "")
     REQUIRE_AUTH = os.environ.get("REQUIRE_AUTH", "false").lower() in ("1", "true", "yes", "on")
 
+    # Zugriffsbeschraenkung: Nur der per Helm konfigurierte Pod-User (= RDP_USERNAME
+    # aus dem rc-user-secret) darf nach erfolgreicher Keycloak-Anmeldung weitermachen.
+    # Andere Realm-Nutzer kommen zwar durch das OIDC-Gate, werden aber hier mit 403
+    # abgewiesen.
+    ALLOWED_USER = os.environ.get("RDP_USERNAME", "").strip()
+
     oauth = OAuth(app)
 
     if KEYCLOAK_BASE_URL and KEYCLOAK_CLIENT_ID:
@@ -216,9 +222,9 @@ data:
           {{ "{% endfor %}" }}
         </ul>
 
-        <a class="nav-link" href="../guacamole/api/ext/openid/login" target="_blank">🖥️ Open Rich Client (via Guacamole Authentication)</a>
+        <a class="nav-link" href="../guacamole/api/ext/openid/login" target="_blank">🖥️ Open Rich Client</a>
         <a class="nav-link" href="{{ .Values.ingress.indexpage }}" target="_blank">🌐 Open USC Index Page</a>
-        
+        <a class="nav-link" href="{{ .Values.openid.userSecurityEndpoint }}" target="_blank">🔒 Password reset</a>
 
         <h2>📋 Clipboard Sync</h2>
         <!--<form action="/transfer/clipboard/write" method="post" enctype="multipart/form-data">
@@ -360,6 +366,15 @@ data:
 
         if not _is_authenticated():
             return redirect(f"{EXTERNAL_BASE_PATH}/login")
+
+        # User-Match: Nur ALLOWED_USER darf rein (Stufe B Access-Control).
+        if ALLOWED_USER:
+            current = (session.get("user") or {}).get("preferred_username", "")
+            if current != ALLOWED_USER:
+                abort(403, description=(
+                    f"Zugriff verweigert. Diese Instanz ist Benutzer "
+                    f"'{ALLOWED_USER}' vorbehalten."
+                ))
 
         return None
       #keycloak Anpassung Ende
