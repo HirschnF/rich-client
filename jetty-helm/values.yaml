@@ -30,9 +30,11 @@ Depth: 24
 enablePersistence: false
 
 image:
-  version: v4.0
+  version: v5.6.01
   repository: frank1977/jetty-rich-client
-  tag: usm5.5.04.i # USM RC 5.5HF04, keycloak und openid Test, mit MariaDB, URI korrigiert
+  tag: usm5.6.01.a # neue USM Version 5.6.01, mit Keycloak, OpenID, Guacamole 1.6.0, MariaDB Connector/J 3.1.2
+
+#  tag: usm5.5.04.i # USM RC 5.5HF04, keycloak und openid Test, mit MariaDB, URI korrigiert
 #  tag: usm5.5.04.f # USM RC 5.5HF04, keycloak Test
 #  tag: usm5.5.04.01 # USM RC 5.5HF04, index url
 #  tag: usm5.5.03.20 neue Terminal Emulation und Clipboard Manager
@@ -91,14 +93,7 @@ db:
   qualifier: ""
   dbuser: root
   #here is the secrets.yaml - usmMariadbRootPassword: 
-  dbpassword: changeMeqcwjOjX4R2sw
-  #2025.4.0 changeMeqcwjOjX4R2sw
-  #2025.3.2 changeMemqmCVL9MlAxT
-  #2025.3.1 changeMeHMOODhktI8mW
-  #2025.2.5 changeMeO54aVCMUb06D
-  #2025.2.4 changeMePLFnw8fLVvz0
-  #2025.2.3 changeMeIl0MKYTBxlwn
-  #2025.2.0 changeMe7IMuzjS4W5NR
+  dbpassword: changeMeBy35zJAMovXB
   
   dbaseexport: usm_export
   dbasectm: usmctm
