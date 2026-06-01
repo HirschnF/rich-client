@@ -1,10 +1,10 @@
 # # Kubernetes Namespace für die App
-# namespace: consult-usifhirsch-202540
-# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-usifhirsch-202540 --set user="" --set pw=""
+# namespace: consult-usiswagner-202612
+# helm upgrade --install jetty-usifhirsch ./jetty-helm --namespace consult-usiswagner-202612 --set user="" --set pw=""
 
 #### CHANGE ALWAYS ####
 # search for the namespace and replace it in this file!
-namespace: consult-usifhirsch-202540
+namespace: consult-usiswagner-202612
 # change also the database password!!!
 #######################
 
@@ -20,8 +20,8 @@ pw: ""
 
 # rdp:
 #   #host: 
-#   #rc-usifhirsch-svc.consult-usifhirsch-202540.k8s-dev004.aspera.usu.grp
-#   #rc-usifhirsch-svc.consult-usifhirsch-202540.svc.cluster.local
+#   #rc-usifhirsch-svc.consult-usiswagner-202612.k8s-dev004.aspera.usu.grp
+#   #rc-usifhirsch-svc.consult-usiswagner-202612.svc.cluster.local
 #   #port: 3389
 #   username: usifhirsch
 #   password: rdppass
@@ -66,10 +66,10 @@ ingress:
     cert-manager.io/cluster-issuer: usu-group-issuer
     haproxy.org/ssl-redirect: "true"
     haproxy.org/ssl-redirect-port: "443"
-  hostname: rc.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp
+  hostname: rc.consult-usiswagner-202612.ha.k8s-dev004.aspera.usu.grp
   tls: true
   uploadlimit: 800 #MB
-  indexpage: https://index.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/
+  indexpage: https://index.consult-usiswagner-202612.ha.k8s-dev004.aspera.usu.grp/
 
 transfer:
   filetypes: "zip,xml,sql,psc,txt,csv,sh,crt"
@@ -87,14 +87,14 @@ resources:
 
 # depends on the USC Package secrets.yaml
 db:
-  host: usm-mariadb.consult-usifhirsch-202540.svc.cluster.local
+  host: usm-mariadb.consult-usiswagner-202612.svc.cluster.local
   port: "3306"
   dbase: usm
   qualifier: ""
   dbuser: root
   #here is the secrets.yaml - usmMariadbRootPassword: 
-  dbpassword: changeMeBy35zJAMovXB
-  
+  dbpassword: changeMeFrFJYyn77Es3 #2026.1.2
+    
   dbaseexport: usm_export
   dbasectm: usmctm
   dbasehistory: usm_history
@@ -116,10 +116,10 @@ proxy:
   # Alternativ  können auch die konkreten Service- und Cluster-Domains aufgelistet werden, z.B. "localhost,
   # Komma-getrennt, wie üblich bei NO_PROXY
   # Hinweis: viele Clients akzeptieren Einträge wie ".svc" und ".cluster.local" als Suffix-Match.
-  noProxy: "localhost,127.0.0.1,.svc,.cluster.local,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp,*.ha.k8s-dev004.aspera.usu.grp"
+  noProxy: "localhost,127.0.0.1,.svc,.cluster.local,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,uum-keycloak.consult-usiswagner-202612.ha.k8s-dev004.aspera.usu.grp,*.ha.k8s-dev004.aspera.usu.grp"
 
   # Java-Konvention (Pipe-separiert, Wildcards erlaubt)
-  javaNonProxyHosts: "localhost|127.*|[::1]|*.svc|*.cluster.local|kubernetes|kubernetes.default|kubernetes.default.svc|kubernetes.default.svc.cluster.local,uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp,*.ha.k8s-dev004.aspera.usu.grp"
+  javaNonProxyHosts: "localhost|127.*|[::1]|*.svc|*.cluster.local|kubernetes|kubernetes.default|kubernetes.default.svc|kubernetes.default.svc.cluster.local,uum-keycloak.consult-usiswagner-202612.ha.k8s-dev004.aspera.usu.grp,*.ha.k8s-dev004.aspera.usu.grp"
 
 richclient:
   # Hier können weitere Einstellungen für den Rich Client hinterlegt werden, z.B.:
@@ -136,7 +136,7 @@ richclient:
 
 keycloak:
   enabled: "true"
-  url: "https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth"
+  url: "https://uum-keycloak.consult-usiswagner-202612.ha.k8s-dev004.aspera.usu.grp/master/auth"
   realm: "master"
   clientId: "rc-transfer"
   # Client-Secret des Keycloak-Clients rc-transfer (confidential client).
@@ -149,18 +149,18 @@ keycloak:
 
 openid:
   enabled: "true"
-  issuer: "https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master"
+  issuer: "https://uum-keycloak.consult-usiswagner-202612.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master"
   clientId: "rc-guacamole"
   clientSecret: "abcBwrRgEoJePmL18VcoxNelHoawhlQQ"
-  #redirectUri: "https://rc.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/guacamole/api/ext/openid/callback"
-  redirectUri: "https://rc.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/guacamole/"
+  #redirectUri: "https://rc.consult-usiswagner-202612.ha.k8s-dev004.aspera.usu.grp/guacamole/api/ext/openid/callback"
+  redirectUri: "https://rc.consult-usiswagner-202612.ha.k8s-dev004.aspera.usu.grp/guacamole/"
 
   # Keycloak realm endpoints (realm: master)
-  authorizationEndpoint: https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/auth
-  tokenEndpoint:         https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/token
-  jwksEndpoint:          https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/certs
-  userinfoEndpoint:      https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/userinfo
-  userSecurityEndpoint:  https://uum-keycloak.consult-usifhirsch-202540.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/account/account-security/signing-in
+  authorizationEndpoint: https://uum-keycloak.consult-usiswagner-202612.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/auth
+  tokenEndpoint:         https://uum-keycloak.consult-usiswagner-202612.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/token
+  jwksEndpoint:          https://uum-keycloak.consult-usiswagner-202612.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/certs
+  userinfoEndpoint:      https://uum-keycloak.consult-usiswagner-202612.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/protocol/openid-connect/userinfo
+  userSecurityEndpoint:  https://uum-keycloak.consult-usiswagner-202612.ha.k8s-dev004.aspera.usu.grp/master/auth/realms/master/account/account-security/signing-in
 
 # JDBC-Konfiguration fuer die Guacamole-Datenbank in der bereits vorhandenen
 # USM-MariaDB (.Values.db.host). Der Init-Container legt diese DB einmalig an
