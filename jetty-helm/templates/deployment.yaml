@@ -250,9 +250,9 @@ spec:
             - name: translation-usermap
               mountPath: /var/lib/tomcat9/webapps/guacamole/translations/en.json
               subPath: en.json
-            # - name: valuemation-config
-            #   mountPath: /home/tomcat/.valuemation/valuemation.ini
-            #   subPath: valuemation.ini
+            - name: valuemation-config
+              mountPath: /home/tomcat/.valuemation/valuemation.ini
+              subPath: valuemation.ini
             #- name: xrdp-wrapper
             #  mountPath: /usr/local/bin/xrdp-wrapper.sh
             #  subPath: xrdp-wrapper.sh
@@ -308,9 +308,9 @@ spec:
         - name: translation-usermap
           configMap:
             name: translation-usermap-{{ .Values.user }}
-        # - name: valuemation-config
-        #   configMap:
-        #     name: valuemation-config-{{ .Values.user }}
+        - name: valuemation-config
+          configMap:
+            name: valuemation-config-{{ .Values.user }}
         # - name: xvnc-wrapper
         #   configMap:
         #     name: xvnc-wrapper-{{ .Values.user }}
